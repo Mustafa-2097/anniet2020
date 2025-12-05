@@ -1,10 +1,12 @@
+import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
+import 'package:anniet2020/feature/auth/sign_up/views/sign_up_page.dart';
 import 'package:anniet2020/splash/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import 'core/constant/app_colors.dart';
+import 'feature/auth/otp_page/views/otp_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -34,8 +36,12 @@ class MyApp extends StatelessWidget {
               iconTheme: const IconThemeData(
                 color: AppColors.textColor,
               ),
+              checkboxTheme: CheckboxThemeData(
+                shape: const CircleBorder(),
+                side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
+              ),
             ),
-            home: SplashScreen(),
+            home: OtpPage(),
           ),
         );
       },
