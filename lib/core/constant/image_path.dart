@@ -6,6 +6,9 @@ class ImagePath {
   static const String colorAppLogo = "assets/images/color_logo.png";
   static const String splash = "assets/images/splash.png";
 
+  static const String user = "assets/images/user.png";
+  static const String videoPlay = "assets/images/video_play.png";
+
   ///
   static const String defaultImage = "https://via.placeholder.com/150?text=No+Image";
 

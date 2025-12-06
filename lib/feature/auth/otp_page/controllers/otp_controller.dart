@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import '../../sign_in/views/sign_in_page.dart';
+import '../../sign_up/views/widgets/success_dialog.dart';
 
 class OtpController extends GetxController {
   static OtpController get instance => Get.find();
@@ -46,7 +46,7 @@ class OtpController extends GetxController {
   }
 
   /// Verify OTP
-  Future<void> verifyOtp() async {
+  Future<void> verifyOtp(VoidCallback onVerified) async {
     final error = validateOtp();
 
     if (error != null) {
@@ -61,10 +61,14 @@ class OtpController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.snackbar("Success", "OTP Verified Successfully");
-      await Future.delayed(Duration(milliseconds: 600)); // for not to navigate immediately
-      /// Navigate to Reset Password Page
-      Get.offAll(() => SignInPage());
+      /// Show Success Dialog instead of snackbar
+      SuccessDialog.show(
+        subtitle: "OTP Verified Successfully!",
+        onContinue: () {
+          Get.back();
+          onVerified(); // execute the callback
+        },
+      );
 
     } catch (e) {
       EasyLoading.dismiss();
@@ -81,8 +85,9 @@ class OtpController extends GetxController {
   Future<void> resendOtp() async {
     if (!canResend.value) return;
     EasyLoading.show(status: "Sending new code...");
-    await Future.delayed(const Duration(seconds: 2));
-    Get.snackbar("Success", "New Code Sent!");
+    await Future.delayed(const Duration(seconds: 2)); // Mock Api
+    EasyLoading.dismiss();
+    Get.snackbar("Check Your Email", "New Code Sent!", backgroundColor: Colors.green);
     startTimer();
   }
 

@@ -24,10 +24,10 @@ class OtpBox extends StatelessWidget {
         shape: PinCodeFieldShape.box,
         borderRadius: BorderRadius.circular(24.r),
 
-        fieldHeight: 50.h,
-        fieldWidth: 50.w,
+        fieldHeight: 55.h,
+        fieldWidth: 55.w,
 
-        borderWidth: 1.4,
+        borderWidth: 1,
 
         /// Inactive state — NO BORDER
         inactiveColor: Colors.transparent,

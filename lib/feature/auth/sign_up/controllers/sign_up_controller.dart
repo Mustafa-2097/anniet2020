@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-
-import '../views/widgets/success_dialog.dart';
+import '../../otp_page/views/otp_page.dart';
+import '../../sign_in/views/sign_in_page.dart';
 
 class SignUpController extends GetxController {
   static SignUpController get instance => Get.find();
@@ -43,21 +43,19 @@ class SignUpController extends GetxController {
 
     await Future.delayed(const Duration(seconds: 2)); // mock API call
 
+    // Dismiss loader BEFORE branching (recommended)
+    EasyLoading.dismiss();
+
     // Simulated success example
     if (emailController.text == "new@example.com") {
-      EasyLoading.dismiss();
-
-      SuccessDialog.show(
-        subtitle: "Your account has been successfully created!",
-        onContinue: () {
-          Get.back();
-          // Navigate to sign-in page
-          // Get.offAll(() => SignInPage());
-        }
-      );
-
+      /// Navigate to OTP Page
+      Get.to(() => OtpPage(
+        onOtpVerified: () {
+          // Navigate to Sign-In page after OTP
+          Get.offAll(() => SignInPage());
+        },
+      ));
     } else {
-      EasyLoading.dismiss();
       Get.snackbar("Error", "Email already exists or invalid details", backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
   }

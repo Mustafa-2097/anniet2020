@@ -1,10 +1,12 @@
 import 'package:anniet2020/core/constant/app_text_styles.dart';
 import 'package:anniet2020/core/constant/widgets/primary_button.dart';
+import 'package:anniet2020/feature/auth/forgot_password/views/forgot_password_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../sign_up/views/sign_up_page.dart';
 import '../controllers/sign_in_controller.dart';
 
 class SignInPage extends StatelessWidget {
@@ -126,7 +128,7 @@ class SignInPage extends StatelessWidget {
                             Text("Remember Me", style: AppTextStyles.body3_400(context)),
                             const Spacer(),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () => Get.to(() => ForgotPasswordPage()),
                               child: Text(
                                 "Forgot Password",
                                 style: AppTextStyles.body3_400(context).copyWith(color: AppColors.redColor),
@@ -154,7 +156,7 @@ class SignInPage extends StatelessWidget {
                     children: [
                       Text("Don’t have an account? ", style: AppTextStyles.body3(context).copyWith(fontSize: 16.sp)),
                       GestureDetector(
-                        onTap: () => Get.toNamed('/signup'),
+                        onTap: () => Get.to(() => SignUpPage()),
                         child: Text(
                           "Sign Up", style: AppTextStyles.body3(context).copyWith(fontSize: 16.sp, color: AppColors.primaryColor),
                         ),
