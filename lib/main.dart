@@ -22,8 +22,8 @@ void configEasyLoading() {
   EasyLoading.instance
     ..loadingStyle = EasyLoadingStyle.custom
     ..backgroundColor = AppColors.blackColor
-    ..textColor = AppColors.textColor
-    ..indicatorColor = AppColors.textColor
+    ..textColor = AppColors.whiteColor
+    ..indicatorColor = AppColors.whiteColor
     ..maskColor = AppColors.primaryColor
     ..indicatorSize = 45
     ..radius = 10

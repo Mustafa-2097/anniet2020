@@ -22,7 +22,7 @@ class PrimaryButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         text,
-        style: GoogleFonts.plusJakartaSans(color: AppColors.textColor, fontSize: 16.sp, fontWeight: FontWeight.w600),
+        style: GoogleFonts.plusJakartaSans(color: AppColors.whiteColor, fontSize: 16.sp, fontWeight: FontWeight.w600),
       ),
     );
   }

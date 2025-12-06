@@ -9,6 +9,12 @@ class ImagePath {
   static const String user = "assets/images/user.png";
   static const String videoPlay = "assets/images/video_play.png";
 
+  /// Icons home page
+  static const String icon01 = "assets/icons/icon01.png";
+  static const String icon02 = "assets/icons/icon02.png";
+  static const String icon03 = "assets/icons/icon03.png";
+  static const String icon04 = "assets/icons/icon04.png";
+
   ///
   static const String defaultImage = "https://via.placeholder.com/150?text=No+Image";
 

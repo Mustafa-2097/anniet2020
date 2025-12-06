@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../../core/constant/app_colors.dart';
+
+class VideoDetailsCard extends StatelessWidget {
+  final String title;
+  final double rating;
+  final String description;
+  final String infoMessage;
+
+  const VideoDetailsCard({
+    super.key,
+    required this.title,
+    required this.rating,
+    required this.description,
+    required this.infoMessage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1.sw,
+      padding: EdgeInsets.all(10.r),
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius: BorderRadius.circular(14.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// TITLE + RATING ROW
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
+              ),
+              Row(
+                children: [
+                  Icon(Icons.star, color: Colors.amber, size: 16.r),
+                  SizedBox(width: 2.w),
+                  Text(
+                    "$rating Rating",
+                    style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w500, color: AppColors.blackColor),
+                  ),
+                ],
+              ),
+            ],
+          ),
+
+          SizedBox(height: 8.h),
+
+          /// DESCRIPTION TEXT
+          Text(
+            description,
+            style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.subTextColor, fontWeight: FontWeight.w500),
+          ),
+
+          SizedBox(height: 6.h),
+
+          /// INFO BOX
+          Container(
+            padding: EdgeInsets.all(12.r),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEEF2FF),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.info_outline, color: Colors.blue, size: 22.r),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: Text(
+                    infoMessage,
+                    style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.blackColor, fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

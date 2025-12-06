@@ -17,7 +17,7 @@ class ForgotPasswordPage extends StatelessWidget {
     final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: AppColors.textColor,
+      backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         elevation: 0,
         leading: Padding(

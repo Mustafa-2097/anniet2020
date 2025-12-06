@@ -32,25 +32,25 @@ class HomePage extends StatelessWidget {
 
   final List<Map<String, dynamic>> driverTypes = [
     {
-      "icon": Icons.person, // replace with your custom icon or svg if needed
+      "icon": ImagePath.icon01, // replace with your custom icon or svg if needed
       "title": "Professional Drivers",
       "description":
       "If you drive for a living or if you Employ Drivers and don't mind drink and or you use drugs then this program is a must.",
     },
     {
-      "icon": Icons.drive_eta,
+      "icon": ImagePath.icon02,
       "title": "Young Drivers",
       "description":
       "Young Drivers who are inexperienced on the roads at the same time they are likely to be exposed to and or experimenting with Alcohol and Drugs.",
     },
     {
-      "icon": Icons.female,
+      "icon": ImagePath.icon03,
       "title": "Female Driver",
       "description":
       "Female Drivers of any age as females metabolite Alcohol and Drugs differently to males, we will teach you what you need to be aware of.",
     },
     {
-      "icon": Icons.group,
+      "icon": ImagePath.icon04,
       "title": "Other Drivers",
       "description":
       "Anyone who Drives, Drinks Alcohol and or takes Drugs (illicit and prescribed) including older more experienced drivers.",
@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
     final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: AppColors.textColor,
+      backgroundColor: AppColors.whiteColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -140,7 +140,7 @@ class HomePage extends StatelessWidget {
                                       Text(
                                         item['title']!,
                                         style: GoogleFonts.plusJakartaSans(
-                                          color: AppColors.textColor,
+                                          color: AppColors.whiteColor,
                                           fontSize: 16.sp,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -149,7 +149,7 @@ class HomePage extends StatelessWidget {
                                       Text(
                                         item['subtitle']!,
                                         style: GoogleFonts.plusJakartaSans(
-                                          color: AppColors.textColor,
+                                          color: AppColors.whiteColor,
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -177,7 +177,7 @@ class HomePage extends StatelessWidget {
                                                           controller
                                                               .currentPage
                                                               .value
-                                                      ? AppColors.textColor
+                                                      ? AppColors.whiteColor
                                                       : Colors.white.withOpacity(
                                                           0.4,
                                                         ),
@@ -213,7 +213,7 @@ class HomePage extends StatelessWidget {
 
                       SizedBox(height: 10.h),
 
-                      ///
+                      /// Video Play
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12.r),
                         child: Image.asset(ImagePath.videoPlay, height: sh * 0.189, width: sw * 0.872, fit: BoxFit.cover),
@@ -228,75 +228,71 @@ class HomePage extends StatelessWidget {
                         shrinkWrap: true,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 12.w,
+                          crossAxisSpacing: 10.w,
                           mainAxisSpacing: 6.h,
-                          childAspectRatio: 1.3,
+                          childAspectRatio: 1.35,
                         ),
                         itemBuilder: (context, index) {
                           final item = driverTypes[index];
                           return Card(
+                            color: AppColors.whiteColor,
                             shape: RoundedRectangleBorder(
                               side: BorderSide(
                                 color: Color(0xFFE61043),
-                                width: 1.5,
+                                width: 1.2,
                               ),
                               borderRadius: BorderRadius.circular(18.r),
                             ),
                             elevation: 0,
                             child: Padding(
-                              padding: EdgeInsets.all(12.w),
+                              padding: EdgeInsets.all(6.w),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.all(8.r),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.shade100.withOpacity(0.3),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      item["icon"],
-                                      color: Colors.red.shade400,
-                                      size: 28.sp,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 40.h,
+                                        padding: EdgeInsets.all(8.r),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFFEF1E9),
+                                          borderRadius: BorderRadius.circular(14.r),
+                                        ),
+                                        child: Image.asset(item["icon"], fit: BoxFit.contain,)
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Expanded(
+                                        child: Text(
+                                          item["title"],
+                                          style: AppTextStyles.body3(context).copyWith(color: AppColors.primaryColor),
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(height: 12.h),
-                                  Text(
-                                    item["title"],
-                                    style: TextStyle(
-                                      color: Colors.blue.shade700,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16.sp,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
+                                  SizedBox(height: 4.h),
                                   Expanded(
                                     child: Text(
                                       item["description"],
-                                      style: TextStyle(
-                                        color: Colors.grey.shade800,
-                                        fontSize: 12.sp,
-                                      ),
+                                      style: GoogleFonts.plusJakartaSans(fontSize: 8.sp, fontWeight: FontWeight.w500, color: AppColors.subTextColor),
                                       maxLines: 5,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  SizedBox(height: 8.h),
+                                  SizedBox(height: 2.h),
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: GestureDetector(
-                                      onTap: () {
-                                        // TODO: handle Read More tap, e.g. navigate or expand text
-                                        debugPrint(
-                                          "Read More tapped on ${item["title"]}",
-                                        );
-                                      },
+                                      onTap: () {},
                                       child: Text(
                                         "Read More",
-                                        style: TextStyle(
-                                          color: Colors.green.shade600,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12.sp,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xFF80D676),
+                                          decoration: TextDecoration.underline,
+                                          decorationColor: Color(0xFF80D676),
                                         ),
                                       ),
                                     ),
@@ -312,6 +308,7 @@ class HomePage extends StatelessWidget {
 
                       /// Join Now Button
                       PrimaryButton(text: "Join Now", onPressed: () {}),
+                      SizedBox(height: 10.h),
                     ],
                   ),
                 ),

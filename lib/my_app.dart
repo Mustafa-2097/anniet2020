@@ -3,6 +3,7 @@ import 'package:anniet2020/feature/auth/forgot_password/views/pages/create_new_p
 import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
 import 'package:anniet2020/feature/auth/sign_up/views/sign_up_page.dart';
 import 'package:anniet2020/feature/user_flow/dashboard/custom_dashboard.dart';
+import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
 import 'package:anniet2020/splash/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -34,17 +35,17 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: AppColors.primaryColor,
               appBarTheme: const AppBarTheme(
                 backgroundColor: Colors.transparent,
-                iconTheme: IconThemeData(color: AppColors.textColor),
+                iconTheme: IconThemeData(color: AppColors.whiteColor),
               ),
               iconTheme: const IconThemeData(
-                color: AppColors.textColor,
+                color: AppColors.whiteColor,
               ),
               checkboxTheme: CheckboxThemeData(
                 shape: const CircleBorder(),
                 side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
               ),
             ),
-            home: CustomerDashboard(),
+            home: OnlineClassPage(),
           ),
         );
       },

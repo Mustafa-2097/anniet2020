@@ -29,13 +29,13 @@ class OnboardingPage extends StatelessWidget {
               Text(
                 data.title,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(fontSize: sw * 0.064, fontWeight: FontWeight.w700, color: AppColors.textColor),
+                style: GoogleFonts.plusJakartaSans(fontSize: sw * 0.064, fontWeight: FontWeight.w700, color: AppColors.whiteColor),
               ),
               SizedBox(height: sh * 0.015),
               Text(
                 data.subtitle,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(fontSize: sw * 0.037, fontWeight: FontWeight.w600, color: AppColors.textColor),
+                style: GoogleFonts.plusJakartaSans(fontSize: sw * 0.037, fontWeight: FontWeight.w600, color: AppColors.whiteColor),
               ),
             ],
           ),

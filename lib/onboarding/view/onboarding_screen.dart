@@ -43,7 +43,7 @@ class OnboardingScreen extends StatelessWidget {
                   onTap: controller.skip,
                   child: Text(
                     "Skip",
-                    style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.textColor),
+                    style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.whiteColor),
                   ),
                 )
                     : const SizedBox.shrink();
@@ -63,8 +63,8 @@ class OnboardingScreen extends StatelessWidget {
                     controller: controller.pageController,
                     count: pages.length,
                     effect: ExpandingDotsEffect(
-                      activeDotColor: AppColors.textColor,
-                      dotColor: AppColors.textColor.withOpacity(0.16),
+                      activeDotColor: AppColors.whiteColor,
+                      dotColor: AppColors.whiteColor.withOpacity(0.16),
                       dotHeight: 10.h,
                       dotWidth: 10.w,
                       expansionFactor: 3,
