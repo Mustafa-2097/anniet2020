@@ -2,6 +2,7 @@ import 'package:anniet2020/feature/auth/forgot_password/views/forgot_password_pa
 import 'package:anniet2020/feature/auth/forgot_password/views/pages/create_new_password.dart';
 import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
 import 'package:anniet2020/feature/auth/sign_up/views/sign_up_page.dart';
+import 'package:anniet2020/feature/user_flow/Exam/views/exam_page.dart';
 import 'package:anniet2020/feature/user_flow/dashboard/custom_dashboard.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
 import 'package:anniet2020/splash/view/splash_screen.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
                 side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
               ),
             ),
-            home: OnlineClassPage(),
+            home: ExamPage(),
           ),
         );
       },

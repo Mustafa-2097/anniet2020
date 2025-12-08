@@ -15,6 +15,12 @@ class ImagePath {
   static const String icon03 = "assets/icons/icon03.png";
   static const String icon04 = "assets/icons/icon04.png";
 
+  static const String progressIcon = "assets/images/progress_icon.png";
+
+  /// Score Page's Icon
+  static const String congratsIcon = "assets/images/congrats_icon.png";
+  static const String failIcon = "assets/images/fail_icon.png";
+
   ///
   static const String defaultImage = "https://via.placeholder.com/150?text=No+Image";
 
