@@ -43,7 +43,6 @@ class ExamController extends GetxController {
         correctIndex: 2,
       ),
     ]);
-    progress.value = 1 / questionsPerVideo;
   }
 
   final currentIndex = 0.obs;
@@ -99,8 +98,7 @@ class ExamController extends GetxController {
     }
 
     currentIndex.value++;
-
-    progress.value = (currentIndex.value + 1) / questionsPerVideo;
+    progress.value = currentIndex.value / questionsPerVideo;
 
     selectedIndex.value = -1;
     isAnswered.value = false;
