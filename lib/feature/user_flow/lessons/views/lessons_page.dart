@@ -1,5 +1,9 @@
-import 'package:anniet2020/feature/user_flow/lessons/views/widgets/LessonTile.dart';
+import 'package:anniet2020/feature/user_flow/lessons/views/widgets/lesson_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/constant/app_colors.dart';
+import '../../../../core/constant/image_path.dart';
 import '../models/lesson_model.dart';
 
 class LessonsPage extends StatelessWidget {
@@ -9,53 +13,57 @@ class LessonsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final lessons = [
       LessonModel(
-        title: "What do we really think about Drink and Drug Driving?",
+        title: "1. What do we really think about Drink and Drug Driving?",
         duration: "2 hours",
         isCompleted: true,
-        image: "assets/lesson1.png",
+        image: ImagePath.lesson01,
+        isLocked: false,
       ),
       LessonModel(
-        title: "How Long do Alcohol and Drugs stay in your Body?",
-        duration: "2 hours",
-        isCompleted: true,
-        image: "assets/lesson2.png",
-      ),
-      LessonModel(
-        title: "The Law, Penalties and Personal Consequences",
-        duration: "2 hours",
-        isCompleted: true,
-        image: "assets/lesson3.png",
-      ),
-      LessonModel(
-        title: "Planning Ahead",
+        title: "1. How Long do Alcohol and Drugs stay in your Body?",
         duration: "2 hours",
         isCompleted: false,
-        image: "assets/lesson4.png",
+        image: ImagePath.lesson02,
+        isLocked: true,
+      ),
+      LessonModel(
+        title: "1. The Law, Penalties and Personal Consequences",
+        duration: "2 hours",
+        isCompleted: false,
+        image: ImagePath.lesson03,
+        isLocked: true,
+      ),
+      LessonModel(
+        title: "1. Planning Ahead",
+        duration: "2 hours",
+        isCompleted: false,
+        image: ImagePath.lesson04,
+        isLocked: true,
       ),
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteColor,
 
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        leading: const BackButton(color: Colors.black),
-        title: const Text(
-          "06 Lessons",
-          style: TextStyle(color: Colors.black),
+        backgroundColor: AppColors.whiteColor,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 20.r),
+          child: const BackButton(color: Colors.black),
         ),
+        title: Text("06 Lessons", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         centerTitle: true,
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 12),
+            padding: EdgeInsets.only(right: 20.r),
             child: Icon(Icons.more_vert, color: Colors.black),
           )
         ],
       ),
 
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(20.r),
         itemCount: lessons.length,
         itemBuilder: (context, index) {
           return LessonTile(lesson: lessons[index]);

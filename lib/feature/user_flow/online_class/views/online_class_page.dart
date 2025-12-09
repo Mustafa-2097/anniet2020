@@ -16,49 +16,44 @@ class OnlineClassPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16.r),
-          child: ListView(
-            children: [
-              /// Video Playing
-              Image.asset("assets/images/video_playing.png", height: sh * 0.23, width: double.infinity, fit: BoxFit.cover),
+        child: ListView(
+          padding: EdgeInsets.all(20.r),
+          children: [
+            /// Video Playing
+            Image.asset("assets/images/video_playing.png", height: sh * 0.23, width: double.infinity, fit: BoxFit.cover),
 
-              SizedBox(height: 20.h),
+            SizedBox(height: 20.h),
 
-              /// Video Details Card
-              VideoDetailsCard(
-                title: "Introduction",
-                rating: 4.8,
-                description:
-                "An introduction and overview of the Don't Blow Your Licence info online program.",
-                infoMessage:
-                "Before watching the next video, please watch this one attentively and answer the questions.",
-              ),
+            /// Video Details Card
+            VideoDetailsCard(
+              title: "Introduction",
+              rating: 4.8,
+              description: "An introduction and overview of the Don't Blow Your Licence info online program.",
+              infoMessage: "Before watching the next video, please watch this one attentively and answer the questions.",
+            ),
 
-              SizedBox(height: 20.h),
+            SizedBox(height: 20.h),
 
-              /// Text
-              Text(
-                "What we really think about Drink and Drug Driving and how it impairs our ability to Drive Safely?",
-                style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.primaryColor, fontWeight: FontWeight.w600),
-              ),
+            /// Text
+            Text(
+              "What we really think about Drink and Drug Driving and how it impairs our ability to Drive Safely?",
+              style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.primaryColor, fontWeight: FontWeight.w600),
+            ),
 
-              SizedBox(height: 20.h),
+            SizedBox(height: 20.h),
 
-              ///
-              BeforeYouContinueCard(),
+            ///
+            BeforeYouContinueCard(),
 
-              SizedBox(height: 20.h),
+            SizedBox(height: 20.h),
 
-              ///
-              Review(),
+            ///
+            Review(),
 
-              SizedBox(height: 20.h),
-              /// Continue Button
-              PrimaryButton(text: "Continue", onPressed: () {}),
-              SizedBox(height: 20.h),
-            ],
-          ),
+            SizedBox(height: 25.h),
+            /// Continue Button
+            PrimaryButton(text: "Continue", onPressed: () {}),
+          ],
         ),
       ),
     );

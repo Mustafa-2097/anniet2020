@@ -22,6 +22,14 @@ class ImagePath {
   static const String failIcon = "assets/images/fail_icon.png";
 
   ///
+  static const String coursesBg = "assets/images/courses_bg.png";
+
+  static const String lesson01 = "assets/images/lesson01.png";
+  static const String lesson02 = "assets/images/lesson02.png";
+  static const String lesson03 = "assets/images/lesson03.png";
+  static const String lesson04 = "assets/images/lesson04.png";
+
+  ///
   static const String defaultImage = "https://via.placeholder.com/150?text=No+Image";
 
   ///=================Onboarding Images======================

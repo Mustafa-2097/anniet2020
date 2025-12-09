@@ -1,10 +1,11 @@
+import 'package:anniet2020/feature/user_flow/review/views/review_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
-import '../../controllers/review_controller.dart';
-import '../../models/review_model.dart';
+import '../../../review/controllers/review_page_controller.dart';
+import '../../../review/views/widgets/review_item.dart';
 
 class Review extends StatelessWidget {
   Review({super.key});
@@ -46,65 +47,54 @@ class Review extends StatelessWidget {
 
         /// Reviews List
         Obx(() {
+          /// Reviews list from controller
+          final reviews = controller.reviews;
+
+          /// Empty state handle
+          if (reviews.isEmpty) {
+            return Center(
+              child: Text(
+                "No reviews yet",
+                style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.boxTextColor),
+              ),
+            );
+          }
+
+          /// Only take maximum 2 reviews safely
+          final limitedReviews = reviews.take(2).toList();
+
           return ListView.separated(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: controller.reviews.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 20),
+            itemCount: limitedReviews.length,
+            separatorBuilder: (_, __) => SizedBox(height: 20.h),
             itemBuilder: (context, index) {
-              final review = controller.reviews[index];
-              return ReviewItem(review: review);
+              return ReviewItem(review: limitedReviews[index]);
             },
           );
         }),
-      ],
-    );
-  }
-}
-
-class ReviewItem extends StatelessWidget {
-  final ReviewModel review;
-  const ReviewItem({super.key, required this.review});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// Rating + Date + More Icon
-        Row(
-          children: [
-            Icon(Icons.star, color: Colors.amber, size: 18),
-            SizedBox(width: 4.h),
-            Text(
-              review.rating.toString(),
-              style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.blackColor, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(width: 4.h),
-            Text(
-              review.date,
-              style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.blackColor, fontWeight: FontWeight.w600),
-            ),
-            const Spacer(),
-            Icon(Icons.more_horiz, color: Colors.black87),
-          ],
-        ),
 
         SizedBox(height: 10.h),
 
-        /// Review Text
-        Text(
-          review.review,
-          style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.blackColor, fontWeight: FontWeight.w600),
+        /// See more button
+        Center(
+          child: TextButton(
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size(0, 0),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed: () => Get.to(()=> ReviewPage()),
+            child: Text(
+              "See more reviews",
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.redColor,
+                decoration: TextDecoration.underline, decorationColor: AppColors.redColor,
+              ),
+            ),
+          ),
         ),
 
-        SizedBox(height: 10.h),
-
-        /// Username
-        Text(
-          review.userName,
-          style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.blackColor, fontWeight: FontWeight.w600),
-        )
       ],
     );
   }

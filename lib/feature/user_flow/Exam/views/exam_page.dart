@@ -35,8 +35,9 @@ class ExamPage extends StatelessWidget {
                       width: 186.w,
                       child: LinearProgressIndicator(
                         value: controller.progress.value,
-                        backgroundColor: Colors.grey.shade300, borderRadius: BorderRadius.circular(20.r),
-                        color: AppColors.greenColor
+                        backgroundColor: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(20.r),
+                        color: AppColors.greenColor,
                       ),
                     ),
                     SizedBox(width: 18.w),

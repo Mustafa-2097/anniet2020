@@ -1,4 +1,9 @@
+import 'package:anniet2020/feature/user_flow/courses/views/widgets/course_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/constant/app_colors.dart';
+import '../../../../core/constant/image_path.dart';
 
 class CoursesPage extends StatelessWidget {
   const CoursesPage({super.key});
@@ -6,20 +11,16 @@ class CoursesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
+      backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        title: const Text(
-          "Your Courses",
-          style: TextStyle(color: Colors.black),
-        ),
+        backgroundColor: AppColors.whiteColor,
+        title: Text("Your Courses", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 12),
+            padding: EdgeInsets.only(right: 20.r),
             child: Icon(Icons.more_vert),
           )
         ],
@@ -28,134 +29,37 @@ class CoursesPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           /// BLUE INFO CONTAINER
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            color: const Color(0xFF0B5ED7),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "Learn the Rules.",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 6),
-                Text(
-                  "Learn the key mistakes that can cause your driving license to be cancelled.",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          /// COURSE CARD
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _CourseCard(
-              title: "Don't Blow Your Licence",
-              lessons: "03/06 Lessons",
-              progress: 0.40,
-              imagePath: "assets/course.png",
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CourseCard extends StatelessWidget {
-  final String title;
-  final String lessons;
-  final double progress;
-  final String imagePath;
-
-  const _CourseCard({
-    required this.title,
-    required this.lessons,
-    required this.progress,
-    required this.imagePath,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          /// IMAGE
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.asset(
-              imagePath,
-              height: 140,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(20.r),
+            color: AppColors.primaryColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  "Learn the Rules.",
+                  style: TextStyle(color: AppColors.whiteColor, fontSize: 24.sp, fontWeight: FontWeight.w700),
                 ),
-
-                const SizedBox(height: 6),
-
+                SizedBox(height: 4.h),
                 Text(
-                  lessons,
-                  style: const TextStyle(color: Colors.grey),
+                  "Learn the key mistakes that can cause your driving license to be cancelled.",
+                  style: TextStyle(color: AppColors.whiteColor, fontSize: 14.sp, fontWeight: FontWeight.w500),
                 ),
-
-                const SizedBox(height: 12),
-
-                /// PROGRESS BAR
-                Row(
-                  children: [
-                    Expanded(
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: Colors.grey.shade200,
-                        color: Colors.green,
-                        minHeight: 6,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text("${(progress * 100).toInt()}%"),
-                  ],
-                )
               ],
+            ),
+          ),
+
+          SizedBox(height: 30.h),
+
+          /// COURSE CARD
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: CourseCard(
+              title: "Don't Blow Your Licence",
+              lessons: "03/06 Lessons",
+              progress: 0.40,
+              image: ImagePath.coursesBg,
             ),
           ),
         ],

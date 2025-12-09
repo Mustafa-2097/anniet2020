@@ -21,7 +21,6 @@ class VideoDetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 1.sw,
       padding: EdgeInsets.all(10.r),
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
