@@ -1,6 +1,7 @@
 import 'package:anniet2020/core/constant/app_text_styles.dart';
 import 'package:anniet2020/core/constant/widgets/primary_button.dart';
 import 'package:anniet2020/feature/user_flow/home_page/controllers/home_controller.dart';
+import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -307,7 +308,7 @@ class HomePage extends StatelessWidget {
                       SizedBox(height: 10.h),
 
                       /// Join Now Button
-                      PrimaryButton(text: "Join Now", onPressed: () {}),
+                      PrimaryButton(text: "Join Now", onPressed: () => Get.to(() => PaymentPage())),
                       SizedBox(height: 10.h),
                     ],
                   ),

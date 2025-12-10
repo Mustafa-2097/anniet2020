@@ -4,9 +4,17 @@ import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
 import 'package:anniet2020/feature/auth/sign_up/views/sign_up_page.dart';
 import 'package:anniet2020/feature/user_flow/Exam/views/exam_page.dart';
 import 'package:anniet2020/feature/user_flow/courses/views/courses_page.dart';
-import 'package:anniet2020/feature/user_flow/dashboard/custom_dashboard.dart';
+import 'package:anniet2020/feature/user_flow/dashboard/customer_dashboard.dart';
+import 'package:anniet2020/feature/user_flow/home_page/views/home_page.dart';
 import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
+import 'package:anniet2020/feature/user_flow/payment/views/pages/add_new_card.dart';
+import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/views/pages/certificate_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/views/pages/contact_us_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/views/pages/help_support_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/views/pages/personal_info_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/views/pages/privacy_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/profile_page.dart';
 import 'package:anniet2020/feature/user_flow/review/views/review_page.dart';
 import 'package:anniet2020/splash/view/splash_screen.dart';
@@ -17,6 +25,7 @@ import 'package:get/get.dart';
 import 'core/constant/app_colors.dart';
 import 'feature/auth/otp_page/views/otp_page.dart';
 import 'feature/user_flow/about/views/about_us_page.dart';
+import 'feature/user_flow/payment/views/pages/payment_method.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -51,7 +60,7 @@ class MyApp extends StatelessWidget {
                 side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
               ),
             ),
-            home: ProfilePage(),
+            home: SplashScreen(),
           ),
         );
       },

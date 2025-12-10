@@ -22,16 +22,16 @@ class SignInPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: AppBar(
-        elevation: 0,
-        leading: Padding(
-          padding: EdgeInsets.symmetric(horizontal: sw * 0.064, vertical: 10.h),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
-            onPressed: () => Get.back(),
-          ),
-        ),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   leading: Padding(
+      //     padding: EdgeInsets.symmetric(horizontal: sw * 0.064, vertical: 10.h),
+      //     child: IconButton(
+      //       icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
+      //       onPressed: () => Navigator.of(context).pop(),
+      //     ),
+      //   ),
+      // ),
 
       body: SafeArea(
         child: Column(
@@ -41,6 +41,7 @@ class SignInPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: kTextTabBarHeight),
                   /// Title + Subtitle
                   Align(
                     alignment: Alignment.center,

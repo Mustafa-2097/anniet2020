@@ -20,12 +20,10 @@ class ForgotPasswordPage extends StatelessWidget {
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: AppColors.whiteColor,
         leading: Padding(
-          padding: EdgeInsets.symmetric(horizontal: sw * 0.064, vertical: 10.h),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
-            onPressed: () => Get.back(),
-          ),
+          padding: EdgeInsets.only(left: 20.r),
+          child: const BackButton(color: Colors.black),
         ),
       ),
 

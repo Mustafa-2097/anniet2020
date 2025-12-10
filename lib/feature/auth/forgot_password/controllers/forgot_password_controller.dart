@@ -28,7 +28,7 @@ class ForgotPasswordController extends GetxController {
     EasyLoading.dismiss();
 
     // Success condition
-    if (emailController.text.trim() == "test@example.com") {
+    if (emailController.text.trim() == "test@gmail.com") {
       Get.snackbar("Success", "OTP sent successfully to your email", backgroundColor: Colors.green);
       Get.to(() => OtpPage(
         onOtpVerified: () {

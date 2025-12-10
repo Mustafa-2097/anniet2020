@@ -6,14 +6,15 @@ import '../home_page/views/home_page.dart';
 import '../profile/views/profile_page.dart';
 
 class CustomerDashboard extends StatefulWidget {
-  const CustomerDashboard({super.key});
+  final int initialIndex;
+  const CustomerDashboard({super.key, this.initialIndex = 0});
 
   @override
   State<CustomerDashboard> createState() => _CustomerDashboardState();
 }
 
 class _CustomerDashboardState extends State<CustomerDashboard> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   final List<Widget> _screens = [
     HomePage(),
@@ -21,6 +22,12 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
     AboutUsPage(),
     ProfilePage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex; // set initial tab
+  }
 
   void _onItemTapped(int index) {
     setState(() {

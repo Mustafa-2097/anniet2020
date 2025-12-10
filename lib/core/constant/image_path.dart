@@ -37,29 +37,17 @@ class ImagePath {
   ///
   static const String defaultImage = "https://via.placeholder.com/150?text=No+Image";
 
+  static const String logoutIcon = "assets/images/logout_icon.png";
+  static const String editIcon = "assets/icons/edit_icon.png";
+  static const String certificate = "assets/images/certificate.png";
+  static const String payment = "assets/images/payment.png";
+  static const String mastercard = "assets/images/mastercard.png";
+  static const String visa = "assets/images/visa.png";
+
   ///=================Onboarding Images======================
   static const String onboardingImg01 = "assets/images/onboarding_img01.png";
   static const String onboardingImg02= "assets/images/onboarding_img01.png";
 
-  ///==================Select language page==================
-  static const String selectLangBg= "assets/images/select_lang_bg.jpeg";
-  /// Flags
-  static const String us = "assets/images/us.png";
-  static const String spain = "assets/images/spain.png";
-
-  ///==================Login page==================
-  static const String loginBg = "assets/images/login_bg.jpeg";
-  ///==================Social Logos==================
-  static const String goggle = "assets/images/goggle.png";
-  static const String fb = "assets/images/fb.png";
-
-  ///==================Forgot Page==================
-  static const String forgotBg = "assets/images/forgot_bg.jpeg";
-
-  ///==================Reset Pass Success==================
   static const String successLogo = "assets/images/success_logo.png";
-
-
-  static const String dummyUser = "assets/images/dummy_user.png";
 
 }

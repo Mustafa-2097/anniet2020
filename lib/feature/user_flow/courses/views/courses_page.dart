@@ -1,6 +1,9 @@
+import 'package:anniet2020/core/constant/widgets/primary_button.dart';
 import 'package:anniet2020/feature/user_flow/courses/views/widgets/course_card.dart';
+import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/image_path.dart';
@@ -62,6 +65,16 @@ class CoursesPage extends StatelessWidget {
               image: ImagePath.coursesBg,
             ),
           ),
+
+          SizedBox(height: 30.h),
+
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: PrimaryButton(
+              text: "Continue",
+              onPressed: () => Get.to(() => LessonsPage()),
+            ),
+          )
         ],
       ),
     );

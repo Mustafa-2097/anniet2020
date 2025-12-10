@@ -1,6 +1,9 @@
+import 'package:anniet2020/feature/user_flow/dashboard/customer_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+
+import '../../../../core/constant/app_colors.dart';
 
 class SignInController extends GetxController {
   static SignInController get instance => Get.find();
@@ -35,11 +38,11 @@ class SignInController extends GetxController {
     await Future.delayed(const Duration(seconds: 2)); // mock API call
 
     // Example login success condition
-    if (emailController.text == "test@example.com" && passwordController.text == "123456") {
+    if (emailController.text == "test@gmail.com" && passwordController.text == "123456") {
       EasyLoading.dismiss();
-      Get.snackbar("Success", "Logged in successfully");
+      Get.snackbar("Success", "Logged in successfully", backgroundColor: AppColors.primaryColor);
       // Navigate to dashboard
-      // Get.offAll(() => HomePage());
+      Get.offAll(() => CustomerDashboard());
     } else {
       EasyLoading.dismiss();
       Get.snackbar("Error", "Invalid email or password", backgroundColor: Colors.redAccent, colorText: Colors.white);

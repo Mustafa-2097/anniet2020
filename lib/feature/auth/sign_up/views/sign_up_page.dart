@@ -2,10 +2,10 @@ import 'package:anniet2020/core/constant/app_text_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/widgets/primary_button.dart';
 import '../controllers/sign_up_controller.dart';
+import 'package:get/get.dart';
 
 class SignUpPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -22,15 +22,12 @@ class SignUpPage extends StatelessWidget {
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: AppColors.whiteColor,
         leading: Padding(
-          padding: EdgeInsets.symmetric(horizontal: sw * 0.064, vertical: 10.h),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
-            onPressed: () => Get.back(),
-          ),
+          padding: EdgeInsets.only(left: 20.r),
+          child: const BackButton(color: Colors.black),
         ),
       ),
-
       body: SafeArea(
         child: Column(
           children: [

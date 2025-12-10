@@ -1,3 +1,4 @@
+import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/offline_storage/shared_pref.dart';
@@ -33,6 +34,6 @@ class OnboardingController extends GetxController {
 
   Future<void> finishOnboarding() async {
     await SharedPreferencesHelper.setOnboardingCompleted();
-    // Get.offAll(() => LoginPage());
+    Get.offAll(() => SignInPage());
   }
 }

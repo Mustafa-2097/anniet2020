@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
 import '../../../review/controllers/review_page_controller.dart';
+import '../../../review/views/widgets/give_review.dart';
 import '../../../review/views/widgets/review_item.dart';
 
 class Review extends StatelessWidget {
@@ -38,7 +39,17 @@ class Review extends StatelessWidget {
                 "Write a Review",
                 style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, color: AppColors.whiteColor, fontWeight: FontWeight.w600),
               ),
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: AppColors.whiteColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                  ),
+                  builder: (_) => GiveReview(),
+                );
+              },
             ),
           ],
         ),

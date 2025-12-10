@@ -47,7 +47,7 @@ class SignUpController extends GetxController {
     EasyLoading.dismiss();
 
     // Simulated success example
-    if (emailController.text == "new@example.com") {
+    if (emailController.text == "new@gmail.com") {
       /// Navigate to OTP Page
       Get.to(() => OtpPage(
         onOtpVerified: () {

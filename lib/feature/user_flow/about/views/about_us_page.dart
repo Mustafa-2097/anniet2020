@@ -1,6 +1,8 @@
 import 'package:anniet2020/core/constant/image_path.dart';
+import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 
@@ -128,9 +130,9 @@ class AboutUsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 14),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => Get.to(() => PaymentPage()),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: AppColors.primaryColor,
                       shape: StadiumBorder(),
                       padding:
                       EdgeInsets.symmetric(horizontal: 40, vertical: 12),

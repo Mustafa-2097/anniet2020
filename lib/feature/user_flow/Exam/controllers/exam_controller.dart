@@ -1,3 +1,5 @@
+import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
+import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
 import 'package:get/get.dart';
 import '../../score/models/score_model.dart';
 import '../../score/views/score_page.dart';
@@ -130,6 +132,6 @@ class ExamController extends GetxController {
     isAnswered.value = false;
     isCorrect.value = false;
 
-    Get.offAll(() => ExamPage());
+    Get.offAll(() => OnlineClassPage());
   }
 }

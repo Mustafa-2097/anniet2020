@@ -1,6 +1,8 @@
+import 'package:anniet2020/feature/user_flow/dashboard/customer_dashboard.dart';
 import 'package:anniet2020/feature/user_flow/lessons/views/widgets/lesson_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/image_path.dart';
@@ -50,7 +52,12 @@ class LessonsPage extends StatelessWidget {
         backgroundColor: AppColors.whiteColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 20.r),
-          child: const BackButton(color: Colors.black),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
+            onPressed: () {
+              Get.to(() => CustomerDashboard(initialIndex: 1));
+            },
+          ),
         ),
         title: Text("06 Lessons", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         centerTitle: true,
