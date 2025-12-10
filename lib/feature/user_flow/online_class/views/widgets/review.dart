@@ -77,24 +77,32 @@ class Review extends StatelessWidget {
         SizedBox(height: 10.h),
 
         /// See more button
-        Center(
-          child: TextButton(
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: Size(0, 0),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: () => Get.to(()=> ReviewPage()),
-            child: Text(
-              "See more reviews",
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.redColor,
-                decoration: TextDecoration.underline, decorationColor: AppColors.redColor,
+        Obx(() {
+          final reviewsCount = controller.reviews.length;
+          /// Show button ONLY if more than 2 reviews
+          if (reviewsCount <= 2) return const SizedBox(); // Hide button
+
+          return Center(
+            child: TextButton(
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () => Get.to(() => ReviewPage()),
+              child: Text(
+                "See more reviews",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.redColor,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.redColor,
+                ),
               ),
             ),
-          ),
-        ),
-
+          );
+        }),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:anniet2020/feature/user_flow/review/controllers/review_page_controller.dart';
+import 'package:anniet2020/feature/user_flow/review/views/widgets/give_review.dart';
 import 'package:anniet2020/feature/user_flow/review/views/widgets/review_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,7 +64,17 @@ class ReviewPage extends StatelessWidget {
             right: 0,
             child: Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: AppColors.whiteColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    builder: (_) => GiveReview(),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 16.r),
                     shape: RoundedRectangleBorder(

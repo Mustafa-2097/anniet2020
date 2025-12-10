@@ -7,6 +7,7 @@ import 'package:anniet2020/feature/user_flow/courses/views/courses_page.dart';
 import 'package:anniet2020/feature/user_flow/dashboard/custom_dashboard.dart';
 import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/views/profile_page.dart';
 import 'package:anniet2020/feature/user_flow/review/views/review_page.dart';
 import 'package:anniet2020/splash/view/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'core/constant/app_colors.dart';
 import 'feature/auth/otp_page/views/otp_page.dart';
+import 'feature/user_flow/about/views/about_us_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -49,7 +51,7 @@ class MyApp extends StatelessWidget {
                 side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
               ),
             ),
-            home: OnlineClassPage(),
+            home: ProfilePage(),
           ),
         );
       },

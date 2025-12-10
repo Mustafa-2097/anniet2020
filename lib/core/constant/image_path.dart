@@ -29,6 +29,11 @@ class ImagePath {
   static const String lesson03 = "assets/images/lesson03.png";
   static const String lesson04 = "assets/images/lesson04.png";
 
+  static const String about01 = "assets/images/about01.png";
+  static const String about02 = "assets/images/about02.png";
+
+  static const String linkedIn = "assets/images/linkedIn.png";
+
   ///
   static const String defaultImage = "https://via.placeholder.com/150?text=No+Image";
 
