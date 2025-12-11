@@ -1,3 +1,5 @@
+import 'package:anniet2020/feature/admin_dashboard/contact/views/contact_page.dart';
+import 'package:anniet2020/feature/admin_dashboard/users/views/users_page.dart';
 import 'package:anniet2020/feature/auth/forgot_password/views/forgot_password_page.dart';
 import 'package:anniet2020/feature/auth/forgot_password/views/pages/create_new_password.dart';
 import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
@@ -23,6 +25,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'core/constant/app_colors.dart';
+import 'feature/admin_dashboard/payments/views/payment_list_page.dart';
 import 'feature/auth/otp_page/views/otp_page.dart';
 import 'feature/user_flow/about/views/about_us_page.dart';
 import 'feature/user_flow/payment/views/pages/payment_method.dart';
@@ -60,7 +63,7 @@ class MyApp extends StatelessWidget {
                 side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
               ),
             ),
-            home: SplashScreen(),
+            home: UsersPage(),
           ),
         );
       },
