@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../../../../core/constant/app_colors.dart';
+import '../../../../../core/constant/image_path.dart';
 import '../../controllers/edit_profile_controller.dart';
 
 class EditProfilePage extends StatelessWidget {
@@ -11,40 +13,25 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
+      backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-
         title: Text(
           "Edit Profile",
           style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w500),
         ),
-
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text("Cancel", style: TextStyle(color: Colors.grey)),
-          ),
-          TextButton(
-            onPressed: controller.saveProfile,
-            child: Text(
-              "Save",
-              style: TextStyle(color: Colors.blue, fontSize: 15.sp),
-            ),
-          ),
-        ],
       ),
 
-      body: SingleChildScrollView(
-        child: Column(
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
           children: [
-            // --------- BLUE HEADER ---------
+            // ---------- BLUE HEADER ----------
             Container(
               height: 180.h,
               width: double.infinity,
@@ -56,8 +43,8 @@ class EditProfilePage extends StatelessWidget {
                 ),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  SizedBox(height: 20.h),
 
                   /// Profile Image
                   Obx(() {
@@ -68,17 +55,16 @@ class EditProfilePage extends StatelessWidget {
                           radius: 45.w,
                           backgroundImage: controller.pickedImage.value != null
                               ? FileImage(File(controller.pickedImage.value!.path))
-                              : NetworkImage("https://i.pravatar.cc/150?img=45")
-                          as ImageProvider,
+                              : const AssetImage(ImagePath.user),
                         ),
 
-                        /// Camera Icon
                         GestureDetector(
                           onTap: controller.pickImage,
                           child: CircleAvatar(
                             radius: 15,
                             backgroundColor: Colors.white,
-                            child: Icon(Icons.camera_alt, size: 16, color: Colors.blue),
+                            child: Icon(Icons.camera_alt_outlined,
+                                size: 16, color: Colors.blue),
                           ),
                         ),
                       ],
@@ -87,86 +73,165 @@ class EditProfilePage extends StatelessWidget {
 
                   SizedBox(height: 10.h),
 
-                  /// Name Display
                   Obx(() {
                     return Text(
                       controller.fullName.value,
-                      style: TextStyle(
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 17.sp),
                     );
                   }),
-
-                  SizedBox(height: 20.h),
                 ],
               ),
             ),
 
-            // ----------- WHITE CARD AREA -----------
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(color: Colors.white),
+            // ---------- CARDS BELOW HEADER ----------
+            Positioned(
+              top: 160.h,   // ⬅ Overlap adjust height
+              left: 0,
+              right: 0,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  SizedBox(height: 10.h),
-
-                  // ---------------- PERSONAL INFO ----------------
-                  _sectionTitle("Personal Information"),
-
-                  SizedBox(height: 10.h),
-                  _inputField(
-                    label: "Full Name",
-                    initialValue: controller.fullName.value,
-                    onChanged: (val) => controller.fullName.value = val,
+                  /// PERSONAL INFO CARD
+                  Card(
+                    elevation: 1,
+                    margin: EdgeInsets.symmetric(horizontal: 16.r),
+                    color: AppColors.whiteColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.r),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _sectionTitle(Icons.person_outline, "Personal Information"),
+                          SizedBox(height: 10.h),
+                          _inputField(
+                            label: "Full Name",
+                            initialValue: controller.fullName.value,
+                            onChanged: (v) => controller.fullName.value = v,
+                          ),
+                          SizedBox(height: 20.h),
+                        ],
+                      ),
+                    ),
                   ),
 
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 16.h),
 
-                  // ---------------- CONTACT INFO ----------------
-                  _sectionTitle("Contact Information"),
-
-                  SizedBox(height: 10.h),
-                  _inputField(
-                    label: "Email Address",
-                    initialValue: controller.email.value,
-                    keyboard: TextInputType.emailAddress,
-                    onChanged: (val) => controller.email.value = val,
+                  /// CONTACT INFO CARD
+                  Card(
+                    elevation: 1,
+                    margin: EdgeInsets.symmetric(horizontal: 16.r),
+                    color: AppColors.whiteColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.r),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _sectionTitle(Icons.mail_outline, "Contact Information"),
+                          SizedBox(height: 10.h),
+                          _inputField(
+                            label: "Email Address",
+                            initialValue: controller.email.value,
+                            onChanged: (v) => controller.email.value = v,
+                          ),
+                          SizedBox(height: 10.h),
+                          _inputField(
+                            label: "Phone Number",
+                            initialValue: controller.phone.value,
+                            onChanged: (v) => controller.phone.value = v,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
 
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 16.h),
 
-                  _inputField(
-                    label: "Phone Number",
-                    initialValue: controller.phone.value,
-                    keyboard: TextInputType.phone,
-                    onChanged: (val) => controller.phone.value = val,
-                  ),
                 ],
+              ),
+            ),
+
+
+          ],
+        ),
+      ),
+
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade300),
+          ),
+        ),
+        child: Row(
+          children: [
+            /// CANCEL BUTTON
+            Expanded(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  side: BorderSide(color: Colors.grey.shade400),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+                onPressed: () => Get.back(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.close, size: 18.r, color: Colors.black),
+                    SizedBox(width: 4.w),
+                    Text("Cancel", style: TextStyle(color: Colors.black, fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 12.w),
+            /// SAVE BUTTON
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                ),
+                onPressed: controller.saveProfile,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.save_outlined, size: 18, color: Colors.white),
+                    SizedBox(width: 4.w),
+                    Text("Save Changes", style: TextStyle(color: Colors.white, fontSize: 14.sp, fontWeight: FontWeight.w600)),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
+
     );
   }
 
-  // Section Title Widget
-  Widget _sectionTitle(String text) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w600,
-      ),
+  /// Section Title Widget
+  Widget _sectionTitle(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, color: AppColors.primaryColor),
+        SizedBox(width: 8.w),
+        Text(text, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
+      ],
     );
   }
 
-  // Reusable Input Field
+  /// Reusable Input Field
   Widget _inputField({
     required String label,
     required String initialValue,
@@ -176,11 +241,8 @@ class EditProfilePage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500)),
-
+        Text(label, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: AppColors.boxTextColor)),
         SizedBox(height: 6.h),
-
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           decoration: BoxDecoration(

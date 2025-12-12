@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../settings/controllers/settings_controller.dart';
 
 class EditProfileController extends GetxController {
   static EditProfileController get instance => Get.find();
@@ -19,11 +21,18 @@ class EditProfileController extends GetxController {
   }
 
   void saveProfile() {
-    // Save API call here
-    print("Saving profile...");
-    print("Name: ${fullName.value}");
-    print("Email: ${email.value}");
-    print("Phone: ${phone.value}");
-    Get.back();
+    final settings = SettingsController.instance;
+
+    // Update Settings page data
+    settings.updateProfile(
+      name: fullName.value,
+      phoneNumber: phone.value,
+      emailAddress: email.value,
+      imagePath: pickedImage.value?.path,
+    );
+
+    print("Profile saved & sent back to SettingsPage!");
+
+    Get.back(); // return to SettingsPage
   }
 }

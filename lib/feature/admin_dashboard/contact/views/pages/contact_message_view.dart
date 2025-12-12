@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../core/constant/app_colors.dart';
 
-class MessageView extends StatelessWidget {
+class ContactMessageView extends StatelessWidget {
   final Map<String, dynamic> user;
-  const MessageView({super.key, required this.user});
+  const ContactMessageView({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

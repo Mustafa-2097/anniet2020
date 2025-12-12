@@ -1,5 +1,6 @@
 import 'package:anniet2020/core/constant/app_colors.dart';
 import 'package:anniet2020/core/constant/image_path.dart';
+import 'package:anniet2020/feature/admin_dashboard/dashboard/views/widgets/custom_appdrawer.dart';
 import 'package:anniet2020/feature/admin_dashboard/users/views/users_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,21 +19,33 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
+      drawer: CustomAppDrawer(
+        onLogoutTap: () {
+          // logout logic here
+        },
+      ),
       appBar: AppBar(
         backgroundColor: AppColors.whiteColor,
         elevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: AppColors.blackColor),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
         title: Text("Dashboard", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         actions: [
-          Icon(Icons.notifications_none, size: 24.r, color: AppColors.subTextColor),
-          const SizedBox(width: 12),
           CircleAvatar(
             radius: 18,
             backgroundColor: Colors.grey[300],
             backgroundImage: AssetImage(ImagePath.user),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 14.w),
         ],
       ),
+
 
       body: SafeArea(
         child: SingleChildScrollView(

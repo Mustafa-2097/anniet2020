@@ -1,15 +1,16 @@
-import 'package:anniet2020/feature/admin_dashboard/contact/views/pages/contact_message_view.dart';
+import 'package:anniet2020/feature/admin_dashboard/Educate/views/pages/educate_message_view.dart';
+import 'package:anniet2020/feature/admin_dashboard/admin_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/widgets/popup_button.dart';
-import '../controllers/contact_controller.dart';
+import '../controllers/educate_controller.dart';
 
-class ContactPage extends StatelessWidget {
-  ContactPage({super.key});
-  final controller = Get.put(ContactController());
+class EducatePage extends StatelessWidget {
+  EducatePage({super.key});
+  final controller = Get.put(EducatorController());
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -19,8 +20,8 @@ class ContactPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.whiteColor,
-        leading: const BackButton(color: Colors.black),
-        title: Text("Contact Request", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
+        leading: IconButton(onPressed: () => Get.to(() => AdminDashboard(initialIndex: 0)), icon: Icon(Icons.arrow_back, color: AppColors.blackColor)),
+        title: Text("Educate Request", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
       ),
 
       body: Column(
@@ -142,7 +143,7 @@ class UserCard extends StatelessWidget {
               ),
               PopupButton(
                 onTap: () {
-                  Get.to(() => ContactMessageView(
+                  Get.to(() => EducateMessageView(
                     user: {
                       "name": "Wilson Levin",
                       "email": "client000@gmail.com",
@@ -188,7 +189,7 @@ class PaginationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ContactController>();
+    final controller = Get.find<EducatorController>();
     return Obx(() {
       final totalPages = controller.totalPages;
       final currentPage = controller.currentPage.value;
