@@ -30,10 +30,11 @@ class AdminBottomNavBar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildNavItem(0, "assets/icons/home.png", "assets/icons/home_selected.png", 'Home'),
-                _buildNavItem(1, "assets/icons/courses.png", "assets/icons/courses_selected.png", 'Courses'),
-                _buildNavItem(2, "assets/icons/about.png", "assets/icons/about_selected.png",'About'),
-                _buildNavItem(3, "assets/icons/profile.png", "assets/icons/profile_selected.png", 'Profile'),
+                _buildNavItem(0, "assets/icons/dashboard.png", "assets/icons/dashboard_selected.png", 'Dashboard'),
+                _buildNavItem(1, "assets/icons/users.png", "assets/icons/users_selected.png", 'Users'),
+                _buildNavItem(2, "assets/icons/payments.png", "assets/icons/payments_selected.png",'Payment'),
+                _buildNavItem(3, "assets/icons/contact.png", "assets/icons/contact_selected.png",'Contact'),
+                _buildNavItem(4, "assets/icons/settings.png", "assets/icons/settings_selected.png", 'Settings'),
               ],
             ),
           ),
@@ -47,7 +48,7 @@ class AdminBottomNavBar extends StatelessWidget {
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+        padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 4.h),
         decoration: isSelected
             ? BoxDecoration(borderRadius: BorderRadius.circular(12.r))
             : null,

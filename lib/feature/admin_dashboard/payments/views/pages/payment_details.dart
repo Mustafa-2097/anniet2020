@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../../core/constant/app_colors.dart';
 
 class PaymentDetails extends StatelessWidget {
   final Map<String, dynamic>? data;
@@ -14,7 +15,7 @@ class PaymentDetails extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Icon(Icons.arrow_back, color: Colors.black),
+        leading: const BackButton(color: AppColors.blackColor),
         title: Text(
           "Payment Details",
           style: GoogleFonts.plusJakartaSans(

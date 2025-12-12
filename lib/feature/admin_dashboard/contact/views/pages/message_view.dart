@@ -15,7 +15,7 @@ class MessageView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Icon(Icons.arrow_back, color: Colors.black),
+        leading: const BackButton(color: AppColors.blackColor),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -23,10 +23,7 @@ class MessageView extends StatelessWidget {
             /// DATE
             Text(
               "December 1, 2025 at 10:30 AM",
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 12.sp,
-                color: Colors.grey,
-              ),
+              style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.subTextColor),
             ),
           ],
         ),
@@ -36,7 +33,7 @@ class MessageView extends StatelessWidget {
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1),
-          child: Container(height: 1, color: Colors.grey.shade300),
+          child: Container(height: 1.h, color: Colors.grey.shade300),
         ),
       ),
 

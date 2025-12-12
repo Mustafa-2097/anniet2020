@@ -219,7 +219,6 @@ class PaginationSection extends StatelessWidget {
       final currentPage = controller.currentPage.value;
       return Container(
         padding: EdgeInsets.symmetric(vertical: 12.h),
-        decoration: BoxDecoration(border: Border.all(width: 1, )),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

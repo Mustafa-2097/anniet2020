@@ -1,0 +1,320 @@
+import 'package:anniet2020/core/constant/app_colors.dart';
+import 'package:anniet2020/core/constant/image_path.dart';
+import 'package:anniet2020/feature/admin_dashboard/users/views/users_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/constant/widgets/popup_button.dart';
+import '../../users/views/pages/user_details.dart';
+import '../controllers/dashboard_controller.dart';
+
+class DashboardPage extends StatelessWidget {
+  DashboardPage({super.key});
+  final controller = Get.put(DashboardController());
+  final TextEditingController searchController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.whiteColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.whiteColor,
+        elevation: 0,
+        title: Text("Dashboard", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
+        actions: [
+          Icon(Icons.notifications_none, size: 24.r, color: AppColors.subTextColor),
+          const SizedBox(width: 12),
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: Colors.grey[300],
+            backgroundImage: AssetImage(ImagePath.user),
+          ),
+          const SizedBox(width: 12),
+        ],
+      ),
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Search Bar
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: "Search users...",
+                    prefixIcon: Icon(Icons.search, color: Colors.grey),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+                    ),
+                    filled: true,
+                    fillColor: AppColors.whiteColor,
+                  ),
+                ),
+              ),
+              Divider(thickness: 1.w, color: Color(0xFFD2D6D8)),
+
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Dashboard Overview",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    // Revenue Card
+                    StatCard(
+                      title: "Total Revenue",
+                      value: "\$163401",
+                      color: Colors.pink.shade100,
+                      icon: Icons.attach_money,
+                      iconColor: Colors.green,
+                    ),
+                    SizedBox(height: 10.h),
+
+                    // Total Sell Card
+                    StatCard(
+                      title: "Total Sell",
+                      value: "1260",
+                      color: Colors.green.shade100,
+                      icon: Icons.shopping_cart_outlined,
+                      iconColor: Colors.orange,
+                    ),
+
+                    SizedBox(height: 10.h),
+
+                    // Total User Card
+                    StatCard(
+                      title: "Total User",
+                      value: "5426",
+                      color: Colors.purple.shade100,
+                      icon: Icons.people_outline,
+                      iconColor: Colors.indigo,
+                    ),
+
+                    SizedBox(height: 10.h),
+
+                    ///
+                    Container(
+                      height: 400.h,
+                      width: 340.w,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFFD2D6D8)),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Column(
+                        children: [
+                          /// FIXED HEADER
+                          Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF3F3F3),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(12.r),
+                                  topRight: Radius.circular(12.r),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Recent User", style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.blackColor)),
+                                  GestureDetector(
+                                    onTap: () => Get.to(() => UsersPage()),
+                                    child: Text("View All", style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.primaryColor)),
+                                  ),
+                                ],
+                              ),
+                          ),
+
+                          /// SCROLLABLE AREA: User List + Pagination
+                          Expanded(
+                            child: Obx(() {
+                              final items = controller.users;
+                              return ListView.builder(
+                                padding: EdgeInsets.zero,
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      Divider(height: 1, color: Color(0xFFD2D6D8)),
+                                      UserCard(user: items[index]),
+                                    ],
+                                  );
+                                },
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final Color color;
+  final IconData icon;
+  final Color iconColor;
+
+  const StatCard({
+    super.key,
+    required this.title,
+    required this.value,
+    required this.color,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: Colors.white,
+            child: Icon(icon, color: iconColor),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class UserCard extends StatelessWidget {
+  final Map<String, dynamic> user;
+  const UserCard({required this.user, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top Row: Name + Menu Btn
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "${user["name"]}  —  #${user["id"]}",
+                style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A)),
+              ),
+              PopupButton(
+                onTap: () {
+                  Get.to(() => UserDetails(user: user));
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 4.h),
+          Text(user["email"], style: GoogleFonts.plusJakartaSans(color: Colors.grey)),
+          SizedBox(height: 10.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Certification: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
+              StatusBadge(status: user["cert"]),
+            ],
+          ),
+
+          SizedBox(height: 4.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Course: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
+              Text(user["course"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
+            ],
+          ),
+          SizedBox(height: 4.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Payment: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
+              Text(user["payment"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class StatusBadge extends StatelessWidget {
+  final String status;
+  const StatusBadge({required this.status, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    bool isReceived = status == "Received";
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+      decoration: BoxDecoration(
+        color: isReceived ? const Color(0xffddedc8) : const Color(0xffdce4ff),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        status,
+        style: TextStyle(
+          color: isReceived ? Colors.green[700] : Colors.blue[700],
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
