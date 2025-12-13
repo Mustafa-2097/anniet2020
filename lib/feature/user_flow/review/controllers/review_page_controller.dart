@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import '../models/review_page_model.dart';
 
-class ReviewController extends GetxController {
-  static ReviewController get instance => Get.find();
+class ReviewUserController extends GetxController {
+  static ReviewUserController get instance => Get.find();
 
   /// Review list
-  final RxList<ReviewModel> reviews = <ReviewModel>[].obs;
+  final RxList<ReviewUserModel> reviews = <ReviewUserModel>[].obs;
 
   /// Pagination state
   final isLoading = false.obs;
@@ -49,7 +49,7 @@ class ReviewController extends GetxController {
 
     /// PAGINATION TEST DATA (8 per page)
     final newData = List.generate(
-      4, (index) => ReviewModel(
+      4, (index) => ReviewUserModel(
         rating: 4.0 + (index % 2) * 0.2,
         date: "23/06/2022",
         comment: "Lorem ipsum dolor sit amet, adipiscing elit. Sed at gravida nulla tempor, neque.Lorem ipsum dolor sit amet,  adipiscing elit. Sed at gravida nulla tempor, neque. Duis quam ut netus donec enim vitae ac diam.",

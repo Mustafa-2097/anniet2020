@@ -5,7 +5,7 @@ import '../../../../../core/constant/app_colors.dart';
 import '../../models/review_page_model.dart';
 
 class ReviewItem extends StatelessWidget {
-  final ReviewModel review;
+  final ReviewUserModel review;
   const ReviewItem({super.key, required this.review});
 
   @override

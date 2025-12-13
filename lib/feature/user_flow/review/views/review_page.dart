@@ -7,9 +7,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 
-class ReviewPage extends StatelessWidget {
-  ReviewPage({super.key});
-  final controller = Get.put(ReviewController());
+class ReviewUserPage extends StatelessWidget {
+  ReviewUserPage({super.key});
+  final controller = Get.put(ReviewUserController());
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +129,7 @@ class ReviewPage extends StatelessWidget {
   }
 
   Widget _ratingBreakdown() {
-    final controller = Get.find<ReviewController>();
+    final controller = Get.find<ReviewUserController>();
     return Column(
       children: controller.ratingStats.entries.map((e) {
         return Padding(
@@ -141,7 +141,7 @@ class ReviewPage extends StatelessWidget {
               Expanded(
                 child: LinearProgressIndicator(
                   value: e.value,
-                  minHeight: 6,
+                  minHeight: 6.h,
                   backgroundColor: AppColors.greyColor,
                   borderRadius: BorderRadius.circular(20.r),
                   color: AppColors.greenColor,
@@ -155,7 +155,7 @@ class ReviewPage extends StatelessWidget {
   }
 
   Widget _reviewList() {
-    final controller = Get.find<ReviewController>();
+    final controller = Get.find<ReviewUserController>();
 
     return Obx(() {
       return ListView.separated(

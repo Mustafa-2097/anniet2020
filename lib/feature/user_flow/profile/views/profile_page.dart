@@ -10,9 +10,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/image_path.dart';
 import '../../../../core/constant/widgets/logout_button.dart';
+import '../controllers/profile_controller.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
+  final controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,26 +37,35 @@ class ProfilePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Profile Image
-                Image.asset(ImagePath.user, width: 56.w, fit: BoxFit.contain),
+                Obx(() {
+                  final avatar = controller.avatarUrl.value;
+                  return CircleAvatar(
+                    radius: 28.r,
+                    backgroundImage: avatar != null
+                        ? NetworkImage(avatar)
+                        : const AssetImage(ImagePath.user) as ImageProvider,
+                  );
+                }),
+
                 SizedBox(width: 14.w),
 
                 // Name + Username
                 Expanded(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Brooklyn Simmons",
+                      Obx(() => Text(
+                        controller.userName.value,
                         style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
-                      ),
-                      Text(
-                        "@Brokklyn",
+                      )),
+                      Obx(() => Text(
+                        controller.userHandle.value,
                         style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w400, color: AppColors.subTextColor),
-                      ),
+                      )),
                     ],
                   ),
                 ),
+
 
                 /// Edit Icon
                 IconButton(

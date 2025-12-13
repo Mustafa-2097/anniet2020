@@ -4,16 +4,21 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constant/app_colors.dart';
+import '../../data/repositories/auth_repository.dart';
 
 class SignInController extends GetxController {
   static SignInController get instance => Get.find();
+
+  /// Repository
+  final AuthRepository _repository = AuthRepository();
+
   /// Text Controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   /// Observables
-  var rememberMe = false.obs;
-  var obscurePassword = true.obs;
+  final rememberMe = false.obs;
+  final obscurePassword = true.obs;
 
   /// Email Validation
   String? validateEmail(String value) {
@@ -22,7 +27,7 @@ class SignInController extends GetxController {
     return null;
   }
 
-  /// Password Validation
+  /// Password Validation (MATCH BACKEND)
   String? validatePassword(String value) {
     if (value.isEmpty) return "Password is required";
     if (value.length < 6) return "Password must be at least 6 characters";
@@ -33,23 +38,28 @@ class SignInController extends GetxController {
   Future<void> signIn(GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return;
 
-    EasyLoading.show(status: 'Signing In...');
+    try {
+      EasyLoading.show(status: 'Signing In...');
 
-    await Future.delayed(const Duration(seconds: 2)); // mock API call
+      await _repository.login(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
-    // Example login success condition
-    if (emailController.text == "test@gmail.com" && passwordController.text == "123456") {
       EasyLoading.dismiss();
-      Get.snackbar("Success", "Logged in successfully", backgroundColor: AppColors.primaryColor);
-      // Navigate to dashboard
+
+      Get.snackbar("Success", "Logged in successfully", backgroundColor: AppColors.primaryColor, colorText: Colors.white);
+      /// Navigate to dashboard
       Get.offAll(() => CustomerDashboard());
-    } else {
+
+    } catch (e) {
       EasyLoading.dismiss();
-      Get.snackbar("Error", "Invalid email or password", backgroundColor: Colors.redAccent, colorText: Colors.white);
+
+      Get.snackbar("Login Failed", e.toString(), backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
   }
 
-  /// Clear controllers on disposing
+  /// Dispose controllers
   @override
   void onClose() {
     emailController.dispose();

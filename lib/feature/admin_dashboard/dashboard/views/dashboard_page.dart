@@ -82,7 +82,7 @@ class DashboardPage extends StatelessWidget {
                   children: [
                     Text(
                       "Dashboard Overview",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.subTextColor),
                     ),
 
                     SizedBox(height: 16.h),
@@ -91,9 +91,10 @@ class DashboardPage extends StatelessWidget {
                     StatCard(
                       title: "Total Revenue",
                       value: "\$163401",
-                      color: Colors.pink.shade100,
+                      color: Color(0xFfFFE2E5),
                       icon: Icons.attach_money,
-                      iconColor: Colors.green,
+                      circleColor: Color(0xFF328736),
+                      iconColor: AppColors.whiteColor,
                     ),
                     SizedBox(height: 10.h),
 
@@ -101,9 +102,10 @@ class DashboardPage extends StatelessWidget {
                     StatCard(
                       title: "Total Sell",
                       value: "1260",
-                      color: Colors.green.shade100,
+                      color: Color(0xFFF9EEE4),
                       icon: Icons.shopping_cart_outlined,
-                      iconColor: Colors.orange,
+                      circleColor: Color(0xFFE57931),
+                      iconColor: AppColors.whiteColor,
                     ),
 
                     SizedBox(height: 10.h),
@@ -112,14 +114,15 @@ class DashboardPage extends StatelessWidget {
                     StatCard(
                       title: "Total User",
                       value: "5426",
-                      color: Colors.purple.shade100,
+                      color: Color(0xFFF3E8FF),
                       icon: Icons.people_outline,
-                      iconColor: Colors.indigo,
+                      circleColor: Color(0xFF1C2A47),
+                      iconColor: AppColors.whiteColor,
                     ),
 
                     SizedBox(height: 10.h),
 
-                    ///
+                    /// User list container
                     Container(
                       height: 400.h,
                       width: 340.w,
@@ -189,16 +192,9 @@ class StatCard extends StatelessWidget {
   final String value;
   final Color color;
   final IconData icon;
+  final Color circleColor;
   final Color iconColor;
-
-  const StatCard({
-    super.key,
-    required this.title,
-    required this.value,
-    required this.color,
-    required this.icon,
-    required this.iconColor,
-  });
+  const StatCard({super.key, required this.title, required this.value, required this.color, required this.icon, required this.iconColor, required this.circleColor});
 
   @override
   Widget build(BuildContext context) {
@@ -233,8 +229,8 @@ class StatCard extends StatelessWidget {
             ],
           ),
           CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.white,
+            radius: 30.r,
+            backgroundColor: circleColor,
             child: Icon(icon, color: iconColor),
           )
         ],

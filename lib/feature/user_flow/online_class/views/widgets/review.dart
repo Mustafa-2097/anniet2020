@@ -10,7 +10,7 @@ import '../../../review/views/widgets/review_item.dart';
 
 class Review extends StatelessWidget {
   Review({super.key});
-  final controller = Get.put(ReviewController());
+  final controller = Get.put(ReviewUserController());
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class Review extends StatelessWidget {
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              onPressed: () => Get.to(() => ReviewPage()),
+              onPressed: () => Get.to(() => ReviewUserPage()),
               child: Text(
                 "See more reviews",
                 style: GoogleFonts.plusJakartaSans(

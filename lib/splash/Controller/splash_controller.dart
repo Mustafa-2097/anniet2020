@@ -43,7 +43,7 @@ class SplashController extends GetxController {
 
       /// Fallback navigation
       Future.microtask(() {
-        //Get.offAll(() => LoginPage());
+        Get.offAll(() => SignInPage());
       });
 
     }
