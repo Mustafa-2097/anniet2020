@@ -1,5 +1,6 @@
 import 'package:anniet2020/core/constant/image_path.dart';
 import 'package:anniet2020/feature/admin_dashboard/admin_dashboard.dart';
+import 'package:anniet2020/feature/admin_dashboard/reivew/views/review_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -63,7 +64,7 @@ class CustomAppDrawer extends StatelessWidget {
               _DrawerItem(
                 icon: Icons.reviews_outlined,
                 label: 'Review',
-                onTap: () {},
+                onTap: () => Get.offAll(() => ReviewPage()),
               ),
               SizedBox(height: 10.h),
               _DrawerItem(
