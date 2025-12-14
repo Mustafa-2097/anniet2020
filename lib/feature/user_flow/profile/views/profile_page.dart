@@ -8,16 +8,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
-import '../../../../core/constant/image_path.dart';
 import '../../../../core/constant/widgets/logout_button.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
-  final controller = Get.put(ProfileController());
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = ProfileController.instance;
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -41,9 +40,13 @@ class ProfilePage extends StatelessWidget {
                   final avatar = controller.avatarUrl.value;
                   return CircleAvatar(
                     radius: 28.r,
-                    backgroundImage: avatar != null
+                    backgroundColor: AppColors.boxTextColor,
+                    backgroundImage: avatar != null && avatar.isNotEmpty
                         ? NetworkImage(avatar)
-                        : const AssetImage(ImagePath.user) as ImageProvider,
+                        : null,
+                    child: avatar == null || avatar.isEmpty
+                        ? Icon(Icons.person, size: 40.r, color: Colors.white)
+                        : null,
                   );
                 }),
 
@@ -66,8 +69,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
 
-
-                /// Edit Icon
+                // Edit Icon
                 IconButton(
                   onPressed: () => Get.to(() => PersonalInfoPage()),
                   icon: Icon(Icons.edit_outlined, size: 22.r, color: AppColors.blackColor),

@@ -1,5 +1,6 @@
 import 'package:anniet2020/core/constant/image_path.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/personal_info_controller.dart';
+import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,9 +41,9 @@ class PersonalInfoPage extends StatelessWidget {
               SizedBox(height: 6.h),
               TextFormField(
                 controller: controller.nameController,
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  hintText: "Gustavo",
+                  hintText: "Enter your full name",
                   hintStyle: AppTextStyles.body3(context),
                   filled: true,
                   fillColor: const Color(0xFFF6F6F6),
@@ -61,9 +62,10 @@ class PersonalInfoPage extends StatelessWidget {
               SizedBox(height: 6.h),
               TextFormField(
                 controller: controller.emailController,
+                enabled: false,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  hintText: "Gustavolipshutz@gmail.com",
+                  hintText: "Your email",
                   hintStyle: AppTextStyles.body3(context),
                   filled: true,
                   fillColor: const Color(0xFFF6F6F6),
@@ -71,8 +73,8 @@ class PersonalInfoPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24.r),
                     borderSide: BorderSide.none,
                   ),
+                  suffixIcon: Icon(Icons.lock_outline),
                 ),
-                validator: (v) => controller.validateEmail(v!.trim()),
               ),
 
               SizedBox(height: 15.h),
@@ -103,7 +105,7 @@ class PersonalInfoPage extends StatelessWidget {
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        hintText: "412 345 678",
+                        hintText: "xxx xxx xxx",
                         hintStyle: AppTextStyles.body3(context),
                         filled: true,
                         fillColor: const Color(0xFFF6F6F6),

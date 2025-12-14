@@ -15,10 +15,24 @@ class UserRepository {
     return response['data'];
   }
 
+  /// Update profile
+  Future<void> updateProfile({
+    required String name,
+    String? phone,
+  }) async {
+    final response = await _provider.updateProfile(
+      name: name,
+      phone: phone,
+    );
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'Profile update failed');
+    }
+  }
+
   /// Logout use-case
   Future<void> logout() async {
     await _provider.logout();
-
     /// Clear local token after successful logout
     await SharedPreferencesHelper.clearToken();
   }

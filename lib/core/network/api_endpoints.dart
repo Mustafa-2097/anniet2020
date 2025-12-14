@@ -11,4 +11,5 @@ class ApiEndpoints {
 
   /// User / Profile
   static const String profile = '$baseUrl/me/profile';
+  static const String updateProfile = '$baseUrl/me/profile';
 }

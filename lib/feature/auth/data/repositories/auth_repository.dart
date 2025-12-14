@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../../core/offline_storage/shared_pref.dart';
 import '../api_providers/auth_api_provider.dart';
 
@@ -35,12 +37,20 @@ class AuthRepository {
       throw Exception(response['message'] ?? 'Login failed');
     }
 
-    /// Token save
-    final token = response['data']['token']; // backend অনুযায়ী adjust
-    if (token != null) {
-      await SharedPreferencesHelper.saveToken(token);
+    final data = response['data'];
+    final accessToken = data['accessToken'];
+
+    if (accessToken == null || accessToken.isEmpty) {
+      throw Exception('Access token missing from response');
     }
+
+    /// MUST await
+    await SharedPreferencesHelper.saveToken(accessToken);
+
+    /// Optional debug
+    debugPrint('TOKEN SAVED: $accessToken');
   }
+
 
   /// Forgot password use-case
   Future<void> forgotPassword(String email) async {

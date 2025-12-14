@@ -2,6 +2,7 @@ import 'package:anniet2020/core/constant/app_text_styles.dart';
 import 'package:anniet2020/core/constant/widgets/primary_button.dart';
 import 'package:anniet2020/feature/user_flow/home_page/controllers/home_controller.dart';
 import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,8 +12,9 @@ import '../../../../core/constant/image_path.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
-
   final controller = Get.put(HomeController());
+  final profileController = ProfileController.instance;
+
   final List<Map<String, String>> items = [
     {
       "title": "The Don’t Blow Your License Info Video Program",
@@ -30,7 +32,6 @@ class HomePage extends StatelessWidget {
       "image": "assets/images/home_img01.png",
     },
   ];
-
   final List<Map<String, dynamic>> driverTypes = [
     {
       "icon": ImagePath.icon01, // replace with your custom icon or svg if needed
@@ -73,15 +74,25 @@ class HomePage extends StatelessWidget {
               padding: EdgeInsets.only(left: 24.w, top: 16.h, bottom: 20.h),
               child: Row(
                 children: [
-                  Image.asset(ImagePath.user, width: sw * 0.08),
+                  // Profile Image
+                  Obx(() {
+                    final avatar = profileController.avatarUrl.value;
+                    return CircleAvatar(
+                      radius: 18.r,
+                      backgroundColor: AppColors.boxTextColor,
+                      backgroundImage: avatar != null && avatar.isNotEmpty
+                          ? NetworkImage(avatar)
+                          : null,
+                      child: avatar == null || avatar.isEmpty
+                          ? Icon(Icons.person, size: 20.r, color: Colors.white)
+                          : null,
+                    );
+                  }),
                   SizedBox(width: 4.w),
+                  // User Name
                   Text(
-                    "Hello Alisa",
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primaryColor,
-                    ),
+                    "Hello ${profileController.userName.value}",
+                    style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.primaryColor),
                   ),
                 ],
               ),

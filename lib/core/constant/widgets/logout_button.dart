@@ -55,7 +55,7 @@ class LogoutButton extends StatelessWidget {
                               minimumSize: Size(double.infinity, 40.h),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24.r),
-                                  side: BorderSide(width: 1.3.w)
+                                  side: BorderSide(width: 1.5.w, color: AppColors.redColor)
                               ),
                               backgroundColor: AppColors.whiteColor,
                             ),

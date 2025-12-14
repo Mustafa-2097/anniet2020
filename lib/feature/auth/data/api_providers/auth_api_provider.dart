@@ -17,6 +17,7 @@ class AuthApiProvider {
         'email': email,
         'password': password,
       },
+      withAuth: false,
     );
   }
 
@@ -31,6 +32,7 @@ class AuthApiProvider {
         'email': email,
         'password': password,
       },
+      withAuth: false,
     );
   }
 
@@ -41,6 +43,7 @@ class AuthApiProvider {
       {
         'email': email,
       },
+      withAuth: false,
     );
   }
 }
