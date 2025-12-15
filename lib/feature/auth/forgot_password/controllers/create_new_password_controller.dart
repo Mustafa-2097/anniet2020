@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import '../../data/repositories/auth_repository.dart';
 import '../../sign_in/views/sign_in_page.dart';
 import '../../sign_up/views/widgets/success_dialog.dart';
 
 class CreateNewPasswordController extends GetxController {
+  final String resetToken;
+  CreateNewPasswordController({required this.resetToken});
   static CreateNewPasswordController get instance => Get.find();
-
+  final AuthRepository _repository = AuthRepository();
   /// Text Controllers
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -36,13 +39,16 @@ class CreateNewPasswordController extends GetxController {
     EasyLoading.show(status: "Updating New Password...");
 
     try {
-      await Future.delayed(const Duration(seconds: 2)); // mock API call
+      await _repository.resetPassword(
+        token: resetToken,
+        password: passwordController.text.trim(),
+      );
 
       EasyLoading.dismiss();
 
       // Show Success Dialog
       SuccessDialog.show(
-        subtitle: "Your password is successfully created!",
+        subtitle: "Password updated successfully!",
         onContinue: () {
           Get.back(); // close dialog
           Get.offAll(() => SignInPage()); // Navigate to Sign-In page

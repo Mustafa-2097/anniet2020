@@ -2,16 +2,24 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import '../../data/repositories/auth_repository.dart';
+import '../../forgot_password/views/pages/create_new_password.dart';
 import '../../sign_up/views/widgets/success_dialog.dart';
 
+enum OtpType { signup, resetPassword }
+
 class OtpController extends GetxController {
+  final String email;
+  final OtpType type;
+  OtpController({required this.email, required this.type});
+  final AuthRepository _repository = AuthRepository();
   static OtpController get instance => Get.find();
 
   /// OTP value
   var otp = "".obs;
 
-  /// Timer countdown 20 seconds
-  var secondsRemaining = 20.obs;
+  /// Timer countdown
+  var secondsRemaining = 60.obs;
   Timer? _timer;
 
   /// Whether user can resend OTP
@@ -23,9 +31,9 @@ class OtpController extends GetxController {
     startTimer();
   }
 
-  /// Start 20-second countdown
+  /// Start countdown
   void startTimer() {
-    secondsRemaining.value = 20;
+    secondsRemaining.value = 60;
     canResend.value = false;
 
     _timer?.cancel();
@@ -46,49 +54,63 @@ class OtpController extends GetxController {
   }
 
   /// Verify OTP
-  Future<void> verifyOtp(VoidCallback onVerified) async {
+  Future<void> verifyOtp({required VoidCallback onOtpVerified}) async {
     final error = validateOtp();
-
     if (error != null) {
-      Get.snackbar("Error", "Please fill all the fields", backgroundColor: Colors.redAccent, colorText: Colors.white);
+      Get.snackbar("Error", error, backgroundColor: Colors.redAccent, colorText: Colors.white);
       return;
     }
 
     EasyLoading.show(status: "Verifying...");
 
     try {
-      await Future.delayed(const Duration(seconds: 2)); // for API
+      if (type == OtpType.signup) {
+        /// Verify OTP via repository
+        await _repository.verifySignUpOtp(email: email, otp: otp.value);
+        EasyLoading.dismiss();
 
-      EasyLoading.dismiss();
+        /// Show Success Dialog
+        SuccessDialog.show(
+          subtitle: "OTP Verified Successfully!",
+          onContinue: () {
+            Get.back();
+            onOtpVerified(); // Usually navigate to SignInPage
+          },
+        );
+      } else {
+        /// Reset password flow
+        final resetToken = await _repository.verifyResetOtp(email: email, otp: otp.value);
+        EasyLoading.dismiss();
 
-      /// Show Success Dialog instead of snackbar
-      SuccessDialog.show(
-        subtitle: "OTP Verified Successfully!",
-        onContinue: () {
-          Get.back();
-          onVerified(); // execute the callback
-        },
-      );
-
+        SuccessDialog.show(
+          subtitle: "OTP Verified Successfully!",
+          onContinue: () {
+            Get.back();
+            Get.offAll(() => CreateNewPassword(resetToken: resetToken));
+          },
+        );
+      }
     } catch (e) {
       EasyLoading.dismiss();
-      Get.snackbar(
-        "Error",
-        "Something went wrong. Try again.",
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Error", e.toString(), backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
   }
 
-  /// Resend OTP
+  /// Resend OTP for resest password
   Future<void> resendOtp() async {
-    if (!canResend.value) return;
+    if (!canResend.value || type != OtpType.resetPassword) return;
     EasyLoading.show(status: "Sending new code...");
-    await Future.delayed(const Duration(seconds: 2)); // Mock Api
-    EasyLoading.dismiss();
-    Get.snackbar("Check Your Email", "New Code Sent!", backgroundColor: Colors.green);
-    startTimer();
+
+    try {
+      await _repository.sendResetOtp(email);
+
+      EasyLoading.dismiss();
+      startTimer();
+      Get.snackbar("Check Your Email", "New Code Sent!", backgroundColor: Colors.green);
+    } catch (e) {
+      EasyLoading.dismiss();
+      Get.snackbar("Error", e.toString());
+    }
   }
 
   @override

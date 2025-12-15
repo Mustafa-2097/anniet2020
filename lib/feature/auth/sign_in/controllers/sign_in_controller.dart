@@ -47,14 +47,12 @@ class SignInController extends GetxController {
       );
 
       EasyLoading.dismiss();
-
       Get.snackbar("Success", "Logged in successfully", backgroundColor: AppColors.primaryColor, colorText: Colors.white);
       /// Navigate to dashboard
       Get.offAll(() => CustomerDashboard());
 
     } catch (e) {
       EasyLoading.dismiss();
-
       Get.snackbar("Login Failed", e.toString(), backgroundColor: Colors.redAccent, colorText: Colors.white);
     }
   }

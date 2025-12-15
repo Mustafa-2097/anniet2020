@@ -20,6 +20,20 @@ class AuthApiProvider {
       withAuth: false,
     );
   }
+  /// Verify OTP for signup
+  Future<Map<String, dynamic>> verifySigUupOtp({
+    required String email,
+    required String otp,
+  }) async {
+    return await _client.post(
+      ApiEndpoints.verifySigUupOtp,
+      {
+        'email': email,
+        'otp': otp,
+      },
+      withAuth: false,
+    );
+  }
 
   /// Login API
   Future<Map<String, dynamic>> login({
@@ -36,12 +50,40 @@ class AuthApiProvider {
     );
   }
 
-  /// Forgot password API
-  Future<void> forgotPassword(String email) async {
-    await _client.post(
-      ApiEndpoints.forgotPassword,
+  /// Send OTP
+  Future<Map<String, dynamic>> sendResetOtp(String email) async {
+    return await _client.post(
+      ApiEndpoints.sendResetOtp,
+      {'email': email},
+      withAuth: false,
+    );
+  }
+
+  /// Verify OTP
+  Future<Map<String, dynamic>> verifyResetOtp({
+    required String email,
+    required String otp,
+  }) async {
+    return await _client.post(
+      ApiEndpoints.verifyResetOtp,
       {
         'email': email,
+        'otp': otp,
+      },
+      withAuth: false,
+    );
+  }
+
+  /// Reset password
+  Future<Map<String, dynamic>> resetPassword({
+    required String token,
+    required String password,
+  }) async {
+    return await _client.post(
+      ApiEndpoints.resetPassword,
+      {
+        'token': token,
+        'password': password,
       },
       withAuth: false,
     );

@@ -1,4 +1,5 @@
 import 'package:anniet2020/core/constant/app_text_styles.dart';
+import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,13 +8,13 @@ import '../../../../../core/constant/widgets/primary_button.dart';
 import '../../controllers/create_new_password_controller.dart';
 
 class CreateNewPassword extends StatelessWidget {
+  final String resetToken;
+  CreateNewPassword({super.key, required this.resetToken});
   final _formKey = GlobalKey<FormState>();
-  final controller = Get.put(CreateNewPasswordController());
-
-  CreateNewPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CreateNewPasswordController(resetToken: resetToken));
     //final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
@@ -22,10 +23,10 @@ class CreateNewPassword extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         leading: Padding(
-          padding: EdgeInsets.symmetric(horizontal: sw * 0.064, vertical: 10.h),
+          padding: EdgeInsets.only(left: 20.r),
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
-            onPressed: () => Get.back(),
+            onPressed: () => Get.to(() => SignInPage()),
           ),
         ),
       ),

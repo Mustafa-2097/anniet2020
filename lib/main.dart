@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 
 void main() {
   /// Register services globally so they can be found anywhere
-  Get.lazyPut(() => ProfileController());
 
   configEasyLoading();
 

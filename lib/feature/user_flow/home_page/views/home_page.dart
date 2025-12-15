@@ -13,7 +13,7 @@ import '../../../../core/constant/image_path.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final controller = Get.put(HomeController());
-  final profileController = ProfileController.instance;
+  final profileController = Get.put(ProfileController());
 
   final List<Map<String, String>> items = [
     {
@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
   ];
   final List<Map<String, dynamic>> driverTypes = [
     {
-      "icon": ImagePath.icon01, // replace with your custom icon or svg if needed
+      "icon": ImagePath.icon01,
       "title": "Professional Drivers",
       "description":
       "If you drive for a living or if you Employ Drivers and don't mind drink and or you use drugs then this program is a must.",

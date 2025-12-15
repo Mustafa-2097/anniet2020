@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import '../../data/repositories/auth_repository.dart';
+import '../../otp_page/controllers/otp_controller.dart';
 import '../../otp_page/views/otp_page.dart';
 import '../../sign_in/views/sign_in_page.dart';
 
@@ -61,11 +62,11 @@ class SignUpController extends GetxController {
 
       EasyLoading.dismiss();
 
-      /// Navigate to OTP page
+      /// Navigate to OTP page after successful registration
       Get.to(() => OtpPage(
-        onOtpVerified: () {
-          Get.offAll(() => SignInPage());
-        },
+        email: emailController.text.trim(),
+        type: OtpType.signup,
+        onOtpVerified: () => Get.offAll(() => SignInPage()),
       ));
     } catch (e) {
       EasyLoading.dismiss();

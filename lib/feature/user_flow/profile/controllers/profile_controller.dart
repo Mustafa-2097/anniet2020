@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../../auth/sign_in/controllers/sign_in_controller.dart';
 import '../../../auth/sign_in/views/sign_in_page.dart';
 import '../../data/repositories/user_repository.dart';
 
@@ -63,6 +64,7 @@ class ProfileController extends GetxController {
     try {
       await _repository.logout();
       Get.delete<ProfileController>(force: true);
+      Get.delete<SignInController>(force: true);
       Get.offAll(() => SignInPage());
     } catch (e) {
       Get.snackbar('Logout Failed', e.toString());
