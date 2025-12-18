@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:mime/mime.dart';
 import '../offline_storage/shared_pref.dart';
 
 class HttpClient {
@@ -82,4 +82,50 @@ class HttpClient {
 
     throw Exception(decoded['message'] ?? 'Something went wrong');
   }
+
+
+  /// Multipart PATCH request
+  Future<Map<String, dynamic>> patchMultipart({
+    required String url,
+    required String filePath,
+    required String fileField,
+  }) async {
+    final token = await SharedPreferencesHelper.getToken();
+
+    final mimeType = lookupMimeType(filePath);
+    if (mimeType == null) {
+      throw Exception("Unable to determine file type");
+    }
+
+    final request = http.MultipartRequest(
+      'PATCH',
+      Uri.parse(url),
+    );
+    request.headers['Authorization'] = token ?? '';
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        fileField,
+        filePath,
+        contentType: http.MediaType.parse(mimeType),
+      ),
+    );
+
+    final streamedResponse = await request.send();
+    final responseBody = await streamedResponse.stream.bytesToString();
+
+    debugPrint('--- AVATAR UPLOAD RESPONSE ---');
+    debugPrint('URL: $url');
+    debugPrint('Status Code: ${streamedResponse.statusCode}');
+    debugPrint('Response Body: $responseBody');
+    debugPrint('--------------------------------');
+
+    final decoded = jsonDecode(responseBody);
+
+    if (streamedResponse.statusCode >= 400) {
+      throw Exception(decoded['message'] ?? 'Avatar upload failed');
+    }
+
+    return decoded;
+  }
+
 }

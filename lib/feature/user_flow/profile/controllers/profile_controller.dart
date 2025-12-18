@@ -1,3 +1,4 @@
+import 'package:anniet2020/feature/user_flow/profile/controllers/personal_info_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
@@ -15,6 +16,7 @@ class ProfileController extends GetxController {
   final userName = ''.obs;
   final userEmail = ''.obs;
   final userHandle = ''.obs;
+  final userPhone = RxnString();
   final avatarUrl = RxnString();
 
   @override
@@ -39,6 +41,7 @@ class ProfileController extends GetxController {
       final fullName = data['profile']?['name'] ?? '';
       userName.value = fullName;
       userEmail.value = data['email'] ?? '';
+      userPhone.value = data['profile']?['phone'];
       avatarUrl.value = data['profile']?['avatar'];
 
       /// @firstWord logic
@@ -64,6 +67,7 @@ class ProfileController extends GetxController {
     try {
       await _repository.logout();
       Get.delete<ProfileController>(force: true);
+      Get.delete<PersonalInfoController>(force: true);
       Get.delete<SignInController>(force: true);
       Get.offAll(() => SignInPage());
     } catch (e) {

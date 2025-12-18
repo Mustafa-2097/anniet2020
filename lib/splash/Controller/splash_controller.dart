@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/offline_storage/shared_pref.dart';
 import '../../feature/user_flow/dashboard/customer_dashboard.dart';
+import '../../feature/user_flow/profile/controllers/profile_controller.dart';
 import '../../onboarding/view/onboarding_screen.dart';
 
 class SplashController extends GetxController {
   static SplashController get instance => Get.find();
+  final profileController = Get.put(ProfileController());
 
   @override
   void onInit() {

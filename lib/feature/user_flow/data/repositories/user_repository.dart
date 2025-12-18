@@ -1,4 +1,6 @@
 import '../../../../core/offline_storage/shared_pref.dart';
+import '../../courses/models/course_model.dart';
+import '../../lessons/models/lesson_model.dart';
 import '../api_providers/user_api_provider.dart';
 
 class UserRepository {
@@ -17,7 +19,7 @@ class UserRepository {
 
   /// Update profile
   Future<void> updateProfile({
-    required String name,
+    String? name,
     String? phone,
   }) async {
     final response = await _provider.updateProfile(
@@ -28,6 +30,40 @@ class UserRepository {
     if (response['success'] != true) {
       throw Exception(response['message'] ?? 'Profile update failed');
     }
+  }
+  /// Upload avatar
+  Future<String> uploadAvatar(String imagePath) async {
+    final response = await _provider.uploadAvatar(imagePath);
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'Avatar upload failed');
+    }
+
+    return response['data']['avatar'];
+  }
+
+  /// Course
+  Future<List<Course>> getCourses() async {
+    final response = await _provider.fetchCourses();
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'Failed to load courses');
+    }
+
+    final List list = response['data'];
+    return list.map((e) => Course.fromJson(e)).toList();
+  }
+  Future<List<LessonModel>> getLessons(String courseId) async {
+    final response = await _provider.fetchCourseDetails(courseId);
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? "Failed to load lessons");
+    }
+
+    final List lessons = response['data']['lessons'];
+
+    return lessons.map((e) => LessonModel.fromJson(e)).toList()
+      ..sort((a, b) => a.order.compareTo(b.order));
   }
 
   /// Logout use-case

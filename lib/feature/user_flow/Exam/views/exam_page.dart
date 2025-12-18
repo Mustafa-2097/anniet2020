@@ -8,8 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/exam_controller.dart';
 
 class ExamPage extends StatelessWidget {
-  ExamPage({super.key});
-
+  final String courseId;
+  ExamPage({super.key, required this.courseId});
   final controller = Get.put(ExamController());
 
   @override

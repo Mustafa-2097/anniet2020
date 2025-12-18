@@ -7,8 +7,7 @@ import 'package:get/get.dart';
 import '../../../../../core/constant/app_colors.dart';
 
 class CertificatePage extends StatelessWidget {
-  CertificatePage({super.key});
-  final controller = Get.put(HelpSupportController());
+  const CertificatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +103,7 @@ class CertificatePage extends StatelessWidget {
                                     style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
                                   ),
                                   SizedBox(height: 10),
-                                  // Certificate Image
+                                  // Certificate Showing here
                                   Image.asset(
                                     ImagePath.certificate,
                                     width: 300,

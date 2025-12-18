@@ -63,8 +63,7 @@ class EditProfilePage extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 15,
                             backgroundColor: Colors.white,
-                            child: Icon(Icons.camera_alt_outlined,
-                                size: 16, color: Colors.blue),
+                            child: Icon(Icons.camera_alt_outlined, size: 16, color: Colors.blue),
                           ),
                         ),
                       ],
@@ -255,7 +254,7 @@ class EditProfilePage extends StatelessWidget {
             keyboardType: keyboard,
             onChanged: onChanged,
             decoration: InputDecoration(
-              border: InputBorder.none,
+              border: InputBorder.none
             ),
           ),
         ),

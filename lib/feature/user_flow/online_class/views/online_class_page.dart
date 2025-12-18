@@ -11,7 +11,8 @@ import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/widgets/primary_button.dart';
 
 class OnlineClassPage extends StatelessWidget {
-  const OnlineClassPage({super.key});
+  final String courseId;
+  const OnlineClassPage({super.key, required this.courseId});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class OnlineClassPage extends StatelessWidget {
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
             onPressed: () {
-              Get.to(() => LessonsPage());
+              Get.to(() => LessonsPage(courseId: courseId));
             },
           ),
         ),
@@ -69,7 +70,7 @@ class OnlineClassPage extends StatelessWidget {
 
           SizedBox(height: 25.h),
           /// Continue Button
-          PrimaryButton(text: "Continue", onPressed: () => Get.to(() => ExamPage())),
+          PrimaryButton(text: "Continue", onPressed: () => Get.to(() => ExamPage(courseId: courseId,))),
         ],
       ),
     );

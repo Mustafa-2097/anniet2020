@@ -13,7 +13,7 @@ import '../../../../core/constant/image_path.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final controller = Get.put(HomeController());
-  final profileController = Get.put(ProfileController());
+  final profileController = ProfileController.instance;
 
   final List<Map<String, String>> items = [
     {

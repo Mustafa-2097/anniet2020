@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:anniet2020/feature/user_flow/profile/views/pages/certificate_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/contact_us_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/help_support_page.dart';
@@ -41,9 +43,11 @@ class ProfilePage extends StatelessWidget {
                   return CircleAvatar(
                     radius: 28.r,
                     backgroundColor: AppColors.boxTextColor,
-                    backgroundImage: avatar != null && avatar.isNotEmpty
-                        ? NetworkImage(avatar)
-                        : null,
+                    backgroundImage: avatar == null || avatar.isEmpty
+                        ? null
+                        : avatar.startsWith('http')
+                          ? NetworkImage(avatar)
+                          : FileImage(File(avatar)) as ImageProvider,
                     child: avatar == null || avatar.isEmpty
                         ? Icon(Icons.person, size: 40.r, color: Colors.white)
                         : null,

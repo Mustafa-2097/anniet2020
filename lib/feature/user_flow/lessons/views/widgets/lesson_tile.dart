@@ -8,12 +8,19 @@ import '../../models/lesson_model.dart';
 
 class LessonTile extends StatelessWidget {
   final LessonModel lesson;
-  const LessonTile({super.key, required this.lesson});
+  final String courseId;
+  const LessonTile({super.key, required this.lesson, required this.courseId});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.to(() => OnlineClassPage()),
+      onTap: () {
+        if (lesson.isLocked) return;
+        Get.to(() => OnlineClassPage(
+            courseId: courseId,
+          ),
+        );
+      },
       child: Container(
         margin: EdgeInsets.only(bottom: 12.r),
         padding: EdgeInsets.all(16.r),
@@ -29,7 +36,7 @@ class LessonTile extends StatelessWidget {
                 /// IMAGE
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(lesson.image, height: 75, width: 75, fit: BoxFit.cover),
+                  child: Image.network(lesson.image, height: 75.h, width: 75.w, fit: BoxFit.cover),
                 ),
 
                 /// ICON OVER IMAGE

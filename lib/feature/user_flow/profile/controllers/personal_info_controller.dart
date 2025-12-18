@@ -3,11 +3,34 @@ import 'package:anniet2020/feature/user_flow/profile/controllers/profile_control
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../data/repositories/user_repository.dart';
 
 class PersonalInfoController extends GetxController {
   static PersonalInfoController get instance => Get.find();
   final profile = ProfileController.instance;
+
+  var fullName = "Your full name".obs;
+  var email = "Your email".obs;
+  var phone = "Phone".obs;
+
+  var pickedImage = Rx<XFile?>(null);
+
+  final ImagePicker picker = ImagePicker();
+  final previewImagePath = RxnString();
+
+  Future pickImage() async {
+    final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+    if (img == null) return;
+    final ext = img.path.split('.').last.toLowerCase();
+    if (!['jpg', 'jpeg', 'png'].contains(ext)) {
+      Get.snackbar("Invalid image", "Only JPG, JPEG, PNG images are allowed", backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
+    pickedImage.value = img;
+    previewImagePath.value = img.path;
+  }
+
   final UserRepository _repository = UserRepository();
   /// Text Controllers
   final nameController = TextEditingController();
@@ -23,13 +46,6 @@ class PersonalInfoController extends GetxController {
     if (value.length < 3) return "Name must be at least 3 characters";
     return null;
   }
-
-  // /// Email Validation no need for update page
-  // String? validateEmail(String value) {
-  //   if (value.isEmpty) return "Email is required";
-  //   if (!GetUtils.isEmail(value)) return "Enter a valid email";
-  //   return null;
-  // }
 
   /// Phone Validation
   String? validatePhone(String value) {
@@ -49,30 +65,41 @@ class PersonalInfoController extends GetxController {
     if (!formKey.currentState!.validate()) return;
 
     // Check if nothing changed
-    if (nameController.text.trim() == profile.userName.value && fullPhone == null) {
+    final bool isNameChanged = nameController.text.trim() != profile.userName.value;
+    final bool isPhoneChanged = fullPhone != null && fullPhone != profile.userPhone.value;
+    final bool isImageChanged = pickedImage.value != null;
+    if (!isNameChanged && !isPhoneChanged && !isImageChanged) {
       Get.snackbar("Info", "No changes to save", backgroundColor: Colors.orange, colorText: Colors.white);
-      return; // Exit without calling API
+      return;
     }
 
     try {
       EasyLoading.show(status: 'Saving info...');
-      await _repository.updateProfile(
-        name: nameController.text.trim(),
-        phone: fullPhone,
-      );
+      if (isNameChanged || isPhoneChanged) {
+        await _repository.updateProfile(
+          name: isNameChanged ? nameController.text.trim() : null,
+          phone: isPhoneChanged ? fullPhone : null,
+        );
+      }
 
-      // update ProfileController state
-      final profile = ProfileController.instance;
-      profile.userName.value = nameController.text.trim();
-      profile.userHandle.value = profile.generateHandle(nameController.text.trim());
-      // phone thakle set koro, jodi ProfileController e phone thake
-      // profile.userPhone.value = fullPhone ?? profile.userPhone.value;
+      if (isImageChanged) {
+        final avatarUrl = await _repository.uploadAvatar(pickedImage.value!.path);
+        profile.avatarUrl.value = avatarUrl;
+      }
+      if (isNameChanged) {
+        profile.userName.value = nameController.text.trim();
+        profile.userHandle.value = profile.generateHandle(nameController.text.trim());
+      }
+      if (isPhoneChanged) profile.userPhone.value = fullPhone!;
 
       EasyLoading.dismiss();
       Get.snackbar("Success", "Profile updated successfully", backgroundColor: Colors.green, colorText: Colors.white);
       Get.off(() => CustomerDashboard(initialIndex: 3));
-    } catch (e) {
+    } catch (e, stack) {
       EasyLoading.dismiss();
+      debugPrint('❌ PROFILE UPDATE ERROR');
+      debugPrint(e.toString());
+      debugPrint(stack.toString());
       Get.snackbar("Update Failed", e.toString(), backgroundColor: Colors.red, colorText: Colors.white);
     }
   }

@@ -1,10 +1,8 @@
-import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
 import 'package:get/get.dart';
 import '../../score/models/score_model.dart';
 import '../../score/views/score_page.dart';
 import '../model/exam_question_model.dart';
-import '../views/exam_page.dart';
 
 class ExamController extends GetxController {
   static ExamController get instance => Get.find();
@@ -132,6 +130,6 @@ class ExamController extends GetxController {
     isAnswered.value = false;
     isCorrect.value = false;
 
-    Get.offAll(() => OnlineClassPage());
+    Get.offAll(() => OnlineClassPage(courseId: 1 as String)); //
   }
 }

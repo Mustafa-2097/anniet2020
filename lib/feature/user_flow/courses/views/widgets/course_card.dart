@@ -28,24 +28,15 @@ class CourseCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: GoogleFonts.plusJakartaSans(color: AppColors.whiteColor, fontSize: 16.sp, fontWeight: FontWeight.w600),
-            ),
+            Text(title, style: GoogleFonts.plusJakartaSans(color: AppColors.whiteColor, fontSize: 16.sp, fontWeight: FontWeight.w600)),
 
             SizedBox(height: 4.h),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  lessons,
-                  style: GoogleFonts.plusJakartaSans(color: AppColors.greyColor, fontSize: 12.sp, fontWeight: FontWeight.w400),
-                ),
-                Text(
-                  "${(progress * 100).toInt()}%",
-                  style: GoogleFonts.plusJakartaSans(color: AppColors.greenColor, fontSize: 12.sp, fontWeight: FontWeight.w400),
-                ),
+                Text(lessons, style: GoogleFonts.plusJakartaSans(color: AppColors.greyColor, fontSize: 12.sp, fontWeight: FontWeight.w400)),
+                Text("${(progress * 100).toInt()}%", style: GoogleFonts.plusJakartaSans(color: AppColors.greenColor, fontSize: 12.sp, fontWeight: FontWeight.w400)),
               ],
             ),
 
