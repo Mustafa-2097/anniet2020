@@ -11,7 +11,9 @@ import '../controllers/sign_in_controller.dart';
 
 class SignInPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final controller = Get.put(SignInController(), permanent: true);
+  // final controller = Get.put(SignInController(), permanent: true);
+  final controller = Get.put(SignInController());
+
   SignInPage({super.key});
 
   @override

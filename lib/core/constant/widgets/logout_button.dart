@@ -1,8 +1,10 @@
+import 'package:anniet2020/feature/auth/sign_in/views/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../feature/user_flow/profile/controllers/profile_controller.dart';
+import '../../offline_storage/shared_pref.dart';
 import '../app_colors.dart';
 import '../image_path.dart';
 
@@ -11,7 +13,7 @@ class LogoutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = ProfileController.instance;
+    // final controller = ProfileController.instance;
     return Center(
       child: TextButton(
         onPressed: () {
@@ -59,7 +61,10 @@ class LogoutButton extends StatelessWidget {
                               ),
                               backgroundColor: AppColors.whiteColor,
                             ),
-                            onPressed: controller.logout, // go to sign in page...
+                            onPressed: () async {
+                              await SharedPreferencesHelper.clearToken();
+                              Get.offAll(SignInPage());
+                            },
                             child: Text(
                               "Log Out",
                               style: GoogleFonts.plusJakartaSans(color: AppColors.redColor, fontSize: 16.sp, fontWeight: FontWeight.w600),

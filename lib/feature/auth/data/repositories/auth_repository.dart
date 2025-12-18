@@ -36,7 +36,7 @@ class AuthRepository {
 
 
   /// Login use-case
-  Future<void> login({
+  Future<String> login({
     required String email,
     required String password,
   }) async {
@@ -51,6 +51,7 @@ class AuthRepository {
 
     final data = response['data'];
     final accessToken = data['accessToken'];
+    final role = data["user"]["role"];
 
     if (accessToken == null || accessToken.isEmpty) {
       throw Exception('Access token missing from response');
@@ -58,9 +59,12 @@ class AuthRepository {
 
     // MUST await
     await SharedPreferencesHelper.saveToken(accessToken);
+    await SharedPreferencesHelper.saveRole(role);
 
     // Optional debug
     debugPrint('TOKEN SAVED: $accessToken');
+
+    return role;
   }
 
 
