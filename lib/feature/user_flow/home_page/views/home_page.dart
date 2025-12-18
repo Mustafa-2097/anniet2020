@@ -1,6 +1,7 @@
 import 'package:anniet2020/core/constant/app_text_styles.dart';
 import 'package:anniet2020/core/constant/widgets/primary_button.dart';
 import 'package:anniet2020/feature/user_flow/home_page/controllers/home_controller.dart';
+import 'package:anniet2020/feature/user_flow/home_page/views/pages/read_more_page.dart';
 import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,12 @@ class HomePage extends StatelessWidget {
       "icon": ImagePath.icon01,
       "title": "Professional Drivers",
       "description":
-      "If you drive for a living or if you Employ Drivers and don't mind drink and or you use drugs then this program is a must.",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. "
+  "Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. "
+  "Odio vulputate est id tincidunt fames.\n\n"
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. "
+  "Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. "
+  "Odio vulputate est id tincidunt fames.",
     },
     {
       "icon": ImagePath.icon02,
@@ -160,39 +166,25 @@ class HomePage extends StatelessWidget {
                                       SizedBox(height: 4.h),
                                       Text(
                                         item['subtitle']!,
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: AppColors.whiteColor,
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                        style: GoogleFonts.plusJakartaSans(color: AppColors.whiteColor, fontSize: 14.sp, fontWeight: FontWeight.w500),
                                       ),
                                       SizedBox(height: 8.h),
 
                                       // Dot indicators (only this needs Obx)
-                                      Obx(
-                                        () => Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                      Obx(() => Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: List.generate(
                                             items.length,
                                             (dotIndex) => Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 3.w,
-                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 3.w),
                                               child: Container(
                                                 width: 6.w,
                                                 height: 6.h,
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                  color:
-                                                      dotIndex ==
-                                                          controller
-                                                              .currentPage
-                                                              .value
+                                                  color: dotIndex == controller.currentPage.value
                                                       ? AppColors.whiteColor
-                                                      : Colors.white.withOpacity(
-                                                          0.4,
-                                                        ),
+                                                      : Colors.white.withOpacity(0.4),
                                                 ),
                                               ),
                                             ),
@@ -296,16 +288,10 @@ class HomePage extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: GestureDetector(
-                                      onTap: () {},
+                                      onTap: () => Get.to(() => ReadMorePage(item: item)),
                                       child: Text(
                                         "Read More",
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 10.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFF80D676),
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: Color(0xFF80D676),
-                                        ),
+                                        style: GoogleFonts.plusJakartaSans(fontSize: 10.sp, fontWeight: FontWeight.w400, color: Color(0xFF80D676), decoration: TextDecoration.underline, decorationColor: Color(0xFF80D676)),
                                       ),
                                     ),
                                   ),

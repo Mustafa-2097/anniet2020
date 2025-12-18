@@ -41,7 +41,7 @@ class ContactUsPage extends StatelessWidget {
               SizedBox(height: 6.h),
               TextFormField(
                 controller: controller.nameController,
-                decoration: _inputDecoration("Gustavo", context),
+                decoration: _inputDecoration("Your name", context),
                 validator: (v) => controller.validateName(v!.trim()),
               ),
               SizedBox(height: 15.h),
@@ -52,7 +52,7 @@ class ContactUsPage extends StatelessWidget {
               TextFormField(
                 controller: controller.emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: _inputDecoration("example@gmail.com", context),
+                decoration: _inputDecoration("Your email", context),
                 validator: (v) => controller.validateEmail(v!.trim()),
               ),
               SizedBox(height: 15.h),
@@ -80,7 +80,7 @@ class ContactUsPage extends StatelessWidget {
                     child: TextFormField(
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
-                      decoration: _inputDecoration("412 345 678", context),
+                      decoration: _inputDecoration("xxx xxx xxx", context),
                       validator: (v) => controller.validatePhone(v!.trim()),
                     ),
                   ),

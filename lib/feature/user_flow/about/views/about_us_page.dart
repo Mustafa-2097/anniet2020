@@ -16,10 +16,6 @@ class AboutUsPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.whiteColor,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 20.r),
-          child: const BackButton(color: Colors.black),
-        ),
         title: Text("About us", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         centerTitle: true,
       ),
