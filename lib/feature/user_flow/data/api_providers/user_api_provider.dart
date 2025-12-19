@@ -31,6 +31,31 @@ class UserApiProvider {
       fileField: 'avatar',
     );
   }
+  /// Contact Us
+  Future<Map<String, dynamic>> contactUs(String message) async {
+    return await _client.post(
+      ApiEndpoints.contact,
+      {
+        "message": message,
+      },
+    );
+  }
+  /// Educate Employee
+  Future<Map<String, dynamic>> educateEmployee({
+    required String companyName,
+    required int employeeCount,
+    required String message,
+  }) async {
+    return await _client.post(
+      ApiEndpoints.educateEmployee,
+      {
+        "company": companyName,
+        "employeeCount": employeeCount,
+        "message": message,
+      },
+    );
+  }
+
 
   /// Course
   Future<Map<String, dynamic>> fetchCourses() async {
@@ -39,6 +64,7 @@ class UserApiProvider {
   Future<Map<String, dynamic>> fetchCourseDetails(String courseId) async {
     return await _client.get("${ApiEndpoints.courses}/$courseId");
   }
+
 
   /// Logout API (requires access token)
   Future<void> logout() async {

@@ -1,11 +1,14 @@
+import 'package:anniet2020/core/constant/app_colors.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../data/repositories/user_repository.dart';
 
 class EducateEmployeesController extends GetxController {
   static EducateEmployeesController get instance => Get.find();
   final profile = ProfileController.instance;
+  final UserRepository _repository = UserRepository();
 
   /// Text Controllers
   final nameController = TextEditingController();
@@ -15,6 +18,22 @@ class EducateEmployeesController extends GetxController {
 
   /// Dropdown value
   var employeeCount = "1-10".obs;
+
+  /// Convert dropdown value to int
+  int _mapEmployeeCount(String value) {
+    switch (value) {
+      case "1-10":
+        return 10;
+      case "11-50":
+        return 50;
+      case "51-200":
+        return 200;
+      case "200+":
+        return 201;
+      default:
+        return 0;
+    }
+  }
 
   /// Company validation
   String? validateCompany(String value) {
@@ -29,13 +48,28 @@ class EducateEmployeesController extends GetxController {
     return null;
   }
 
-  /// Submit logic
-  Future<void> contactChange(GlobalKey<FormState> formKey) async {
+  /// logic
+  Future<void> educateEmployee(GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return;
-    EasyLoading.show(status: 'Sending...');
-    await Future.delayed(const Duration(seconds: 2));
-    EasyLoading.dismiss();
-    Get.snackbar("Success", "Your message has been sent!", snackPosition: SnackPosition.BOTTOM);
+
+    try {
+      EasyLoading.show(status: 'Sending...');
+
+      await _repository.educateEmployee(
+        companyName: companyController.text.trim(),
+        employeeCount: _mapEmployeeCount(employeeCount.value),
+        message: messageController.text.trim(),
+      );
+
+      EasyLoading.dismiss();
+
+      Get.snackbar("Success", "Your request has been sent successfully!", backgroundColor: AppColors.primaryColor, snackPosition: SnackPosition.BOTTOM);
+      companyController.clear();
+      messageController.clear();
+    } catch (e) {
+      EasyLoading.dismiss();
+      Get.snackbar("Error", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    }
   }
 
   @override

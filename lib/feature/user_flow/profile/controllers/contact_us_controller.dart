@@ -3,10 +3,12 @@ import 'package:anniet2020/feature/user_flow/profile/controllers/profile_control
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../data/repositories/user_repository.dart';
 
 class ContactUsController extends GetxController {
   static ContactUsController get instance => Get.find();
   final profile = ProfileController.instance;
+  final UserRepository _repository = UserRepository();
 
   /// Text Controllers
   final nameController = TextEditingController();
@@ -23,10 +25,21 @@ class ContactUsController extends GetxController {
   /// Submit logic
   Future<void> contactChange(GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return;
-    EasyLoading.show(status: 'Sending...');
-    await Future.delayed(const Duration(seconds: 2));
-    EasyLoading.dismiss();
-    Get.snackbar("Success", "Your message has been sent!", backgroundColor: AppColors.primaryColor, snackPosition: SnackPosition.BOTTOM);
+
+    try {
+      EasyLoading.show(status: 'Sending...');
+      await _repository.contactUs(
+        messageController.text.trim(),
+      );
+
+      EasyLoading.dismiss();
+      Get.snackbar("Success", "Your message has been sent!", backgroundColor: AppColors.primaryColor, snackPosition: SnackPosition.BOTTOM);
+      messageController.clear();
+
+    } catch (e) {
+      EasyLoading.dismiss();
+      Get.snackbar("Error", e.toString(), backgroundColor: Colors.red, snackPosition: SnackPosition.BOTTOM);
+    }
   }
 
   @override

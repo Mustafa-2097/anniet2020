@@ -17,6 +17,7 @@ class UserRepository {
     return response['data'];
   }
 
+
   /// Update profile
   Future<void> updateProfile({
     String? name,
@@ -42,6 +43,30 @@ class UserRepository {
     return response['data']['avatar'];
   }
   /// Contact Us via Message
+  Future<void> contactUs(String message) async {
+    final response = await _provider.contactUs(message);
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? "Failed to send message");
+    }
+  }
+  /// Educate Employee use-case
+  Future<void> educateEmployee({
+    required String companyName,
+    required int employeeCount,
+    required String message,
+  }) async {
+    final response = await _provider.educateEmployee(
+      companyName: companyName,
+      employeeCount: employeeCount,
+      message: message,
+    );
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? "Failed to send request");
+    }
+  }
+
 
 
   /// Course
@@ -67,6 +92,7 @@ class UserRepository {
     return lessons.map((e) => LessonModel.fromJson(e)).toList()
       ..sort((a, b) => a.order.compareTo(b.order));
   }
+
 
   /// Logout use-case
   Future<void> logout() async {

@@ -23,6 +23,7 @@ class ApiEndpoints {
   static const String certificate = '$baseUrl/me/certificate';
   //
   static const String contact = '$baseUrl/me/contact';
+  static const String educateEmployee = '$baseUrl/me/educate-employee';
 
 
   /// Courses
