@@ -1,13 +1,10 @@
 import 'dart:io';
-import 'package:anniet2020/core/constant/image_path.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/personal_info_controller.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
-import '../../../../../core/constant/app_text_styles.dart';
-import '../../../../../core/constant/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
 class PersonalInfoPage extends StatelessWidget {

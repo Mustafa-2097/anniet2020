@@ -10,16 +10,14 @@ class ReadMorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
+    final sh = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.whiteColor,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 20.r),
-          child: const BackButton(color: Colors.black),
-        ),
+        leading: const BackButton(color: Colors.black),
         title: Text(item["title"], style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         centerTitle: true,
       ),
@@ -49,7 +47,14 @@ class ReadMorePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 16.h),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: Image.asset(item["image"], height: sh * 0.255, fit: BoxFit.cover),
+                    ),
+
+                    SizedBox(height: 16.h),
+
                     /// PARAGRAPH
                     Text(
                       item["description"],

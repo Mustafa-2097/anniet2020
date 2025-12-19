@@ -1,9 +1,11 @@
 import 'package:anniet2020/core/constant/image_path.dart';
+import 'package:anniet2020/feature/user_flow/about/views/pages/blog_page.dart';
 import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constant/app_colors.dart';
 
 class AboutUsPage extends StatelessWidget {
@@ -60,8 +62,14 @@ class AboutUsPage extends StatelessWidget {
                         style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w500, color: AppColors.blackColor),
                       ),
                       GestureDetector(
-                        onTap: () {},
-                        child: Image.asset(ImagePath.linkedIn, width: 24.w, fit: BoxFit.contain),
+                        onTap: () async {
+                          final Uri uri = Uri.parse('https://www.linkedin.com/in/annie-trainor-02389315a/');
+                          await launchUrl(
+                            uri,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
+                        child: Image.asset(ImagePath.linkedIn, width: 24.w),
                       ),
                     ],
                   ),
@@ -73,7 +81,7 @@ class AboutUsPage extends StatelessWidget {
 
             // About Description
             Text(
-              "www.drinkdrivevictoria.com.au I have been a Drug "
+              "I have been a Drug "
                   "and Alcohol Facilitator for over 3 years working mainly "
                   "with remote Cleveland and have lived here for the past "
                   "year.",
@@ -171,7 +179,7 @@ class AboutUsPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 60.w),
               child: Text(
-                "40 Impaired Drivers Caught in One Weekend! 🚓",
+                "40 Impaired Drivers Caught in One Weekend! 👮",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w700),
               ),
@@ -183,9 +191,26 @@ class AboutUsPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Text(
                 "Employers, The Effects More Than You Think! Over the weekend, "
-                    "Victoria Police caught 40 drink and drug drivers in a major sweep.",
+                    "Victoria Police caught 40 drink and drug drivers in a major freeway blitz...",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(fontSize: 14, height: 1.6, color: Colors.grey.shade800),
+              ),
+            ),
+
+            SizedBox(height: 8),
+
+            Center(
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () => Get.to(() => BlogPage()),
+                child: Text(
+                  "Read more",
+                  style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, color: AppColors.greenColor, decoration: TextDecoration.underline, decorationColor: AppColors.greenColor),
+                ),
               ),
             ),
 

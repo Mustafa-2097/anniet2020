@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:anniet2020/feature/user_flow/profile/views/pages/certificate_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/contact_us_page.dart';
+import 'package:anniet2020/feature/user_flow/profile/views/pages/educate_employees_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/help_support_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/personal_info_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/privacy_page.dart';
@@ -105,6 +105,14 @@ class ProfilePage extends StatelessWidget {
               child: _menuItem(
                 icon: Icons.chat_bubble_outline,
                 title: "Contact Us",
+              ),
+            ),
+
+            GestureDetector(
+              onTap: () => Get.to(() => EducateEmployeesPage()),
+              child: _menuItem(
+                icon: Icons.school_outlined,
+                title: "Educate your employees",
               ),
             ),
 

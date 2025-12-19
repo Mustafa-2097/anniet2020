@@ -50,4 +50,11 @@ class ImagePath {
 
   static const String successLogo = "assets/images/success_logo.png";
 
+
+  /// Home Page related images
+  static const String homeImg01 = "assets/images/home_img01.png";
+  static const String homeImg02 = "assets/images/home_img02.png";
+  static const String homeImg03 = "assets/images/home_img03.png";
+  static const String homeImg04 = "assets/images/home_img04.png";
+
 }

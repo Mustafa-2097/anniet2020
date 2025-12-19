@@ -1,17 +1,26 @@
-import 'package:anniet2020/core/constant/app_colors.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class ContactUsController extends GetxController {
-  static ContactUsController get instance => Get.find();
+class EducateEmployeesController extends GetxController {
+  static EducateEmployeesController get instance => Get.find();
   final profile = ProfileController.instance;
 
   /// Text Controllers
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final companyController = TextEditingController();
   final messageController = TextEditingController();
+
+  /// Dropdown value
+  var employeeCount = "1-10".obs;
+
+  /// Company validation
+  String? validateCompany(String value) {
+    if (value.isEmpty) return "Company name is required";
+    return null;
+  }
 
   /// Message validation
   String? validateMessage(String value) {
@@ -26,7 +35,7 @@ class ContactUsController extends GetxController {
     EasyLoading.show(status: 'Sending...');
     await Future.delayed(const Duration(seconds: 2));
     EasyLoading.dismiss();
-    Get.snackbar("Success", "Your message has been sent!", backgroundColor: AppColors.primaryColor, snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar("Success", "Your message has been sent!", snackPosition: SnackPosition.BOTTOM);
   }
 
   @override
@@ -40,6 +49,7 @@ class ContactUsController extends GetxController {
   void onClose() {
     nameController.dispose();
     emailController.dispose();
+    companyController.dispose();
     messageController.dispose();
     super.onClose();
   }

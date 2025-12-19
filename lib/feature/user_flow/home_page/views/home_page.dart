@@ -23,45 +23,53 @@ class HomePage extends StatelessWidget {
       "image": "assets/images/home_img01.png",
     },
     {
-      "title": "Next Video Program Title",
-      "subtitle": "Approximately 45 mins in total",
-      "image": "assets/images/home_img01.png",
+      "title": "The Don’t Blow Your License Info Video Program",
+      "subtitle": "Approximately 30 mins in total",
+      "image": "assets/images/home_img02.png",
     },
     {
-      "title": "Another Video Program",
-      "subtitle": "Approximately 25 mins in total",
-      "image": "assets/images/home_img01.png",
+      "title": "The Don’t Blow Your License Info Video Program",
+      "subtitle": "Approximately 30 mins in total",
+      "image": "assets/images/home_img03.png",
+    },
+    {
+      "title": "The Don’t Blow Your License Info Video Program",
+      "subtitle": "Approximately 30 mins in total",
+      "image": "assets/images/home_img04.png",
     },
   ];
   final List<Map<String, dynamic>> driverTypes = [
     {
       "icon": ImagePath.icon01,
       "title": "Professional Drivers",
+      "image": ImagePath.homeImg03,
       "description":
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. "
-  "Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. "
-  "Odio vulputate est id tincidunt fames.\n\n"
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. "
-  "Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. "
-  "Odio vulputate est id tincidunt fames.",
+      "If you are a Professional Drivers and your livelihood depends on you having Your Licence but you also don’t mind a drink and or you use drugs (illicit or prescribed) then the information the The DBYL Video Info Program is crucial for you. These days Professional Drivers are often randomly tested for Alcohol and Drugs by their employer or Police which is fair enough given the safety implications so having as much information as possible about how long substances stay in your body and the consequences of a Drink or Drug Drive offence is really important for you.\n\n"
+          "If you are an Employer and you Employ Drivers (eg Truck Drivers, Couriers, Delivery Drivers, Bus Drivers, Taxi or Uber Drivers etc) then providing the The Don’t Blow Your Licence Info Videos for your Employees  will not only help them make informed decisions about their Alcohol and Drug use in relation to Driving but will also ensure that you as their Employer support them to do so whilst also protecting yourself as any employees in a motor vehicle accident who are subsequently charged with Drink or Drug Driving will not be covered by your insurance and you as their Employer could also be liable to other legal consequences.",
     },
     {
       "icon": ImagePath.icon02,
       "title": "Young Drivers",
+      "image": ImagePath.homeImg02,
       "description":
-      "Young Drivers who are inexperienced on the roads at the same time they are likely to be exposed to and or experimenting with Alcohol and Drugs.",
+      "Wow getting your licence and becoming independent is so exciting however it’s typically at a time when you may also be experimenting or exposed to Alcohol and Drugs so the timing couldn’t be worse …..especially for your parents!\n\n"
+        "So the The Don’t Blow Your Licence Info Video Program has in part been created especially for YOU. To help YOU to navigate this fabulous time of your life which is also unfortunately a potentially a dangerous time in your life.\n\n"
+          "So whether you are the Young Person going for your licence or  you are a Parent of someone getting their licence The DBYL Info Video Program is invaluable.",
     },
     {
       "icon": ImagePath.icon03,
       "title": "Female Driver",
+      "image": ImagePath.homeImg04,
       "description":
-      "Female Drivers of any age as females metabolite Alcohol and Drugs differently to males, we will teach you what you need to be aware of.",
+      "There are lots of fabulous things about being a female but how we metabolise Alcohol and Drugs is not one of them. Unfortunately we are more likely to have higher readings even when we consume smaller amounts of alcohol than men and we can also store illicit and prescribed substances in our bodies for longer making the decision to Drive after consuming even small amounts of Alcohol or Drugs potentially unsafe and illegal. So the The DBYL Info Video Program will provide you with the information you need to understand how you could be at risk of a Drink or Drug Drive offence even when you think you are OK to drive.",
     },
     {
       "icon": ImagePath.icon04,
       "title": "Other Drivers",
+      "image": ImagePath.homeImg01,
       "description":
-      "Anyone who Drives, Drinks Alcohol and or takes Drugs (illicit and prescribed) including older more experienced drivers.",
+      "The DBYL Info Video Program is actually for anyone who Drives and Drinks Alcohol or takes Drugs regardless of age, gender, profession or nationality. The information presented is from the experiences of those who have lost their licences for Drink and Drug Driving and highlights the negative impact such an offence has on any individual Personally Professionally and Legally.\n\n"
+      "This program is particularly important for drivers from other countries who in our experience are often unfortunately unaware of our Drink and Drug Drive laws and the Personal Professional and Legal Consequences of such offences. The DBYL Info Video Program ensures they get all the information they need in relation to substance use and driving so they are able to make informed decisions without unknowningly risking their licence.",
     },
   ];
 
@@ -203,7 +211,7 @@ class HomePage extends StatelessWidget {
                       SizedBox(height: 10.h),
 
                       /// Join Now Button
-                      PrimaryButton(text: "Join Now", onPressed: () {}),
+                      PrimaryButton(text: "Join Now", onPressed: () => Get.to(() => PaymentPage())),
 
                       SizedBox(height: 10.h),
 
@@ -256,15 +264,15 @@ class HomePage extends StatelessWidget {
                                   Row(
                                     children: [
                                       Container(
-                                        height: 40.h,
+                                        width: sw*0.1,
                                         padding: EdgeInsets.all(8.r),
                                         decoration: BoxDecoration(
                                           color: Color(0xFFFEF1E9),
                                           borderRadius: BorderRadius.circular(14.r),
                                         ),
-                                        child: Image.asset(item["icon"], fit: BoxFit.contain,)
+                                        child: Image.asset(item["icon"], fit: BoxFit.contain),
                                       ),
-                                      SizedBox(width: 4.w),
+                                      SizedBox(width: sw*0.01),
                                       Expanded(
                                         child: Text(
                                           item["title"],
