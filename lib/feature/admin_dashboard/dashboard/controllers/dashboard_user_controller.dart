@@ -5,7 +5,7 @@ import '../../../../core/offline_storage/shared_pref.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../model/dashboard_user_model.dart';
 
-class UsersController extends GetxController {
+class DashboardUserController extends GetxController {
   // Observables
   var isLoading = false.obs;
   var isError = false.obs;
@@ -15,9 +15,29 @@ class UsersController extends GetxController {
   var currentPage = 1.obs;
   var totalPages = 1.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUsers(); // Initial fetch
+  }
+
+  Future<void> goToPage(int page) async {
+    if (page != currentPage.value) {
+      await fetchUsers(page: page);
+    }
+  }
+
+  Future<void> goNextPage() async => loadNextPage();
+
+  Future<void> goPreviousPage() async {
+    if (currentPage.value > 1) {
+      await fetchUsers(page: currentPage.value - 1);
+    }
+  }
+
   // Fetch users
   Future<void> fetchUsers({int page = 1, int limit = 10}) async {
-    try {
+    // try {
       isLoading.value = true;
       isError.value = false;
       errorMessage.value = '';
@@ -32,10 +52,13 @@ class UsersController extends GetxController {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          'Authorization': token,
           'Content-Type': 'application/json',
         },
       );
+
+      print(response.request?.url);
+      print(response.body);
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
@@ -59,11 +82,11 @@ class UsersController extends GetxController {
       } else {
         _setError('Failed to fetch users: ${response.statusCode}');
       }
-    } catch (e) {
-      _setError('Something went wrong: $e');
-    } finally {
-      isLoading.value = false;
-    }
+    // } catch (e) {
+    //   _setError('Something went wrong: $e');
+    // } finally {
+    //   isLoading.value = false;
+    // }
   }
 
   // Load next page for pagination

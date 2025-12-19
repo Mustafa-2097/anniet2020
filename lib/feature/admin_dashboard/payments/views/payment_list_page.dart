@@ -1,16 +1,18 @@
-import 'package:anniet2020/feature/admin_dashboard/payments/controllers/payment_list_controller.dart';
 import 'package:anniet2020/feature/admin_dashboard/payments/views/pages/payment_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart'; // Add for date formatting
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/widgets/popup_button.dart';
+import '../controllers/dashboard_payment_controller.dart';
+import '../model/dashboard_payment_model.dart';
 
 class PaymentListPage extends StatelessWidget {
   PaymentListPage({super.key});
 
-  final controller = Get.put(PaymentListController());
+  final controller = Get.put(PaymentsController());
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -21,9 +23,9 @@ class PaymentListPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: AppColors.whiteColor,
         leading: const BackButton(color: Colors.black),
-        title: Text("Payment List", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
+        title: Text("Payment List",
+            style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor)),
       ),
-
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,7 +36,7 @@ class PaymentListPage extends StatelessWidget {
               controller: searchController,
               decoration: InputDecoration(
                 hintText: "Search payments...",
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
                   borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
@@ -48,69 +50,58 @@ class PaymentListPage extends StatelessWidget {
               ),
             ),
           ),
-          Divider(thickness: 1.w, color: Color(0xFFD2D6D8)),
+          const Divider(thickness: 1, color: Color(0xFFD2D6D8)),
 
           /// Main Content Box
           Expanded(
-            child: Container(
-              width: 340.w,
-              margin: EdgeInsets.all(16.r),
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xFFD2D6D8)),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                children: [
-                  /// FIXED HEADER
-                  Obx(() {
-                    return Container(
+            child: Obx(() {
+              if (controller.isLoading.value && controller.payments.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return Container(
+                margin: EdgeInsets.all(16.r),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFD2D6D8)),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Column(
+                  children: [
+                    /// FIXED HEADER
+                    Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Color(0xFFF3F3F3),
-                        border: Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
+                        color: const Color(0xFFF3F3F3),
+                        border: const Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(12.r),
                           topRight: Radius.circular(12.r),
                         ),
                       ),
                       child: Text(
-                        "Showing Page ${controller.currentPage.value}-10 of ${controller.totalPages}",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                        "Showing Page ${controller.currentPage.value} of ${controller.totalPages.value}",
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                       ),
-                    );
-                  }),
+                    ),
 
-                  /// SCROLLABLE AREA: User List + Pagination
-                  Expanded(
-                    child: Obx(() {
-                      final items = controller.users;
-                      return ListView.builder(
+                    /// SCROLLABLE AREA
+                    Expanded(
+                      child: ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: items.length + 1,   // +1 because last item = pagination
+                        itemCount: controller.payments.length + 1,
                         itemBuilder: (context, index) {
-                          // LAST ITEM = Pagination
-                          if (index == items.length) {
-                            return Column(
-                              children: [
-                                PaginationSection(),
-                              ],
-                            );
+                          if (index == controller.payments.length) {
+                            return const PaginationSection();
                           }
-                          // NORMAL USER CARD
-                          return Column(
-                            children: [
-                              UserCard(user: items[index]),
-                              Divider(height: 1, color: Color(0xFFD2D6D8)),
-                            ],
-                          );
+                          return PaymentCard(payment: controller.payments[index]);
                         },
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
           )
         ],
       ),
@@ -118,69 +109,57 @@ class PaymentListPage extends StatelessWidget {
   }
 }
 
-class UserCard extends StatelessWidget {
-  final Map<String, dynamic> user;
-  const UserCard({required this.user, super.key});
+class PaymentCard extends StatelessWidget {
+  final PaymentData payment; // Updated to Model
+  const PaymentCard({required this.payment, super.key});
 
   @override
   Widget build(BuildContext context) {
+    String formattedDate = payment.paidAt != null
+        ? DateFormat('MMM dd, yyyy').format(payment.paidAt!)
+        : "N/A";
+
     return Container(
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: const BoxDecoration(color: Colors.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top Row: Name + Menu Btn
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${user["name"]}  —  #${user["id"]}",
-                style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A)),
+                "${payment.name}  —  #${payment.id.substring(0, 6)}",
+                style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4E4E4A)),
               ),
               PopupButton(
                 onTap: () {
-                  Get.to(() => PaymentDetails(data: {
-                    "name": user["name"],
-                    "email": user["email"],
-                    "phone": "+1 (555) 123-4567",
-                    "bookingID": "#${user["id"]}",
-                    "courseName": "Don’t Blow Your Licence",
-                    "duration": "1hour 30 minute",
-                    "paymentType": "Full Payment",
-                    "amount": "\$328.90",
-                    "paymentDate": user["Payment Date"],
-                    "transactionId": user["Transaction ID"],
-                  }));
+                  // Navigate with full model object
+                  Get.to(() => PaymentDetails(paymentId: payment.id));
                 },
               ),
-
             ],
           ),
           SizedBox(height: 4.h),
-          Text(user["email"], style: GoogleFonts.plusJakartaSans(color: Colors.grey)),
-
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Payment Date: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              Text(user["Payment Date"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-            ],
-          ),
-          SizedBox(height: 4.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Transaction ID: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              Text(user["Transaction ID"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-            ],
-          ),
+          Text(payment.email, style: GoogleFonts.plusJakartaSans(color: Colors.grey, fontSize: 13.sp)),
+          SizedBox(height: 12.h),
+          _rowItem("Amount Paid:", "\$${payment.amount.toStringAsFixed(2)}"),
+          SizedBox(height: 6.h),
+          _rowItem("Payment Date:", formattedDate),
+          SizedBox(height: 6.h),
+          _rowItem("Transaction ID:", payment.transactionId ?? "Pending"),
         ],
       ),
+    );
+  }
+
+  Widget _rowItem(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4E4E4A))),
+        Text(value, style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black87)),
+      ],
     );
   }
 }
@@ -190,63 +169,37 @@ class PaginationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<PaymentListController>();
+    final controller = Get.find<PaymentsController>();
     return Obx(() {
-      final totalPages = controller.totalPages;
-      final currentPage = controller.currentPage.value;
       return Container(
         padding: EdgeInsets.symmetric(vertical: 12.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            /// LEFT ARROW
-            GestureDetector(
-              onTap: currentPage > 1 ? controller.goPreviousPage : null,
-              child: Icon(
-                Icons.chevron_left,
-                size: 22.sp,
-                color: currentPage > 1 ? Colors.black : Colors.grey,
-              ),
+            IconButton(
+              onPressed: controller.currentPage.value > 1 ? () => controller.goPreviousPage() : null,
+              icon: const Icon(Icons.chevron_left),
             ),
-
-            SizedBox(width: 12.w),
-
-            /// PAGE NUMBERS
-            ...List.generate(totalPages, (index) {
-              final pageNumber = index + 1;
-              final isActive = pageNumber == currentPage;
-
+            ...List.generate(controller.totalPages.value, (index) {
+              final page = index + 1;
+              final isCurrent = page == controller.currentPage.value;
               return GestureDetector(
-                onTap: () => controller.goToPage(pageNumber),
+                onTap: () => controller.goToPage(page),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 6.w),
-                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                  margin: EdgeInsets.symmetric(horizontal: 4.w),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
-                    color: isActive ? Color(0xFF8A9198) : Colors.transparent,
+                    color: isCurrent ? const Color(0xFF8A9198) : Colors.transparent,
                     borderRadius: BorderRadius.circular(6.r),
                   ),
-                  child: Text(
-                    "$pageNumber",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: isActive ? Colors.white : Colors.black,
-                    ),
-                  ),
+                  child: Text("$page",
+                      style: TextStyle(color: isCurrent ? Colors.white : Colors.black, fontWeight: FontWeight.bold)),
                 ),
               );
             }),
-
-            SizedBox(width: 12.w),
-
-            /// RIGHT ARROW
-            GestureDetector(
-              onTap: currentPage < totalPages ? controller.goNextPage : null,
-              child: Icon(
-                Icons.chevron_right,
-                size: 22.sp,
-                color: currentPage < totalPages ? Colors.black : Colors.grey,
-              ),
+            IconButton(
+              onPressed: controller.currentPage.value < controller.totalPages.value ? () => controller.goNextPage() : null,
+              icon: const Icon(Icons.chevron_right),
             ),
           ],
         ),
@@ -254,4 +207,3 @@ class PaginationSection extends StatelessWidget {
     });
   }
 }
-

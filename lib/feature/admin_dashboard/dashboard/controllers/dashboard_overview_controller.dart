@@ -5,7 +5,7 @@ import '../../../../core/offline_storage/shared_pref.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../model/dashboard_overview_model.dart';
 
-class AnalyticsController extends GetxController {
+class DashboardOverviewController extends GetxController {
   // Observables
   var isLoading = false.obs;
   var isError = false.obs;
@@ -33,7 +33,7 @@ class AnalyticsController extends GetxController {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer $token', // usually Bearer token
+          'Authorization': token,
           'Content-Type': 'application/json',
         },
       );

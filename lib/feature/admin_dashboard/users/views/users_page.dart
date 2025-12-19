@@ -1,31 +1,30 @@
-import 'package:anniet2020/feature/admin_dashboard/users/controllers/users_controllers.dart';
 import 'package:anniet2020/feature/admin_dashboard/users/views/pages/user_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/constant/app_colors.dart';
-import '../../../../core/constant/widgets/popup_button.dart';
+import '../../dashboard/controllers/dashboard_user_controller.dart';
+import '../../dashboard/model/dashboard_user_model.dart';
 
 class UsersPage extends StatelessWidget {
   UsersPage({super.key});
 
-  final controller = Get.put(UsersController());
+  // Ensure naming matches your controller class
+  final controller = Get.put(DashboardUserController());
   final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Colors.white,
         leading: const BackButton(color: Colors.black),
-        title: Text("All Users", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
+        title: Text("All Users",
+            style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
       ),
-
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Search Bar
           Padding(
@@ -34,85 +33,64 @@ class UsersPage extends StatelessWidget {
               controller: searchController,
               decoration: InputDecoration(
                 hintText: "Search users...",
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
-                ),
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                 filled: true,
-                fillColor: AppColors.whiteColor,
+                fillColor: Colors.white,
               ),
             ),
           ),
-          Divider(thickness: 1.w, color: Color(0xFFD2D6D8)),
+          const Divider(thickness: 1, color: Color(0xFFD2D6D8)),
 
-          /// Main Content Box
           Expanded(
-            child: Container(
-              width: 340.w,
-              margin: EdgeInsets.all(16.r),
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xFFD2D6D8)),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                children: [
-                  /// FIXED HEADER
-                  Obx(() {
-                    return Container(
+            child: Obx(() {
+              if (controller.isLoading.value && controller.users.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.isError.value) {
+                return Center(child: Text(controller.errorMessage.value));
+              }
+
+              return Container(
+                margin: EdgeInsets.all(16.r),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFD2D6D8)),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Column(
+                  children: [
+                    /// Header
+                    Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.all(12),
+                      decoration: const BoxDecoration(
                         color: Color(0xFFF3F3F3),
                         border: Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(12.r),
-                          topRight: Radius.circular(12.r),
-                        ),
                       ),
                       child: Text(
-                        "Showing Page ${controller.currentPage.value}-10 of ${controller.totalPages}",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                        "Showing Page ${controller.currentPage.value} of ${controller.totalPages.value}",
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                       ),
-                    );
-                  }),
+                    ),
 
-                  /// SCROLLABLE AREA: User List + Pagination
-                  Expanded(
-                    child: Obx(() {
-                      final items = controller.users;
-                      return ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: items.length + 1,   // +1 because last item = pagination
+                    /// List
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: controller.users.length + 1,
                         itemBuilder: (context, index) {
-                          // LAST ITEM = Pagination
-                          if (index == items.length) {
-                            return Column(
-                              children: [
-                                PaginationSection(),
-                              ],
-                            );
+                          if (index == controller.users.length) {
+                            return const PaginationSection();
                           }
-                          // NORMAL USER CARD
-                          return Column(
-                            children: [
-                              UserCard(user: items[index]),
-                              Divider(height: 1, color: Color(0xFFD2D6D8)),
-                            ],
-                          );
+                          return UserCard(user: controller.users[index]);
                         },
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
           )
-
         ],
       ),
     );
@@ -120,89 +98,74 @@ class UsersPage extends StatelessWidget {
 }
 
 class UserCard extends StatelessWidget {
-  final Map<String, dynamic> user;
+  final UserData user; // Changed from Map to UserData model
   const UserCard({required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        border: Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top Row: Name + Menu Btn
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "${user["name"]}  —  #${user["id"]}",
-                style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A)),
+              Expanded(
+                child: Text(
+                  "${user.name}  —  #${user.id.substring(0, 6)}", // Shortened ID
+                  style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF4E4E4A)
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              PopupButton(
-                onTap: () {
-                  Get.to(() => UserDetails(user: user));
-                },
+              IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: () => Get.to(() => UserDetails(userId: user.id)),
               ),
             ],
           ),
-          SizedBox(height: 4.h),
-          Text(user["email"], style: GoogleFonts.plusJakartaSans(color: Colors.grey)),
+          Text(user.email, style: GoogleFonts.plusJakartaSans(color: Colors.grey, fontSize: 12.sp)),
           SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Certification: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              StatusBadge(status: user["cert"]),
-            ],
-          ),
 
+          _infoRow("Certification:", user.certification ? "Received" : "Pending"),
           SizedBox(height: 4.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Course: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              Text(user["course"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-            ],
-          ),
+          _infoRow("Course:", user.course),
           SizedBox(height: 4.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Payment: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              Text(user["payment"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-            ],
-          ),
+          _infoRow("Subscribed:", user.subscribed ? "Yes" : "No"),
         ],
       ),
     );
   }
-}
 
-class StatusBadge extends StatelessWidget {
-  final String status;
-  const StatusBadge({required this.status, super.key});
+  Widget _infoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w500)),
+        statusBadge(value),
+      ],
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    bool isReceived = status == "Received";
-
+  Widget statusBadge(String status) {
+    bool isPositive = status == "Received" || status == "Yes";
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
-        color: isReceived ? const Color(0xffddedc8) : const Color(0xffdce4ff),
-        borderRadius: BorderRadius.circular(6),
+        color: isPositive ? const Color(0xffddedc8) : const Color(0xfff5f5f5),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         status,
-        style: TextStyle(
-          color: isReceived ? Colors.green[700] : Colors.blue[700],
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
+        style: TextStyle(color: isPositive ? Colors.green : Colors.black54, fontSize: 11.sp, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -213,63 +176,39 @@ class PaginationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<UsersController>();
+    final controller = Get.find<DashboardUserController>();
     return Obx(() {
-      final totalPages = controller.totalPages;
-      final currentPage = controller.currentPage.value;
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 12.h),
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            /// LEFT ARROW
-            GestureDetector(
-              onTap: currentPage > 1 ? controller.goPreviousPage : null,
-              child: Icon(
-                Icons.chevron_left,
-                size: 22.sp,
-                color: currentPage > 1 ? Colors.black : Colors.grey,
-              ),
+            IconButton(
+              onPressed: controller.currentPage.value > 1 ? () => controller.goPreviousPage() : null,
+              icon: const Icon(Icons.chevron_left),
             ),
 
-            SizedBox(width: 12.w),
-
-            /// PAGE NUMBERS
-            ...List.generate(totalPages, (index) {
-              final pageNumber = index + 1;
-              final isActive = pageNumber == currentPage;
-
+            // Show dynamic page numbers (limited to 5 for UI safety)
+            ...List.generate(controller.totalPages.value, (index) {
+              int pageNum = index + 1;
+              bool isCurrent = pageNum == controller.currentPage.value;
               return GestureDetector(
-                onTap: () => controller.goToPage(pageNumber),
+                onTap: () => controller.goToPage(pageNum),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 6.w),
-                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                  margin: EdgeInsets.symmetric(horizontal: 4.w),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
-                    color: isActive ? Color(0xFF8A9198) : Colors.transparent,
-                    borderRadius: BorderRadius.circular(6.r),
+                    color: isCurrent ? Colors.blueGrey : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text(
-                    "$pageNumber",
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: isActive ? Colors.white : Colors.black,
-                    ),
-                  ),
+                  child: Text("$pageNum", style: TextStyle(color: isCurrent ? Colors.white : Colors.black)),
                 ),
               );
-            }),
+            }).take(5), // Limit dots if totalPages is huge
 
-            SizedBox(width: 12.w),
-
-            /// RIGHT ARROW
-            GestureDetector(
-              onTap: currentPage < totalPages ? controller.goNextPage : null,
-              child: Icon(
-                Icons.chevron_right,
-                size: 22.sp,
-                color: currentPage < totalPages ? Colors.black : Colors.grey,
-              ),
+            IconButton(
+              onPressed: controller.currentPage.value < controller.totalPages.value ? () => controller.goNextPage() : null,
+              icon: const Icon(Icons.chevron_right),
             ),
           ],
         ),
@@ -277,4 +216,3 @@ class PaginationSection extends StatelessWidget {
     });
   }
 }
-

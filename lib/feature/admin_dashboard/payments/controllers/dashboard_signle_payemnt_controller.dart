@@ -13,6 +13,7 @@ class PaymentDetailController extends GetxController {
 
   var paymentDetail = Rxn<PaymentDetail>();
 
+
   // Fetch single payment detail by ID
   Future<void> fetchPaymentDetail(String id) async {
     try {
@@ -30,7 +31,7 @@ class PaymentDetailController extends GetxController {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          'Authorization': token,
           'Content-Type': 'application/json',
         },
       );

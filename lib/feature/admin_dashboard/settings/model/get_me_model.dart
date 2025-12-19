@@ -1,36 +1,36 @@
-// admin_profile_model.dart
-
-class AdminProfileResponse {
+class ProfileResponse {
   final bool success;
   final int statusCode;
   final String message;
-  final AdminData data;
+  final UserData data;
 
-  AdminProfileResponse({
+  ProfileResponse({
     required this.success,
     required this.statusCode,
     required this.message,
     required this.data,
   });
 
-  factory AdminProfileResponse.fromJson(Map<String, dynamic> json) {
-    return AdminProfileResponse(
+  factory ProfileResponse.fromJson(Map<String, dynamic> json) {
+    return ProfileResponse(
       success: json['success'] as bool,
       statusCode: json['statusCode'] as int,
       message: json['message'] as String,
-      data: AdminData.fromJson(json['data']),
+      data: UserData.fromJson(json['data']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'success': success,
-    'statusCode': statusCode,
-    'message': message,
-    'data': data.toJson(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'statusCode': statusCode,
+      'message': message,
+      'data': data.toJson(),
+    };
+  }
 }
 
-class AdminData {
+class UserData {
   final String id;
   final String email;
   final String role;
@@ -38,9 +38,9 @@ class AdminData {
   final bool verified;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final AdminProfile profile;
+  final UserProfile profile;
 
-  AdminData({
+  UserData({
     required this.id,
     required this.email,
     required this.role,
@@ -51,8 +51,8 @@ class AdminData {
     required this.profile,
   });
 
-  factory AdminData.fromJson(Map<String, dynamic> json) {
-    return AdminData(
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
       id: json['id'] as String,
       email: json['email'] as String,
       role: json['role'] as String,
@@ -60,30 +60,32 @@ class AdminData {
       verified: json['verified'] as bool,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      profile: AdminProfile.fromJson(json['profile']),
+      profile: UserProfile.fromJson(json['profile']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'email': email,
-    'role': role,
-    'status': status,
-    'verified': verified,
-    'createdAt': createdAt.toIso8601String(),
-    'updatedAt': updatedAt.toIso8601String(),
-    'profile': profile.toJson(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'role': role,
+      'status': status,
+      'verified': verified,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'profile': profile.toJson(),
+    };
+  }
 }
 
-class AdminProfile {
+class UserProfile {
   final String name;
   final String phone;
   final String? avatar;
   final bool subscribed;
   final DateTime? paidAt;
 
-  AdminProfile({
+  UserProfile({
     required this.name,
     required this.phone,
     this.avatar,
@@ -91,21 +93,25 @@ class AdminProfile {
     this.paidAt,
   });
 
-  factory AdminProfile.fromJson(Map<String, dynamic> json) {
-    return AdminProfile(
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
       name: json['name'] as String,
       phone: json['phone'] as String,
-      avatar: json['avatar'] as String?,
+      avatar: json['avatar'],
       subscribed: json['subscribed'] as bool,
-      paidAt: json['paidAt'] != null ? DateTime.parse(json['paidAt']) : null,
+      paidAt: json['paidAt'] != null
+          ? DateTime.parse(json['paidAt'])
+          : null,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'name': name,
-    'phone': phone,
-    'avatar': avatar,
-    'subscribed': subscribed,
-    'paidAt': paidAt?.toIso8601String(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'phone': phone,
+      'avatar': avatar,
+      'subscribed': subscribed,
+      'paidAt': paidAt?.toIso8601String(),
+    };
+  }
 }

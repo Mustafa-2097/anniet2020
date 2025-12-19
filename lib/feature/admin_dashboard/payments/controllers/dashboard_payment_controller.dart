@@ -15,6 +15,28 @@ class PaymentsController extends GetxController {
   var currentPage = 1.obs;
   var totalPages = 1.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchPayments();
+  }
+
+  Future<void> goToPage(int page) async {
+    await fetchPayments(page: page);
+  }
+
+  Future<void> goNextPage() async {
+    if (currentPage.value < totalPages.value) {
+      await fetchPayments(page: currentPage.value + 1);
+    }
+  }
+
+  Future<void> goPreviousPage() async {
+    if (currentPage.value > 1) {
+      await fetchPayments(page: currentPage.value - 1);
+    }
+  }
+
   // Fetch payments
   Future<void> fetchPayments({int page = 1, int limit = 10}) async {
     try {
@@ -32,7 +54,7 @@ class PaymentsController extends GetxController {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          'Authorization': token,
           'Content-Type': 'application/json',
         },
       );
