@@ -8,20 +8,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/widgets/popup_button.dart';
 import '../../users/views/pages/user_details.dart';
-import '../controllers/dashboard_controller.dart';
-import '../controllers/dashboard_overview_controller.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import 'package:anniet2020/core/constant/app_colors.dart';
-import 'package:anniet2020/core/constant/image_path.dart';
-import 'package:anniet2020/feature/admin_dashboard/dashboard/views/widgets/custom_appdrawer.dart';
-import 'package:anniet2020/feature/admin_dashboard/users/views/users_page.dart';
-import '../../../../core/constant/widgets/popup_button.dart';
-import '../../users/views/pages/user_details.dart';
 import '../controllers/dashboard_overview_controller.dart';
 import '../controllers/dashboard_user_controller.dart';
 import '../model/dashboard_user_model.dart';
@@ -46,6 +32,7 @@ class _DashboardPageState extends State<DashboardPage> {
     // Fetch data when the page opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchAnalytics();
+      dashboardUserController.fetchUsers();
     });
   }
 
@@ -76,7 +63,10 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => controller.fetchAnalytics(),
+          onRefresh: () async {
+            await controller.fetchAnalytics();
+            await dashboardUserController.fetchUsers();
+          },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
@@ -118,9 +108,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
                       /// Stat Cards wrapped in Obx to update UI when data arrives
                       Obx(() {
-                        if (controller.isLoading.value) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
 
                         if (controller.isError.value) {
                           return Center(child: Text(controller.errorMessage.value, style: const TextStyle(color: Colors.red)));

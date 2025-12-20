@@ -6,12 +6,27 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../dashboard/controllers/dashboard_user_controller.dart';
 import '../../dashboard/model/dashboard_user_model.dart';
 
-class UsersPage extends StatelessWidget {
+class UsersPage extends StatefulWidget {
   UsersPage({super.key});
 
+  @override
+  State<UsersPage> createState() => _UsersPageState();
+}
+
+class _UsersPageState extends State<UsersPage> {
   // Ensure naming matches your controller class
   final controller = Get.put(DashboardUserController());
+
   final TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch data when the page opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchUsers();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,78 +35,83 @@ class UsersPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        leading: const BackButton(color: Colors.black),
         title: Text("All Users",
             style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
       ),
-      body: Column(
-        children: [
-          /// Search Bar
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: "Search users...",
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                filled: true,
-                fillColor: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await controller.fetchUsers();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Search Bar
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: "Search users...",
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
               ),
             ),
-          ),
-          const Divider(thickness: 1, color: Color(0xFFD2D6D8)),
+            const Divider(thickness: 1, color: Color(0xFFD2D6D8)),
 
-          Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value && controller.users.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value && controller.users.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              if (controller.isError.value) {
-                return Center(child: Text(controller.errorMessage.value));
-              }
+                if (controller.isError.value) {
+                  return Center(child: Text(controller.errorMessage.value));
+                }
 
-              return Container(
-                margin: EdgeInsets.all(16.r),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFD2D6D8)),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Column(
-                  children: [
-                    /// Header
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFF3F3F3),
-                        border: Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
+                return Container(
+                  margin: EdgeInsets.all(16.r),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFD2D6D8)),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Column(
+                    children: [
+                      /// Header
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF3F3F3),
+                          border: Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
+                        ),
+                        child: Text(
+                          "Showing Page ${controller.currentPage.value} of ${controller.totalPages.value}",
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
                       ),
-                      child: Text(
-                        "Showing Page ${controller.currentPage.value} of ${controller.totalPages.value}",
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
-                    ),
 
-                    /// List
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: controller.users.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == controller.users.length) {
-                            return const PaginationSection();
-                          }
-                          return UserCard(user: controller.users[index]);
-                        },
+                      /// List
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: controller.users.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == controller.users.length) {
+                              return const PaginationSection();
+                            }
+                            return UserCard(user: controller.users[index]);
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          )
-        ],
+                    ],
+                  ),
+                );
+              }),
+            )
+          ],
+        ),
       ),
     );
   }

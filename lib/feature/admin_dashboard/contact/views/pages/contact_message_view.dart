@@ -29,7 +29,7 @@ class ContactMessageView extends StatelessWidget {
       buttonColor: Colors.red,
       onConfirm: () {
         Get.back(); // Close dialog
-        controller.deleteContact(contactId); // Call delete method
+        controller.deleteContact(contactId);
       },
     );
   }

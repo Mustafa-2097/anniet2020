@@ -1,6 +1,7 @@
 class ApiEndpoints {
   /// Base URL
-  static const String baseUrl = 'https://anniet-server.vercel.app/api/v1';
+  // static const String baseUrl = 'https://anniet-server.vercel.app/api/v1';
+  static const String baseUrl = 'http://206.162.244.168:5002/api/v1';
 
   /// Auth
   static const String register = '$baseUrl/auth/register';

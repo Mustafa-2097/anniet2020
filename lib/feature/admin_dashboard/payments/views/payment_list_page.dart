@@ -22,88 +22,94 @@ class PaymentListPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.whiteColor,
-        leading: const BackButton(color: Colors.black),
         title: Text("Payment List",
             style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor)),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// Search Bar
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: "Search payments...",
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await controller.fetchPayments();
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Search Bar
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: "Search payments...",
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+                    ),
+                    filled: true,
+                    fillColor: AppColors.whiteColor,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
-                ),
-                filled: true,
-                fillColor: AppColors.whiteColor,
               ),
-            ),
-          ),
-          const Divider(thickness: 1, color: Color(0xFFD2D6D8)),
+              const Divider(thickness: 1, color: Color(0xFFD2D6D8)),
 
-          /// Main Content Box
-          Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value && controller.payments.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
+              /// Main Content Box
+              Expanded(
+                child: Obx(() {
+                  if (controller.isLoading.value && controller.payments.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-              return Container(
-                margin: EdgeInsets.all(16.r),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFD2D6D8)),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Column(
-                  children: [
-                    /// FIXED HEADER
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF3F3F3),
-                        border: const Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(12.r),
-                          topRight: Radius.circular(12.r),
+                  return Container(
+                    margin: EdgeInsets.all(16.r),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFD2D6D8)),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Column(
+                      children: [
+                        /// FIXED HEADER
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF3F3F3),
+                            border: const Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12.r),
+                              topRight: Radius.circular(12.r),
+                            ),
+                          ),
+                          child: Text(
+                            "Showing Page ${controller.currentPage.value} of ${controller.totalPages.value}",
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        "Showing Page ${controller.currentPage.value} of ${controller.totalPages.value}",
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
-                    ),
 
-                    /// SCROLLABLE AREA
-                    Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: controller.payments.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == controller.payments.length) {
-                            return const PaginationSection();
-                          }
-                          return PaymentCard(payment: controller.payments[index]);
-                        },
-                      ),
+                        /// SCROLLABLE AREA
+                        Expanded(
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: controller.payments.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == controller.payments.length) {
+                                return const PaginationSection();
+                              }
+                              return PaymentCard(payment: controller.payments[index]);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            }),
-          )
-        ],
+                  );
+                }),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
