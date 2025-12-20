@@ -1,24 +1,50 @@
+import 'package:chewie/chewie.dart';
 import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
 
 class OnlineClassController extends GetxController {
-  var title = "".obs;
-  var rating = 0.0.obs;
-  var description = "".obs;
-  var infoMessage = "".obs;
+  static OnlineClassController get instance => Get.find();
 
-  @override
-  void onInit() {
-    loadDetails();
-    super.onInit();
+  VideoPlayerController? videoController;
+  ChewieController? chewieController;
+
+  final isInitialized = false.obs;
+  String? _currentUrl;
+
+  void setVideo(String? url) {
+    if (url == null || url.isEmpty) return;
+    if (_currentUrl == url) return;
+    _currentUrl = url;
+    _initVideo(url);
   }
 
-  /// Mock API call
-  void loadDetails() {
-    title.value = "Introduction";
-    rating.value = 4.8;
-    description.value =
-    "An introduction and overview of the Don't Blow Your Licence info online program.";
-    infoMessage.value =
-    "Before watching the next video, please watch this one attentively and answer the questions.";
+  Future<void> _initVideo(String videoUrl) async {
+    isInitialized.value = false;
+
+    videoController?.dispose();
+    chewieController?.dispose();
+
+    videoController =
+        VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+
+    await videoController!.initialize();
+
+    chewieController = ChewieController(
+      videoPlayerController: videoController!,
+      autoPlay: true,
+      looping: false,
+      showControls: true,
+      allowFullScreen: true,
+      allowMuting: true,
+    );
+
+    isInitialized.value = true;
+  }
+
+  @override
+  void onClose() {
+    videoController?.dispose();
+    chewieController?.dispose();
+    super.onClose();
   }
 }

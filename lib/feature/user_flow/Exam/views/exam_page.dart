@@ -1,19 +1,22 @@
 import 'package:anniet2020/core/constant/app_colors.dart';
 import 'package:anniet2020/core/constant/image_path.dart';
 import 'package:anniet2020/feature/user_flow/Exam/views/widgets/color_button.dart';
+import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../lessons/models/lesson_model.dart';
 import '../controllers/exam_controller.dart';
 
 class ExamPage extends StatelessWidget {
   final String courseId;
-  ExamPage({super.key, required this.courseId});
-  final controller = Get.put(ExamController());
+  final LessonModel lesson;
+  const ExamPage({super.key, required this.courseId, required this.lesson});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ExamController(lesson: lesson, courseId: courseId), permanent: false);
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       extendBody: true,
@@ -28,7 +31,10 @@ class ExamPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.arrow_back_ios, size: 16.r, color: AppColors.blackColor),
+                    IconButton(
+                      onPressed: () => Get.off(() => OnlineClassPage(courseId: courseId, lesson: lesson)),
+                      icon: Icon(Icons.arrow_back_ios, size: 16.r, color: AppColors.blackColor),
+                    ),
                     SizedBox(width: 18.w),
                     SizedBox(
                       height: 12.h,
@@ -86,7 +92,7 @@ class ExamPage extends StatelessWidget {
                 /// =================== BOTTOM ACTION ===================
                 if (!controller.isAnswered.value)
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.r),
                     child: ColorButton(
                       text: "Check",
                       onPressed: controller.checkAnswer,

@@ -61,8 +61,15 @@ class UserApiProvider {
   Future<Map<String, dynamic>> fetchCourses() async {
     return await _client.get(ApiEndpoints.courses);
   }
+  /// Lessons via course id
   Future<Map<String, dynamic>> fetchCourseDetails(String courseId) async {
     return await _client.get("${ApiEndpoints.courses}/$courseId");
+  }
+  /// Next Video
+  Future<Map<String, dynamic>> getNextVideo(String courseId) async {
+    return await _client.get(
+      "${ApiEndpoints.courses}/$courseId/next-video",
+    );
   }
 
 

@@ -3,7 +3,6 @@ import '../../data/repositories/user_repository.dart';
 import '../models/lesson_model.dart';
 
 class LessonsController extends GetxController {
-  static LessonsController get instance => Get.find();
   final UserRepository _repository = UserRepository();
 
   final String courseId;
@@ -21,11 +20,80 @@ class LessonsController extends GetxController {
   Future<void> fetchLessons() async {
     try {
       isLoading(true);
-      lessons.value = await _repository.getLessons(courseId);
+
+      final fetchedLessons = await _repository.getLessons(courseId);
+
+      /// Sort by order (important)
+      fetchedLessons.sort((a, b) => a.order.compareTo(b.order));
+
+      lessons.value = fetchedLessons;
+
+      _applyLockingLogic();
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading(false);
     }
   }
+
+  /// Core lock/unlock logic
+  void _applyLockingLogic() {
+    for (int i = 0; i < lessons.length; i++) {
+      final lesson = lessons[i];
+
+      /// If no video → always locked
+      if (lesson.video == null || lesson.video!.isEmpty) {
+        lesson.isLocked = true;
+        continue;
+      }
+
+      /// First lesson always unlocked
+      if (i == 0) {
+        lesson.isLocked = false;
+        continue;
+      }
+
+      /// Unlock only if previous lesson completed
+      lesson.isLocked = !lessons[i - 1].isCompleted;
+    }
+
+    lessons.refresh();
+  }
+
+  /// Call this after exam pass
+  void markLessonCompleted(String lessonId) {
+    final index = lessons.indexWhere((l) => l.id == lessonId);
+    if (index == -1) return;
+    lessons[index].isCompleted = true;
+
+    /// Unlock next lesson safely
+    if (index + 1 < lessons.length) {
+      final nextLesson = lessons[index + 1];
+
+      /// Only unlock if video exists
+      if (nextLesson.video != null && nextLesson.video!.isNotEmpty) {
+        nextLesson.isLocked = false;
+      }
+    }
+    lessons.refresh();
+  }
+
+  Future<void> syncNextVideoFromServer() async {
+    try {
+      final nextLesson = await _repository.getNextVideo(courseId);
+      if (nextLesson == null) return;
+
+      final index =
+      lessons.indexWhere((l) => l.id == nextLesson.id);
+
+      if (index != -1) {
+        lessons[index].isLocked = false;
+        lessons.refresh();
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
 }
+

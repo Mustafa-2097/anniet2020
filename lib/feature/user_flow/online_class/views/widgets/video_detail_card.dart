@@ -6,14 +6,12 @@ import '../../../../../core/constant/app_colors.dart';
 
 class VideoDetailsCard extends StatelessWidget {
   final String title;
-  final double rating;
   final String description;
   final String infoMessage;
 
   const VideoDetailsCard({
     super.key,
     required this.title,
-    required this.rating,
     required this.description,
     required this.infoMessage,
   });
@@ -38,24 +36,9 @@ class VideoDetailsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// TITLE + RATING ROW
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
-              ),
-              Row(
-                children: [
-                  Icon(Icons.star, color: Colors.amber, size: 16.r),
-                  SizedBox(width: 2.w),
-                  Text(
-                    "$rating Rating",
-                    style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w500, color: AppColors.blackColor),
-                  ),
-                ],
-              ),
-            ],
+          Text(
+            title,
+            style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
           ),
 
           SizedBox(height: 8.h),

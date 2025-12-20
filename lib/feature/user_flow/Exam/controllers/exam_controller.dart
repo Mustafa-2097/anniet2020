@@ -1,21 +1,33 @@
-import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
+import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
 import 'package:get/get.dart';
+import '../../lessons/controllers/lessons_controller.dart';
+import '../../lessons/models/lesson_model.dart';
 import '../../score/models/score_model.dart';
 import '../../score/views/score_page.dart';
 import '../model/exam_question_model.dart';
+import '../../online_class/views/online_class_page.dart';
 
 class ExamController extends GetxController {
   static ExamController get instance => Get.find();
 
+  /// ================= DEPENDENCIES =================
+  final LessonModel lesson;
+  final String courseId;
+  late final LessonsController lessonsController;
+  ExamController({required this.lesson, required this.courseId});
+
   /// ================= CONFIG =================
   static const int questionsPerVideo = 5;
-  static const int passMark = 3;
+  static const int passMark = 4; /// 4 out of 5 required
 
   /// ================= QUESTIONS =================
   final questions = <ExamQuestionModel>[].obs;
+
   @override
   void onInit() {
     super.onInit();
+    lessonsController = Get.find<LessonsController>(tag: courseId);
+    /// TODO: Later load questions dynamically from backend by lesson.id
     questions.assignAll([
       ExamQuestionModel(
         question: "What is the legal BAC limit?",
@@ -45,24 +57,20 @@ class ExamController extends GetxController {
     ]);
   }
 
+  /// ================= STATE =================
   final currentIndex = 0.obs;
-
-  ExamQuestionModel get question => questions[currentIndex.value];
-  int get totalQuestions => questionsPerVideo;
-
-  /// ================= STATES =================
   final selectedIndex = (-1).obs;
   final isAnswered = false.obs;
   final isCorrect = false.obs;
 
-  final score = 0.obs; /// Only for current video
+  final score = 0.obs;
   final progress = 0.0.obs;
-  final lifeCount = 6.obs;
 
-  /// Total successfully completed videos
-  final completedVideos = 0.obs;
+  /// ================= GETTERS =================
+  ExamQuestionModel get question => questions[currentIndex.value];
+  int get totalQuestions => questionsPerVideo;
 
-  ///
+  /// ================= OPTION SELECT =================
   void selectOption(int index) {
     if (isAnswered.value) return;
     selectedIndex.value = index;
@@ -79,24 +87,25 @@ class ExamController extends GetxController {
       score.value++;
     } else {
       isCorrect.value = false;
-      lifeCount.value--;
     }
   }
 
   /// ================= NEXT QUESTION =================
-  void nextQuestion() {
-    /// Last question of this video
+  Future<void> nextQuestion() async {
+    /// Last question
     if (currentIndex.value == questionsPerVideo - 1) {
-      final bool isVideoPassed = score.value >= passMark;
+      final bool isPassed = score.value >= passMark;
 
-      if (isVideoPassed) {
-        completedVideos.value++; /// Only when video pass
+      if (isPassed) {
+        lessonsController.markLessonCompleted(lesson.id);
+        await lessonsController.syncNextVideoFromServer();
       }
 
-      goToResultPage(isVideoPassed);
+      goToResultPage(isPassed);
       return;
     }
 
+    /// Go next question
     currentIndex.value++;
     progress.value = currentIndex.value / questionsPerVideo;
 
@@ -106,23 +115,23 @@ class ExamController extends GetxController {
   }
 
   /// ================= SCORE PAGE =================
-  void goToResultPage(bool isVideoPassed) {
+  void goToResultPage(bool isPassed) {
     Get.off(() => ScorePage(
       result: ScoreData(
         score: score.value,
         total: questionsPerVideo,
-        isPassed: isVideoPassed,
-        userName: "Tanvir Hossain",
-        completedVideos: completedVideos.value,
+        isPassed: isPassed,
+        completedVideos: lessonsController.lessons
+            .where((l) => l.isCompleted)
+            .length,
       ),
-      onNext: retryExam,
+      onNext: isPassed ? goToNextLesson : retryExam, courseId: courseId,
     ));
   }
 
-  /// ================= RETRY =================
+  /// ================= RETRY SAME LESSON =================
   void retryExam() {
     score.value = 0;
-    lifeCount.value = 6;
     progress.value = 0;
     currentIndex.value = 0;
 
@@ -130,6 +139,29 @@ class ExamController extends GetxController {
     isAnswered.value = false;
     isCorrect.value = false;
 
-    Get.offAll(() => OnlineClassPage(courseId: 1 as String)); //
+    Get.off(() => OnlineClassPage(
+      courseId: lessonsController.courseId,
+      lesson: lesson,
+    ));
+  }
+
+  /// ================= NEXT LESSON =================
+  void goToNextLesson() {
+    final index =
+    lessonsController.lessons.indexWhere((l) => l.id == lesson.id);
+    if (index == -1) return;
+
+    /// If next lesson exists → open it
+    if (index + 1 < lessonsController.lessons.length) {
+      final nextLesson = lessonsController.lessons[index + 1];
+
+      Get.offAll(() => OnlineClassPage(
+        courseId: lessonsController.courseId,
+        lesson: nextLesson,
+      ));
+    } else {
+      /// All lessons completed → back to lessons list
+      Get.offAll(() => LessonsPage(courseId: courseId));
+    }
   }
 }

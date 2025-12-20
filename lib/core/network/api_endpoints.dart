@@ -28,6 +28,7 @@ class ApiEndpoints {
 
   /// Courses
   static const String courses = '$baseUrl/courses';
+  static const String nextVideo = '$baseUrl/courses/:id/next-video';
 
 
 

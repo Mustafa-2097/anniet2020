@@ -13,7 +13,8 @@ class LessonsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LessonsController(courseId));
+    Get.put(LessonsController(courseId), tag: courseId);
+    final controller = Get.find<LessonsController>(tag: courseId);
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -31,7 +32,6 @@ class LessonsPage extends StatelessWidget {
         title: Obx(() => Text("${controller.lessons.length} Lessons", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor))),
         centerTitle: true,
       ),
-
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());

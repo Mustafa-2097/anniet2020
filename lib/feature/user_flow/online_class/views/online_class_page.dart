@@ -3,19 +3,25 @@ import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/widgets/before_continue.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/widgets/review.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/widgets/video_detail_card.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/widgets/primary_button.dart';
+import '../../lessons/models/lesson_model.dart';
+import '../controllers/online_class_controller.dart';
 
 class OnlineClassPage extends StatelessWidget {
   final String courseId;
-  const OnlineClassPage({super.key, required this.courseId});
+  final LessonModel lesson;
+  OnlineClassPage({super.key, required this.courseId, required this.lesson});
+  final controller = Get.put(OnlineClassController());
 
   @override
   Widget build(BuildContext context) {
+    controller.setVideo(lesson.video);
     final sh = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
@@ -27,6 +33,7 @@ class OnlineClassPage extends StatelessWidget {
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
             onPressed: () {
+              Get.delete<OnlineClassController>();
               Get.to(() => LessonsPage(courseId: courseId));
             },
           ),
@@ -37,16 +44,35 @@ class OnlineClassPage extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.all(20.r),
         children: [
-          /// Video Playing
-          Image.asset("assets/images/video_playing.png", height: sh * 0.23, width: double.infinity, fit: BoxFit.cover),
+          /// Video Thumbnail / Player placeholder
+          Container(
+            height: sh * 0.23,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.black,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Obx(() {
+                if (!controller.isInitialized.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                }
+                return Chewie(
+                  controller: controller.chewieController!,
+                );
+              }),
+            ),
+          ),
 
           SizedBox(height: 20.h),
 
           /// Video Details Card
           VideoDetailsCard(
-            title: "Introduction",
-            rating: 4.8,
-            description: "An introduction and overview of the Don't Blow Your Licence info online program.",
+            title: lesson.title,
+            description: lesson.description,
             infoMessage: "Before watching the next video, please watch this one attentively and answer the questions.",
           ),
 
@@ -70,7 +96,7 @@ class OnlineClassPage extends StatelessWidget {
 
           SizedBox(height: 25.h),
           /// Continue Button
-          PrimaryButton(text: "Continue", onPressed: () => Get.to(() => ExamPage(courseId: courseId,))),
+          PrimaryButton(text: "Continue", onPressed: () => Get.to(() => ExamPage(courseId: courseId, lesson: lesson))),
         ],
       ),
     );

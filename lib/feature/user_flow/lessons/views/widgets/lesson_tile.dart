@@ -15,12 +15,10 @@ class LessonTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (lesson.isLocked) return;
-        Get.to(() => OnlineClassPage(
-            courseId: courseId,
-          ),
-        );
+      onTap: lesson.isLocked
+          ? null
+          : () {
+        Get.to(() => OnlineClassPage(lesson: lesson, courseId: courseId));
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12.r),

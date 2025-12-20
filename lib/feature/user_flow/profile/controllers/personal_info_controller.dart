@@ -81,7 +81,6 @@ class PersonalInfoController extends GetxController {
           phone: isPhoneChanged ? fullPhone : null,
         );
       }
-
       if (isImageChanged) {
         final avatarUrl = await _repository.uploadAvatar(pickedImage.value!.path);
         profile.avatarUrl.value = avatarUrl;
@@ -91,7 +90,6 @@ class PersonalInfoController extends GetxController {
         profile.userHandle.value = profile.generateHandle(nameController.text.trim());
       }
       if (isPhoneChanged) profile.userPhone.value = fullPhone!;
-
       EasyLoading.dismiss();
       Get.snackbar("Success", "Profile updated successfully", backgroundColor: Colors.green, colorText: Colors.white);
       Get.off(() => CustomerDashboard(initialIndex: 3));
