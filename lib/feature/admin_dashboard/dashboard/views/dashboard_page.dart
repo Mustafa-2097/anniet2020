@@ -28,9 +28,6 @@ class _DashboardPageState extends State<DashboardPage> {
   final TextEditingController searchController = TextEditingController();
   final adminController = Get.put(AdminProfileController());
 
-
-  late final profileData = adminController.profile.value;
-
   @override
   void initState() {
     super.initState();
@@ -38,6 +35,7 @@ class _DashboardPageState extends State<DashboardPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchAnalytics();
       dashboardUserController.fetchUsers();
+      adminController.fetchProfile();
     });
   }
 
@@ -58,28 +56,34 @@ class _DashboardPageState extends State<DashboardPage> {
         title: Text("Dashboard",
             style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor)),
         actions: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(30.r),
-            child: profileData?.profile.avatar != null && profileData!.profile.avatar!.isNotEmpty
-                ? Image.network(
-              profileData!.profile.avatar!,
-              height: 40.w,
-              width: 40.w,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Image.asset(
+          Obx(() {
+            final profileData = adminController.profile.value;
+            final avatarUrl = profileData?.profile.avatar ?? '';
+
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(30.r),
+              child: avatarUrl.isNotEmpty
+                  ? Image.network(
+                avatarUrl,
+                height: 40.w,
+                width: 40.w,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  ImagePath.user,
+                  height: 40.w,
+                  width: 40.w,
+                  fit: BoxFit.cover,
+                ),
+              )
+                  : Image.asset(
                 ImagePath.user,
                 height: 40.w,
                 width: 40.w,
                 fit: BoxFit.cover,
               ),
-            )
-                : Image.asset(
-              ImagePath.user,
-              height: 40.w,
-              width: 40.w,
-              fit: BoxFit.cover,
-            ),
-          ),
+            );
+          }),
+
           SizedBox(width: 14.w),
         ],
       ),
