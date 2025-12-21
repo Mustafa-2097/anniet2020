@@ -8,7 +8,7 @@ import '../../data/repositories/user_repository.dart';
 
 class PersonalInfoController extends GetxController {
   static PersonalInfoController get instance => Get.find();
-  final profile = ProfileController.instance;
+  final profile = Get.find<ProfileController>();
 
   var fullName = "Your full name".obs;
   var email = "Your email".obs;

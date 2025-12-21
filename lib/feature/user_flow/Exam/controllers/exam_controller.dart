@@ -121,9 +121,7 @@ class ExamController extends GetxController {
         score: score.value,
         total: questionsPerVideo,
         isPassed: isPassed,
-        completedVideos: lessonsController.lessons
-            .where((l) => l.isCompleted)
-            .length,
+        completedVideos: lessonsController.lessons.where((l) => l.isCompleted).length,
       ),
       onNext: isPassed ? goToNextLesson : retryExam, courseId: courseId,
     ));

@@ -5,10 +5,11 @@ import 'package:get/get.dart';
 import '../../../../../core/constant/app_colors.dart';
 import '../../../../../core/constant/image_path.dart';
 import '../../controllers/edit_profile_controller.dart';
+import '../../controllers/get_me_profile_controller.dart';
 
 class EditProfilePage extends StatelessWidget {
   EditProfilePage({super.key});
-  final controller = Get.put(EditProfileController());
+  final controller = Get.put(AdminProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +49,21 @@ class EditProfilePage extends StatelessWidget {
 
                   /// Profile Image
                   Obx(() {
+                    ImageProvider? image;
+                    if (controller.selectedImage.value != null) {
+                      image = FileImage(controller.selectedImage.value!);
+                    } else if (controller.profile.value?.profile.avatar != null &&
+                        controller.profile.value!.profile.avatar!.isNotEmpty) {
+                      image = NetworkImage(controller.profile.value!.profile.avatar!);
+                    } else {
+                      image = AssetImage(ImagePath.user);
+                    }
                     return Stack(
                       alignment: Alignment.bottomRight,
                       children: [
                         CircleAvatar(
                           radius: 45.w,
-                          backgroundImage: controller.pickedImage.value != null
-                              ? FileImage(File(controller.pickedImage.value!.path))
-                              : const AssetImage(ImagePath.user),
+                          backgroundImage: image,
                         ),
 
                         GestureDetector(
@@ -63,7 +71,8 @@ class EditProfilePage extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 15,
                             backgroundColor: Colors.white,
-                            child: Icon(Icons.camera_alt_outlined, size: 16, color: Colors.blue),
+                            child: Icon(Icons.camera_alt_outlined,
+                                size: 16, color: Colors.blue),
                           ),
                         ),
                       ],
@@ -74,7 +83,7 @@ class EditProfilePage extends StatelessWidget {
 
                   Obx(() {
                     return Text(
-                      controller.fullName.value,
+                      controller.profile.value!.profile.name ?? '',
                       style: TextStyle(color: Colors.white, fontSize: 17.sp),
                     );
                   }),
@@ -105,9 +114,8 @@ class EditProfilePage extends StatelessWidget {
                           _sectionTitle(Icons.person_outline, "Personal Information"),
                           SizedBox(height: 10.h),
                           _inputField(
-                            label: "Full Name",
-                            initialValue: controller.fullName.value,
-                            onChanged: (v) => controller.fullName.value = v,
+                            controller: controller.nameController,
+                            label: "${controller.profile.value!.profile.name ?? ''}",
                           ),
                           SizedBox(height: 20.h),
                         ],
@@ -134,14 +142,15 @@ class EditProfilePage extends StatelessWidget {
                           SizedBox(height: 10.h),
                           _inputField(
                             label: "Email Address",
-                            initialValue: controller.email.value,
-                            onChanged: (v) => controller.email.value = v,
+                            controller: controller.emailController,
+                            keyboard: TextInputType.emailAddress,
+                            enabled: false,
                           ),
                           SizedBox(height: 10.h),
                           _inputField(
                             label: "Phone Number",
-                            initialValue: controller.phone.value,
-                            onChanged: (v) => controller.phone.value = v,
+                            controller: controller.phoneController,
+                            keyboard: TextInputType.phone,
                           ),
                         ],
                       ),
@@ -233,9 +242,9 @@ class EditProfilePage extends StatelessWidget {
   /// Reusable Input Field
   Widget _inputField({
     required String label,
-    required String initialValue,
+    required TextEditingController controller,
     TextInputType keyboard = TextInputType.text,
-    required Function(String) onChanged,
+    bool enabled = true,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,11 +259,11 @@ class EditProfilePage extends StatelessWidget {
             color: Colors.white,
           ),
           child: TextFormField(
-            initialValue: initialValue,
+            controller: controller,
             keyboardType: keyboard,
-            onChanged: onChanged,
+            enabled: enabled,
             decoration: InputDecoration(
-              border: InputBorder.none
+              border: InputBorder.none,
             ),
           ),
         ),

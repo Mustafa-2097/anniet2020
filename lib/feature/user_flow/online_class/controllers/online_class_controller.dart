@@ -7,7 +7,6 @@ class OnlineClassController extends GetxController {
 
   VideoPlayerController? videoController;
   ChewieController? chewieController;
-
   final isInitialized = false.obs;
   String? _currentUrl;
 
@@ -24,8 +23,7 @@ class OnlineClassController extends GetxController {
     videoController?.dispose();
     chewieController?.dispose();
 
-    videoController =
-        VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+    videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
 
     await videoController!.initialize();
 
@@ -37,7 +35,6 @@ class OnlineClassController extends GetxController {
       allowFullScreen: true,
       allowMuting: true,
     );
-
     isInitialized.value = true;
   }
 

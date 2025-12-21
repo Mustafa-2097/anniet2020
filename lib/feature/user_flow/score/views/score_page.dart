@@ -14,7 +14,7 @@ class ScorePage extends StatelessWidget {
   final VoidCallback onNext;
   final String courseId;
   ScorePage({super.key, required this.result, required this.onNext, required this.courseId});
-  final ProfileController profile = ProfileController.instance;
+  final ProfileController profile = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class ScorePage extends StatelessWidget {
               Text(
                 result.isPassed
                     ? "Great job, ${profile.userName}! You did it"
-                    : "Keep practicing — you’re getting closer!",
+                    : "Keep practicing. Retry to review the lesson first, then attempt the exam again.",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.notoSans(fontSize: 16.sp, fontWeight: FontWeight.w400, color: AppColors.blackColor),
               ),

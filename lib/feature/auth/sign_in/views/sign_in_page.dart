@@ -1,7 +1,7 @@
 import 'package:anniet2020/core/constant/app_text_styles.dart';
 import 'package:anniet2020/core/constant/widgets/primary_button.dart';
 import 'package:anniet2020/feature/auth/forgot_password/views/forgot_password_page.dart';
-import 'package:flutter/gestures.dart';
+import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,7 +11,8 @@ import '../controllers/sign_in_controller.dart';
 
 class SignInPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final controller = Get.put(SignInController(), permanent: true);
+  final controller = Get.put(SignInController());
+  final profile = Get.put(ProfileController());
   SignInPage({super.key});
 
   @override

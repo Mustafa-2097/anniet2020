@@ -7,137 +7,191 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/widgets/popup_button.dart';
+import '../../settings/controllers/get_me_profile_controller.dart';
 import '../../users/views/pages/user_details.dart';
-import '../controllers/dashboard_controller.dart';
+import '../controllers/dashboard_overview_controller.dart';
+import '../controllers/dashboard_user_controller.dart';
+import '../model/dashboard_user_model.dart';
 
-class DashboardPage extends StatelessWidget {
-  DashboardPage({super.key});
-  final controller = Get.put(DashboardController());
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  // Initialize Controller
+  final controller = Get.put(DashboardOverviewController());
+  final dashboardUserController = Get.put(DashboardUserController());
+
   final TextEditingController searchController = TextEditingController();
+  final adminController = Get.put(AdminProfileController());
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch data when the page opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchAnalytics();
+      dashboardUserController.fetchUsers();
+      adminController.fetchProfile();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      drawer: CustomAppDrawer(
-        onLogoutTap: () {
-          // logout logic here
-        },
-      ),
+      drawer: CustomAppDrawer(onLogoutTap: () {}),
       appBar: AppBar(
         backgroundColor: AppColors.whiteColor,
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu, color: AppColors.blackColor),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        title: Text("Dashboard", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
+        title: Text("Dashboard",
+            style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor)),
         actions: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: Colors.grey[300],
-            backgroundImage: AssetImage(ImagePath.user),
-          ),
+          Obx(() {
+            final profileData = adminController.profile.value;
+            final avatarUrl = profileData?.profile.avatar ?? '';
+
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(30.r),
+              child: avatarUrl.isNotEmpty
+                  ? Image.network(
+                avatarUrl,
+                height: 40.w,
+                width: 40.w,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  ImagePath.user,
+                  height: 40.w,
+                  width: 40.w,
+                  fit: BoxFit.cover,
+                ),
+              )
+                  : Image.asset(
+                ImagePath.user,
+                height: 40.w,
+                width: 40.w,
+                fit: BoxFit.cover,
+              ),
+            );
+          }),
+
           SizedBox(width: 14.w),
         ],
       ),
-
-
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Search Bar
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
-                child: TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                    hintText: "Search users...",
-                    prefixIcon: Icon(Icons.search, color: Colors.grey),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await controller.fetchAnalytics();
+            await dashboardUserController.fetchUsers();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Search Bar
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (value){
+                      dashboardUserController.fetchUsers(
+                        // page: 1,
+                        searchTerm: value.trim(),
+                      );
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Search users...",
+                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
+                      ),
+                      filled: true,
+                      fillColor: AppColors.whiteColor,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: AppColors.boxTextColor.withOpacity(0.6)),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.whiteColor,
                   ),
                 ),
-              ),
-              Divider(thickness: 1.w, color: Color(0xFFD2D6D8)),
+                Divider(thickness: 1.w, color: const Color(0xFFD2D6D8)),
 
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Dashboard Overview",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.subTextColor),
-                    ),
-
-                    SizedBox(height: 16.h),
-
-                    // Revenue Card
-                    StatCard(
-                      title: "Total Revenue",
-                      value: "\$163401",
-                      color: Color(0xFfFFE2E5),
-                      icon: Icons.attach_money,
-                      circleColor: Color(0xFF328736),
-                      iconColor: AppColors.whiteColor,
-                    ),
-                    SizedBox(height: 10.h),
-
-                    // Total Sell Card
-                    StatCard(
-                      title: "Total Sell",
-                      value: "1260",
-                      color: Color(0xFFF9EEE4),
-                      icon: Icons.shopping_cart_outlined,
-                      circleColor: Color(0xFFE57931),
-                      iconColor: AppColors.whiteColor,
-                    ),
-
-                    SizedBox(height: 10.h),
-
-                    // Total User Card
-                    StatCard(
-                      title: "Total User",
-                      value: "5426",
-                      color: Color(0xFFF3E8FF),
-                      icon: Icons.people_outline,
-                      circleColor: Color(0xFF1C2A47),
-                      iconColor: AppColors.whiteColor,
-                    ),
-
-                    SizedBox(height: 10.h),
-
-                    /// User list container
-                    Container(
-                      height: 400.h,
-                      width: 340.w,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFFD2D6D8)),
-                        borderRadius: BorderRadius.circular(12.r),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Dashboard Overview",
+                        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.subTextColor),
                       ),
-                      child: Column(
-                        children: [
-                          /// FIXED HEADER
-                          Container(
+                      SizedBox(height: 16.h),
+
+                      /// Stat Cards wrapped in Obx to update UI when data arrives
+                      Obx(() {
+
+                        if (controller.isError.value) {
+                          return Center(child: Text(controller.errorMessage.value, style: const TextStyle(color: Colors.red)));
+                        }
+
+                        return Column(
+                          children: [
+                            StatCard(
+                              title: "Total Revenue",
+                              value: "\$${controller.totalRevenue.value}",
+                              color: const Color(0xFfFFE2E5),
+                              icon: Icons.attach_money,
+                              circleColor: const Color(0xFF328736),
+                              iconColor: AppColors.whiteColor,
+                            ),
+                            SizedBox(height: 10.h),
+                            StatCard(
+                              title: "Total Sell",
+                              value: "${controller.totalSell.value}",
+                              color: const Color(0xFFF9EEE4),
+                              icon: Icons.shopping_cart_outlined,
+                              circleColor: const Color(0xFFE57931),
+                              iconColor: AppColors.whiteColor,
+                            ),
+                            SizedBox(height: 10.h),
+                            StatCard(
+                              title: "Total User",
+                              value: "${controller.totalUsers.value}",
+                              color: const Color(0xFFF3E8FF),
+                              icon: Icons.people_outline,
+                              circleColor: const Color(0xFF1C2A47),
+                              iconColor: AppColors.whiteColor,
+                            ),
+                          ],
+                        );
+                      }),
+
+                      SizedBox(height: 20.h),
+
+                      /// User list container
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFD2D6D8)),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
                               width: double.infinity,
-                              padding: EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: Color(0xFFF3F3F3),
+                                color: const Color(0xFFF3F3F3),
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(12.r),
                                   topRight: Radius.circular(12.r),
@@ -153,33 +207,37 @@ class DashboardPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                          ),
+                            ),
 
-                          /// SCROLLABLE AREA: User List + Pagination
-                          Expanded(
-                            child: Obx(() {
-                              final items = controller.users;
-                              return ListView.builder(
+                            Obx(() {
+                              if (dashboardUserController.isLoading.value && dashboardUserController.users.isEmpty) {
+                                return const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()));
+                              }
+
+                              if (dashboardUserController.users.isEmpty) {
+                                return const SizedBox(height: 100, child: Center(child: Text("No users found")));
+                              }
+
+                              return ListView.separated(
+                                shrinkWrap: true, // Use shrinkWrap since it's inside SingleChildScrollView
+                                physics: const NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.zero,
-                                itemCount: items.length,
+                                itemCount: dashboardUserController.users.length > 5 ? 5 : dashboardUserController.users.length,
+                                separatorBuilder: (context, index) => Divider(height: 1.h, color: const Color(0xFFD2D6D8)),
                                 itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      Divider(height: 1, color: Color(0xFFD2D6D8)),
-                                      UserCard(user: items[index]),
-                                    ],
-                                  );
+                                  final user = dashboardUserController.users[index];
+                                  return UserCard(user: user);
                                 },
                               );
                             }),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -240,64 +298,58 @@ class StatCard extends StatelessWidget {
 }
 
 class UserCard extends StatelessWidget {
-  final Map<String, dynamic> user;
+  final UserData user;
   const UserCard({required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top Row: Name + Menu Btn
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "${user["name"]}  —  #${user["id"]}",
-                style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A)),
+              Expanded(
+                child: Text(
+                  "${user.name}  —  #${user.id.substring(user.id.length - 5)}", // Showing last 5 chars of ID
+                  style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4E4E4A)),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               PopupButton(
                 onTap: () {
-                  Get.to(() => UserDetails(user: user));
+                  // If UserDetails expects a Map, use user.toJson()
+                  Get.to(() => UserDetails(userId: user.id));
                 },
               ),
             ],
           ),
           SizedBox(height: 4.h),
-          Text(user["email"], style: GoogleFonts.plusJakartaSans(color: Colors.grey)),
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Certification: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              StatusBadge(status: user["cert"]),
-            ],
-          ),
+          Text(user.email, style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: Colors.grey)),
+          SizedBox(height: 12.h),
 
-          SizedBox(height: 4.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Course: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              Text(user["course"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-            ],
-          ),
-          SizedBox(height: 4.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Payment: ", style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-              Text(user["payment"], style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xFF4E4E4A))),
-            ],
-          ),
+          _buildInfoRow("Certification:", user.certification ? "Received" : "Pending"),
+          SizedBox(height: 6.h),
+          _buildInfoRow("Course:", user.course),
+          SizedBox(height: 6.h),
+          _buildInfoRow("Subscribed:", user.subscribed ? "Yes" : "No"),
         ],
       ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w500, color: const Color(0xFF4E4E4A))),
+        label == "Certification:"
+            ? StatusBadge(status: value)
+            : Text(value, style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4E4E4A))),
+      ],
     );
   }
 }

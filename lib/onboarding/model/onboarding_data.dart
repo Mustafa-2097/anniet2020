@@ -14,7 +14,7 @@ final List<OnboardingData> pages = [
   ),
   OnboardingData(
     title: "Everything You Need in One Course",
-    subtitle: "A simple 6-class course designed to help you understand what to avoid while driving.",
+    subtitle: "A simple 6 video course designed so you Don't Blow Your Licence for Drink or Drug Driving",
     image: "assets/images/onboarding_img02.png.png",
   ),
   OnboardingData(

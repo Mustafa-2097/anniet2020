@@ -9,12 +9,7 @@ class VideoDetailsCard extends StatelessWidget {
   final String description;
   final String infoMessage;
 
-  const VideoDetailsCard({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.infoMessage,
-  });
+  const VideoDetailsCard({super.key, required this.title, required this.description, required this.infoMessage});
 
   @override
   Widget build(BuildContext context) {

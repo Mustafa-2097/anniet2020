@@ -7,7 +7,7 @@ import '../../data/repositories/user_repository.dart';
 
 class ContactUsController extends GetxController {
   static ContactUsController get instance => Get.find();
-  final profile = ProfileController.instance;
+  final profile = Get.find<ProfileController>();
   final UserRepository _repository = UserRepository();
 
   /// Text Controllers

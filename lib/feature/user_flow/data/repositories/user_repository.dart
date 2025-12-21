@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
 import '../../courses/models/course_model.dart';
 import '../../lessons/models/lesson_model.dart';
@@ -58,6 +59,7 @@ class UserRepository {
   /// Course
   Future<List<Course>> getCourses() async {
     final response = await _provider.fetchCourses();
+    debugPrint(response.toString());
     if (response['success'] != true) {
       throw Exception(response['message'] ?? 'Failed to load courses');
     }

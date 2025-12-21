@@ -14,11 +14,11 @@ import '../../../../core/constant/widgets/logout_button.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
+  final controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
-    final controller = ProfileController.instance;
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -40,20 +40,16 @@ class ProfilePage extends StatelessWidget {
                 // Profile Image
                 Obx(() {
                   final avatar = controller.avatarUrl.value;
+                  final bool hasApiImage = avatar != null && avatar.isNotEmpty && avatar.startsWith('http');
                   return CircleAvatar(
                     radius: 28.r,
                     backgroundColor: AppColors.boxTextColor,
-                    backgroundImage: avatar == null || avatar.isEmpty
+                    backgroundImage: hasApiImage ? NetworkImage(avatar) : null,
+                    child: hasApiImage
                         ? null
-                        : avatar.startsWith('http')
-                          ? NetworkImage(avatar)
-                          : FileImage(File(avatar)) as ImageProvider,
-                    child: avatar == null || avatar.isEmpty
-                        ? Icon(Icons.person, size: 40.r, color: Colors.white)
-                        : null,
+                        : Icon(Icons.person, size: 40.r, color: Colors.white),
                   );
                 }),
-
                 SizedBox(width: 14.w),
 
                 // Name + Username

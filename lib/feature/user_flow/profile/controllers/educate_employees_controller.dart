@@ -7,7 +7,7 @@ import '../../data/repositories/user_repository.dart';
 
 class EducateEmployeesController extends GetxController {
   static EducateEmployeesController get instance => Get.find();
-  final profile = ProfileController.instance;
+  final profile = Get.find<ProfileController>();
   final UserRepository _repository = UserRepository();
 
   /// Text Controllers

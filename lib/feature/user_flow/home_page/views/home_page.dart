@@ -4,6 +4,7 @@ import 'package:anniet2020/feature/user_flow/home_page/controllers/home_controll
 import 'package:anniet2020/feature/user_flow/home_page/views/pages/read_more_page.dart';
 import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,8 @@ import '../../../../core/constant/image_path.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final controller = Get.put(HomeController());
-  final profileController = ProfileController.instance;
+  final profile= Get.put(ProfileController());
+  final profileController = Get.find<ProfileController>();
 
   final List<Map<String, String>> items = [
     {
@@ -226,10 +228,28 @@ class HomePage extends StatelessWidget {
                       SizedBox(height: 10.h),
 
                       /// Video Play
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12.r),
-                        child: Image.asset(ImagePath.videoPlay, height: sh * 0.189, width: sw * 0.872, fit: BoxFit.cover),
+                      Container(
+                        height: sh * 0.23,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.black,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Obx(() {
+                            if (!profileController.isInitialized.value || profileController.chewieController == null) {
+                              return const Center(
+                                child: CircularProgressIndicator(color: Colors.white),
+                              );
+                            }
+                            return Chewie(
+                              controller: profileController.chewieController!,
+                            );
+                          }),
+                        ),
                       ),
+
 
                       SizedBox(height: 12.h),
 

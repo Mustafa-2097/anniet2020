@@ -31,7 +31,7 @@ dependencies:
   url_launcher:
   video_player: ^2.10.1
   chewie:
-
+  http_parser: ^4.0.2
 
 
 

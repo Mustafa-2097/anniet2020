@@ -87,7 +87,7 @@ class CoursesPage extends StatelessWidget {
             return const Center(child: Text("No courses found"));
           }
           final course = controller.courses.first;
-          final progress = course.completedLessons / course.totalLessons;
+          final progress = course.totalLessons == 0 ? 0.0 : course.completedLessons / course.totalLessons;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -121,7 +121,7 @@ class CoursesPage extends StatelessWidget {
                   title: course.title,
                   lessons:  "${course.completedLessons}/${course.totalLessons} Lessons",
                   progress: progress,
-                  image: ImagePath.coursesBg, // static if from api --> course.thumbnail,
+                  image: ImagePath.coursesBg,
                 ),
               ),
 

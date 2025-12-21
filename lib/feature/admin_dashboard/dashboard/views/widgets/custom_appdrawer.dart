@@ -58,13 +58,13 @@ class CustomAppDrawer extends StatelessWidget {
               _DrawerItem(
                 icon: Icons.school_outlined,
                 label: 'Educate Request',
-                onTap: () => Get.offAll(() => EducatePage()),
+                onTap: () => Get.to(() => EducatePage()),
               ),
               SizedBox(height: 10.h),
               _DrawerItem(
                 icon: Icons.reviews_outlined,
                 label: 'Review',
-                onTap: () => Get.offAll(() => ReviewAdminPage()),
+                onTap: () => Get.to(() => ReviewAdminPage()),
               ),
               SizedBox(height: 10.h),
               _DrawerItem(

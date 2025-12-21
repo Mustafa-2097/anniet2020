@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../../core/constant/app_colors.dart';
 import '../../data/repositories/user_repository.dart';
 import '../models/lesson_model.dart';
 
@@ -7,10 +8,8 @@ class LessonsController extends GetxController {
 
   final String courseId;
   LessonsController(this.courseId);
-
   var isLoading = true.obs;
   var lessons = <LessonModel>[].obs;
-
   @override
   void onInit() {
     super.onInit();
@@ -22,12 +21,9 @@ class LessonsController extends GetxController {
       isLoading(true);
 
       final fetchedLessons = await _repository.getLessons(courseId);
-
       /// Sort by order (important)
       fetchedLessons.sort((a, b) => a.order.compareTo(b.order));
-
       lessons.value = fetchedLessons;
-
       _applyLockingLogic();
     } catch (e) {
       Get.snackbar("Error", e.toString());
@@ -40,7 +36,6 @@ class LessonsController extends GetxController {
   void _applyLockingLogic() {
     for (int i = 0; i < lessons.length; i++) {
       final lesson = lessons[i];
-
       /// If no video → always locked
       if (lesson.video == null || lesson.video!.isEmpty) {
         lesson.isLocked = true;
@@ -56,7 +51,6 @@ class LessonsController extends GetxController {
       /// Unlock only if previous lesson completed
       lesson.isLocked = !lessons[i - 1].isCompleted;
     }
-
     lessons.refresh();
   }
 
@@ -83,15 +77,13 @@ class LessonsController extends GetxController {
       final nextLesson = await _repository.getNextVideo(courseId);
       if (nextLesson == null) return;
 
-      final index =
-      lessons.indexWhere((l) => l.id == nextLesson.id);
-
+      final index = lessons.indexWhere((l) => l.id == nextLesson.id);
       if (index != -1) {
         lessons[index].isLocked = false;
         lessons.refresh();
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error", e.toString(), backgroundColor: AppColors.redColor);
     }
   }
 

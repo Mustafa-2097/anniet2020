@@ -16,7 +16,7 @@ class ExamPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ExamController(lesson: lesson, courseId: courseId), permanent: false);
+    final controller = Get.put(ExamController(lesson: lesson, courseId: courseId));
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       extendBody: true,

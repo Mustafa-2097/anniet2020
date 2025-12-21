@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 class PersonalInfoPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final controller = Get.put(PersonalInfoController());
-  final profile = ProfileController.instance;
+  final profile = Get.find<ProfileController>();
   PersonalInfoPage({super.key});
 
   @override
