@@ -67,7 +67,7 @@ class EducationSingleController extends GetxController {
 
   Future<bool> sendReply(String id, String message) async {
     if (message.trim().isEmpty) {
-      Get.snackbar("Error", "Message cannot be empty", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Error", "Message cannot be empty", backgroundColor: AppColors.primaryColor, snackPosition: SnackPosition.BOTTOM);
       return false;
     }
 
@@ -89,15 +89,15 @@ class EducationSingleController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Get.snackbar("Success", "Reply sent successfully",
-            backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+            backgroundColor: AppColors.primaryColor,
             snackPosition: SnackPosition.BOTTOM);
         return true;
       } else {
-        Get.snackbar("Error", jsonData['message'] ?? "Failed to send reply");
+        Get.snackbar("Error", jsonData['message'] ?? "Failed to send reply", backgroundColor: AppColors.primaryColor);
         return false;
       }
     } catch (e) {
-      Get.snackbar("Error", "Something went wrong: $e");
+      Get.snackbar("Error", "Something went wrong: $e", backgroundColor: AppColors.primaryColor);
       return false;
     } finally {
       isReplying.value = false;
@@ -118,12 +118,12 @@ class EducationSingleController extends GetxController {
       if (response.statusCode == 200) {
         Get.back(); // Go back to the list page
         Get.snackbar("Deleted", "Contact request removed successfully",
-            backgroundColor: AppColors.primaryColor.withOpacity(0.1));
+            backgroundColor: AppColors.primaryColor);
       } else {
-        Get.snackbar("Error", "Failed to delete contact");
+        Get.snackbar("Error", "Failed to delete contact", backgroundColor: AppColors.primaryColor);
       }
     } catch (e) {
-      Get.snackbar("Error", "Something went wrong: $e");
+      Get.snackbar("Error", "Something went wrong: $e", backgroundColor: AppColors.primaryColor);
     } finally {
       isDeleting.value = false;
     }
@@ -135,6 +135,7 @@ class EducationSingleController extends GetxController {
     errorMessage.value = msg;
     Get.snackbar(
       "Error",
+      backgroundColor: AppColors.primaryColor,
       msg,
       snackPosition: SnackPosition.BOTTOM,
     );

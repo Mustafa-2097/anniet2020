@@ -1,13 +1,17 @@
 import 'dart:io';
 
+import 'package:anniet2020/core/constant/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import '../../../../core/offline_storage/shared_pref.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../model/get_me_model.dart';
+import 'package:path/path.dart' as path;
+import 'package:http_parser/http_parser.dart';
 
 class AdminProfileController extends GetxController {
   // Observables
@@ -186,7 +190,7 @@ class AdminProfileController extends GetxController {
         if (data['success'] == true) {
           Get.snackbar(
             "Success",
-            data['message'] ?? "Profile updated successfully",
+            data['message'] ?? "Profile updated successfully", backgroundColor: AppColors.primaryColor
           );
           // Refetch profile to update the UI
           await fetchProfile();
@@ -209,81 +213,93 @@ class AdminProfileController extends GetxController {
     }
   }
 
-  Future<void> updateAvatar({
-    required String avatar,
-  }) async {
+
+  Future<void> updateAvatar(File imageFile) async {
     try {
       isLoading.value = true;
 
       final token = await SharedPreferencesHelper.getToken();
-      if (token == null || token.isEmpty) {
-        _setError("Session expired. No token found");
+      if (token == null || token.isEmpty) return;
+
+      final uri = Uri.parse('${ApiEndpoints.baseUrl}/me/avatar');
+      final request = http.MultipartRequest('PATCH', uri);
+
+      request.headers['Authorization'] = token;
+
+      final extension = path.extension(imageFile.path).toLowerCase();
+
+      MediaType mediaType;
+      if (extension == '.png') {
+        mediaType = MediaType('image', 'png');
+      } else if (extension == '.jpg' || extension == '.jpeg') {
+        mediaType = MediaType('image', 'jpeg');
+      } else {
+        Get.snackbar("Error", "Unsupported image format");
         return;
       }
 
-      final response = await http.patch(
-        Uri.parse('${ApiEndpoints.baseUrl}/me/avatar'),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token,
-        },
-        body: jsonEncode({
-          "avatar": avatar,
-        }),
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'avatar',
+          imageFile.path,
+          contentType: mediaType,
+        ),
       );
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      print(response.body);
 
       final data = jsonDecode(response.body);
 
-      print(response.request?.url);
-      print(response.body);
-
       if (response.statusCode == 200) {
-        if (data['success'] == true) {
-          Get.snackbar(
-            "Success",
-            data['message'] ?? "Avatar updated successfully",
-          );
-          // Refetch profile to update the UI
-          await fetchProfile();
-        } else {
-          Get.snackbar(
-            "Error",
-            data['message'] ?? "Failed to update avatar",
-          );
-        }
+        // Get.snackbar("Success", data['message']);
+        print("successfully insert the avater");
+        await fetchProfile();
       } else {
-        Get.snackbar(
-          "Error",
-          data['message'] ?? "Something went wrong",
-        );
+        Get.snackbar("Error", data['message']);
       }
-    } catch (e) {
-      Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
   }
 
+
   Future<void> pickImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+      preferredCameraDevice: CameraDevice.rear,
+    );
+
     if (pickedFile != null) {
+      final ext = pickedFile.path.toLowerCase();
+      if (!(ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png'))) {
+        Get.snackbar("Error", "Please select a JPG or PNG image");
+        return;
+      }
+
       selectedImage.value = File(pickedFile.path);
     }
   }
+
 
   Future<void> saveProfile() async {
     await updateProfile(
       name: nameController.text,
       phone: phoneController.text,
     );
+
     if (selectedImage.value != null) {
-      final bytes = await selectedImage.value!.readAsBytes();
-      final base64Image = base64Encode(bytes);
-      await updateAvatar(avatar: base64Image);
+      await updateAvatar(selectedImage.value!);
     }
+
     Get.back();
   }
+
+
 
 
 

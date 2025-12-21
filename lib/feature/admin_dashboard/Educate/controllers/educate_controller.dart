@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/constant/app_colors.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../model/educated_model.dart';
@@ -26,7 +27,7 @@ class EducateEmployeeController extends GetxController {
   }
 
   /// Fetch Educate Employees (Paginated)
-  Future<void> fetchEducateEmployees({int page = 1, int limit = 10}) async {
+  Future<void> fetchEducateEmployees({int page = 1, int limit = 10, String? searchTerm}) async {
     try {
       isLoading.value = true;
       isError.value = false;
@@ -38,8 +39,17 @@ class EducateEmployeeController extends GetxController {
         return;
       }
 
+      final queryParams = {
+        'page': page.toString(),
+        'limit': limit.toString(),
+
+        if(searchTerm != null && searchTerm.isNotEmpty)
+          'searchTerm': searchTerm
+      };
       final url = Uri.parse(
         '${ApiEndpoints.baseUrl}/admin/educate-employee?page=$page&limit=$limit',
+      ).replace(
+        queryParameters: queryParams
       );
 
       final response = await http.get(
@@ -97,7 +107,7 @@ class EducateEmployeeController extends GetxController {
     isError.value = true;
     errorMessage.value = msg;
     Get.snackbar(
-      "Error",
+      "Error", backgroundColor: AppColors.primaryColor,
       msg,
       snackPosition: SnackPosition.BOTTOM,
     );

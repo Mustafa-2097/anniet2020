@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/widgets/popup_button.dart';
+import '../../settings/controllers/get_me_profile_controller.dart';
 import '../../users/views/pages/user_details.dart';
 import '../controllers/dashboard_overview_controller.dart';
 import '../controllers/dashboard_user_controller.dart';
@@ -25,6 +26,10 @@ class _DashboardPageState extends State<DashboardPage> {
   final dashboardUserController = Get.put(DashboardUserController());
 
   final TextEditingController searchController = TextEditingController();
+  final adminController = Get.put(AdminProfileController());
+
+
+  late final profileData = adminController.profile.value;
 
   @override
   void initState() {
@@ -53,10 +58,27 @@ class _DashboardPageState extends State<DashboardPage> {
         title: Text("Dashboard",
             style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor)),
         actions: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: Colors.grey[300],
-            backgroundImage: AssetImage(ImagePath.user),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(30.r),
+            child: profileData?.profile.avatar != null && profileData!.profile.avatar!.isNotEmpty
+                ? Image.network(
+              profileData!.profile.avatar!,
+              height: 40.w,
+              width: 40.w,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Image.asset(
+                ImagePath.user,
+                height: 40.w,
+                width: 40.w,
+                fit: BoxFit.cover,
+              ),
+            )
+                : Image.asset(
+              ImagePath.user,
+              height: 40.w,
+              width: 40.w,
+              fit: BoxFit.cover,
+            ),
           ),
           SizedBox(width: 14.w),
         ],
@@ -77,6 +99,12 @@ class _DashboardPageState extends State<DashboardPage> {
                   padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
                   child: TextField(
                     controller: searchController,
+                    onChanged: (value){
+                      dashboardUserController.fetchUsers(
+                        // page: 1,
+                        searchTerm: value.trim(),
+                      );
+                    },
                     decoration: InputDecoration(
                       hintText: "Search users...",
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),

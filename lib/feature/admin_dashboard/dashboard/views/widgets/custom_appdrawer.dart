@@ -64,7 +64,7 @@ class CustomAppDrawer extends StatelessWidget {
               _DrawerItem(
                 icon: Icons.reviews_outlined,
                 label: 'Review',
-                // onTap: () => Get.offAll(() => DashboardReviewAdminPage()),
+                onTap: () => Get.offAll(() => ReviewAdminPage()),
               ),
               SizedBox(height: 10.h),
               _DrawerItem(

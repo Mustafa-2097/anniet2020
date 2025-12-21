@@ -1,23 +1,47 @@
-import 'package:anniet2020/core/network/api_endpoints.dart';
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 import '../../../../core/offline_storage/shared_pref.dart';
+import '../../../../core/network/api_endpoints.dart';
 import '../models/dashboard_review_model.dart';
 
 class DashboardReviewController extends GetxController {
-  // Observable variables
+  /// UI State
   var isLoading = false.obs;
-  var reviews = <Review>[].obs;
+  var isError = false.obs;
+  var errorMessage = ''.obs;
+
+  /// Data
+  var reviews = <CourseReview>[].obs;
   var averageRating = 0.0.obs;
-  var counts = <String, int>{}.obs;
+  var ratingCounts = <int, int>{}.obs;
+
+  /// Pagination
   var currentPage = 1.obs;
   var totalPages = 1.obs;
 
-  final isError = false.obs;
-  final errorMessage = ''.obs;
+  var selectedFilter = 0.obs;
 
-  // Fetch reviews
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchReviews();
+  }
+
+  List<CourseReview> get filteredReviews {
+    if (selectedFilter.value == 0) return reviews;
+    return reviews.where((r) => r.rating == selectedFilter.value).toList();
+  }
+
+  double getProgress(int star) {
+    if (reviews.isEmpty) return 0.0;
+    final count = ratingCounts[star] ?? 0;
+    return count / reviews.length;
+  }
+
+  /// Fetch Reviews (Paginated)
   Future<void> fetchReviews({int page = 1, int limit = 10}) async {
     try {
       isLoading.value = true;
@@ -26,11 +50,14 @@ class DashboardReviewController extends GetxController {
 
       final token = await SharedPreferencesHelper.getToken();
       if (token == null || token.isEmpty) {
-        _setError("Session expired. No token found");
+        _setError("Authentication failed. Please login again.");
         return;
       }
 
-      final url = Uri.parse('${ApiEndpoints.baseUrl}/admin/reviews?page=$page&limit=$limit');
+      final url = Uri.parse(
+        '${ApiEndpoints.baseUrl}/admin/reviews?page=$page&limit=$limit',
+      );
+
       final response = await http.get(
         url,
         headers: {
@@ -42,26 +69,24 @@ class DashboardReviewController extends GetxController {
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
 
-        if (jsonData['success'] != true) {
-          _setError(jsonData['message'] ?? 'Failed to fetch reviews');
-          return;
-        }
+        if (jsonData['success'] == true) {
+          final reviewResponse = CourseReviewsResponse.fromJson(jsonData);
 
-        final data = CourseReviewResponse.fromJson(jsonData);
+          /// List data
+          reviews.assignAll(reviewResponse.data.reviews);
 
-        // Append if loading next page
-        if (page > 1) {
-          reviews.addAll(data.data.reviews);
+          /// Summary data
+          averageRating.value = reviewResponse.data.average;
+          ratingCounts.value = reviewResponse.data.counts;
+
+          /// Pagination
+          currentPage.value = reviewResponse.pagination.page;
+          totalPages.value = reviewResponse.pagination.totalPage;
         } else {
-          reviews.value = data.data.reviews;
+          _setError(jsonData['message'] ?? 'Failed to load reviews');
         }
-
-        averageRating.value = data.data.average;
-        counts.value = data.data.counts;
-        currentPage.value = data.pagination.page;
-        totalPages.value = data.pagination.totalPage;
       } else {
-        _setError('Failed to fetch reviews: ${response.statusCode}');
+        _setError('Server Error: ${response.statusCode}');
       }
     } catch (e) {
       _setError('Something went wrong: $e');
@@ -70,16 +95,33 @@ class DashboardReviewController extends GetxController {
     }
   }
 
-  // Optional: Load next page
-  Future<void> loadNextPage() async {
+  /// Pagination Helpers
+  Future<void> goToPage(int page) async {
+    if (page >= 1 && page <= totalPages.value) {
+      await fetchReviews(page: page);
+    }
+  }
+
+  Future<void> goNextPage() async {
     if (currentPage.value < totalPages.value) {
       await fetchReviews(page: currentPage.value + 1);
     }
   }
 
+  Future<void> goPreviousPage() async {
+    if (currentPage.value > 1) {
+      await fetchReviews(page: currentPage.value - 1);
+    }
+  }
+
+  /// Error Handler
   void _setError(String msg) {
     isError.value = true;
     errorMessage.value = msg;
+    Get.snackbar(
+      "Error",
+      msg,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
-
 }

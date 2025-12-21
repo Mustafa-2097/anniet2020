@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../../../core/constant/app_colors.dart';
 import '../../../../core/offline_storage/shared_pref.dart'; // Adjust path
 import '../../../../core/network/api_endpoints.dart';     // Adjust path
 import '../model/contact_model.dart';                     // Adjust path
@@ -23,7 +24,7 @@ class ContactController extends GetxController {
   }
 
   /// Fetch Contacts with Pagination
-  Future<void> fetchContacts({int page = 1, int limit = 10}) async {
+  Future<void> fetchContacts({int page = 1, int limit = 10, String? searchTerm}) async {
     try {
       isLoading.value = true;
       isError.value = false;
@@ -36,8 +37,18 @@ class ContactController extends GetxController {
         return;
       }
 
+      final queryParams = {
+        'page': page.toString(),
+        'limit': limit.toString(),
+
+        if(searchTerm != null && searchTerm.isNotEmpty)
+          'searchTerm': searchTerm,
+      };
+
       // Construct URL
-      final url = Uri.parse('${ApiEndpoints.baseUrl}/admin/contacts?page=$page&limit=$limit');
+      final url = Uri.parse('${ApiEndpoints.baseUrl}/admin/contacts?page=$page&limit=$limit').replace(
+        queryParameters: queryParams
+      );
 
       final response = await http.get(
         url,
@@ -94,6 +105,6 @@ class ContactController extends GetxController {
     isError.value = true;
     errorMessage.value = msg;
     // Optional: Show a snackbar on error
-    Get.snackbar("Error", msg, snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar("Error",backgroundColor: AppColors.primaryColor, msg, snackPosition: SnackPosition.BOTTOM);
   }
 }

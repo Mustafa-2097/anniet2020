@@ -1,8 +1,10 @@
 import 'package:anniet2020/feature/admin_dashboard/users/views/pages/user_details.dart';
+import 'package:anniet2020/onboarding/model/onboarding_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/constant/widgets/popup_button.dart';
 import '../../dashboard/controllers/dashboard_user_controller.dart';
 import '../../dashboard/model/dashboard_user_model.dart';
 
@@ -50,6 +52,12 @@ class _UsersPageState extends State<UsersPage> {
               padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
               child: TextField(
                 controller: searchController,
+                onChanged: (value){
+                  controller.fetchUsers(
+                    // page: 1,
+                    searchTerm: value.trim(),
+                  );
+                },
                 decoration: InputDecoration(
                   hintText: "Search users...",
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -137,18 +145,15 @@ class UserCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  "${user.name}  —  #${user.id.substring(0, 6)}", // Shortened ID
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF4E4E4A)
-                  ),
+                  "${user.name}  —  #${user.id.substring(user.id.length - 6)}", // Showing last 5 chars of ID
+                  style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: const Color(0xFF4E4E4A)),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () => Get.to(() => UserDetails(userId: user.id)),
+              PopupButton(
+                onTap: () {
+                  Get.to(() => UserDetails(userId: user.id));
+                },
               ),
             ],
           ),

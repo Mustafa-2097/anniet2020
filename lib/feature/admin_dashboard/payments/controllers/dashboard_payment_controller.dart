@@ -38,7 +38,7 @@ class PaymentsController extends GetxController {
   }
 
   // Fetch payments
-  Future<void> fetchPayments({int page = 1, int limit = 10}) async {
+  Future<void> fetchPayments({int page = 1, int limit = 10, String? searchTerm}) async {
     try {
       isLoading.value = true;
       isError.value = false;
@@ -50,7 +50,17 @@ class PaymentsController extends GetxController {
         return;
       }
 
-      final url = Uri.parse('${ApiEndpoints.baseUrl}/admin/payments?page=$page&limit=$limit');
+      final queryParams = {
+        "page": page.toString(),
+        "limit": limit.toString(),
+
+        if(searchTerm != null && searchTerm.isNotEmpty)
+          'searchTerm': searchTerm
+      };
+
+      final url = Uri.parse('${ApiEndpoints.baseUrl}/admin/payments?page=$page&limit=$limit').replace(
+        queryParameters: queryParams
+      );
       final response = await http.get(
         url,
         headers: {

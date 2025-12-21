@@ -1,12 +1,11 @@
-// course_review_model.dart
-class CourseReviewResponse {
+class CourseReviewsResponse {
   final bool success;
   final int statusCode;
   final String message;
   final Pagination pagination;
-  final ReviewData data;
+  final CourseReviewsData data;
 
-  CourseReviewResponse({
+  CourseReviewsResponse({
     required this.success,
     required this.statusCode,
     required this.message,
@@ -14,24 +13,18 @@ class CourseReviewResponse {
     required this.data,
   });
 
-  factory CourseReviewResponse.fromJson(Map<String, dynamic> json) {
-    return CourseReviewResponse(
-      success: json['success'] as bool,
-      statusCode: json['statusCode'] as int,
-      message: json['message'] as String,
-      pagination: Pagination.fromJson(json['pagination']),
-      data: ReviewData.fromJson(json['data']),
+  factory CourseReviewsResponse.fromJson(Map<String, dynamic> json) {
+    return CourseReviewsResponse(
+      success: json['success'] ?? false,
+      statusCode: json['statusCode'] ?? 0,
+      message: json['message'] ?? '',
+      pagination: Pagination.fromJson(json['pagination'] ?? {}),
+      data: CourseReviewsData.fromJson(json['data'] ?? {}),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'success': success,
-    'statusCode': statusCode,
-    'message': message,
-    'pagination': pagination.toJson(),
-    'data': data.toJson(),
-  };
 }
+
+/* ---------------- Pagination ---------------- */
 
 class Pagination {
   final int page;
@@ -48,58 +41,50 @@ class Pagination {
 
   factory Pagination.fromJson(Map<String, dynamic> json) {
     return Pagination(
-      page: json['page'] as int,
-      limit: json['limit'] as int,
-      total: json['total'] as int,
-      totalPage: json['totalPage'] as int,
+      page: json['page'] ?? 1,
+      limit: json['limit'] ?? 10,
+      total: json['total'] ?? 0,
+      totalPage: json['totalPage'] ?? 1,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'page': page,
-    'limit': limit,
-    'total': total,
-    'totalPage': totalPage,
-  };
 }
 
-class ReviewData {
-  final List<Review> reviews;
-  final double average;
-  final Map<String, int> counts;
+/* ---------------- Main Data ---------------- */
 
-  ReviewData({
+class CourseReviewsData {
+  final List<CourseReview> reviews;
+  final double average;
+  final Map<int, int> counts;
+
+  CourseReviewsData({
     required this.reviews,
     required this.average,
     required this.counts,
   });
 
-  factory ReviewData.fromJson(Map<String, dynamic> json) {
-    return ReviewData(
-      reviews: (json['reviews'] as List)
-          .map((e) => Review.fromJson(e))
+  factory CourseReviewsData.fromJson(Map<String, dynamic> json) {
+    return CourseReviewsData(
+      reviews: (json['reviews'] as List<dynamic>? ?? [])
+          .map((e) => CourseReview.fromJson(e))
           .toList(),
-      average: (json['average'] as num).toDouble(),
-      counts: Map<String, int>.from(json['counts']),
+      average: (json['average'] as num?)?.toDouble() ?? 0.0,
+      counts: (json['counts'] as Map<String, dynamic>? ?? {})
+          .map((key, value) => MapEntry(int.parse(key), value as int)),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'reviews': reviews.map((e) => e.toJson()).toList(),
-    'average': average,
-    'counts': counts,
-  };
 }
 
-class Review {
+/* ---------------- Review Item ---------------- */
+
+class CourseReview {
   final String id;
   final int rating;
   final String comment;
   final Lesson lesson;
   final DateTime createdAt;
-  final User user;
+  final ReviewUser user;
 
-  Review({
+  CourseReview({
     required this.id,
     required this.rating,
     required this.comment,
@@ -108,26 +93,19 @@ class Review {
     required this.user,
   });
 
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
-      id: json['id'] as String,
-      rating: json['rating'] as int,
-      comment: json['comment'] as String,
-      lesson: Lesson.fromJson(json['lesson']),
+  factory CourseReview.fromJson(Map<String, dynamic> json) {
+    return CourseReview(
+      id: json['id'] ?? '',
+      rating: json['rating'] ?? 0,
+      comment: json['comment'] ?? '',
+      lesson: Lesson.fromJson(json['lesson'] ?? {}),
       createdAt: DateTime.parse(json['createdAt']),
-      user: User.fromJson(json['user']),
+      user: ReviewUser.fromJson(json['user'] ?? {}),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'rating': rating,
-    'comment': comment,
-    'lesson': lesson.toJson(),
-    'createdAt': createdAt.toIso8601String(),
-    'user': user.toJson(),
-  };
 }
+
+/* ---------------- Lesson ---------------- */
 
 class Lesson {
   final String id;
@@ -140,43 +118,33 @@ class Lesson {
 
   factory Lesson.fromJson(Map<String, dynamic> json) {
     return Lesson(
-      id: json['id'] as String,
-      order: json['order'] as int,
+      id: json['id'] ?? '',
+      order: json['order'] ?? 0,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'order': order,
-  };
 }
 
-class User {
+/* ---------------- Review User ---------------- */
+
+class ReviewUser {
   final String id;
   final String email;
   final String name;
   final String? avatar;
 
-  User({
+  ReviewUser({
     required this.id,
     required this.email,
     required this.name,
     this.avatar,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      name: json['name'] as String,
+  factory ReviewUser.fromJson(Map<String, dynamic> json) {
+    return ReviewUser(
+      id: json['id'] ?? '',
+      email: json['email'] ?? '',
+      name: json['name'] ?? '',
       avatar: json['avatar'],
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'email': email,
-    'name': name,
-    'avatar': avatar,
-  };
 }

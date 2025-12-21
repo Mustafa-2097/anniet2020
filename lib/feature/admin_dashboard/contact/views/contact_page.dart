@@ -37,6 +37,11 @@ class ContactPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
               child: TextField(
                 controller: searchController,
+                onChanged: (value){
+                  controller.fetchContacts(
+                    searchTerm: value.toString(),
+                  );
+                },
                 decoration: InputDecoration(
                   hintText: "Search contact requests...",
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -127,7 +132,7 @@ class ContactPage extends StatelessWidget {
 }
 
 class UserCard extends StatelessWidget {
-  final ContactData contact; // Changed from Map to ContactData
+  final ContactData contact;
   const UserCard({required this.contact, super.key});
 
   @override

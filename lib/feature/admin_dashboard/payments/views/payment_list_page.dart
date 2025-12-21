@@ -38,6 +38,11 @@ class PaymentListPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
                 child: TextField(
                   controller: searchController,
+                  onChanged: (value){
+                    controller.fetchPayments(
+                      searchTerm: value.trim()
+                    );
+                  },
                   decoration: InputDecoration(
                     hintText: "Search payments...",
                     prefixIcon: const Icon(Icons.search, color: Colors.grey),

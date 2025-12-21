@@ -22,15 +22,15 @@ class PopupButton extends StatelessWidget {
           ),
         ),
         // Divider Style Item
-        PopupMenuItem(
-          enabled: false,
-          height: 1.h,
-          child: Container(height: 1.h, color: Colors.grey.shade300),
-        ),
-        PopupMenuItem(
-          value: "delete",
-          child: Text("Delete", style: TextStyle(color: AppColors.redColor)),
-        ),
+        // PopupMenuItem(
+        //   enabled: false,
+        //   height: 1.h,
+        //   child: Container(height: 1.h, color: Colors.grey.shade300),
+        // ),
+        // PopupMenuItem(
+        //   value: "delete",
+        //   child: Text("Delete", style: TextStyle(color: AppColors.redColor)),
+        // ),
       ],
     );
   }
