@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../data/repositories/user_repository.dart';
@@ -5,9 +6,9 @@ import '../models/lesson_model.dart';
 
 class LessonsController extends GetxController {
   final UserRepository _repository = UserRepository();
-
   final String courseId;
   LessonsController(this.courseId);
+
   var isLoading = true.obs;
   var lessons = <LessonModel>[].obs;
   @override
@@ -19,14 +20,14 @@ class LessonsController extends GetxController {
   Future<void> fetchLessons() async {
     try {
       isLoading(true);
-
       final fetchedLessons = await _repository.getLessons(courseId);
+      debugPrint("Fetched lessons: ${fetchedLessons.length}");
       /// Sort by order (important)
       fetchedLessons.sort((a, b) => a.order.compareTo(b.order));
       lessons.value = fetchedLessons;
       _applyLockingLogic();
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error", e.toString(), backgroundColor: AppColors.redColor);
     } finally {
       isLoading(false);
     }

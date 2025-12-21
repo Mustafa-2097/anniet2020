@@ -9,11 +9,12 @@ import '../../../review/views/widgets/give_review.dart';
 import '../../../review/views/widgets/review_item.dart';
 
 class Review extends StatelessWidget {
-  Review({super.key});
-  final controller = Get.put(ReviewUserController());
+  final String lessonId;
+  const Review({super.key, required this.lessonId});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ReviewUserController(lessonId), tag: lessonId);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -47,7 +48,7 @@ class Review extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                   ),
-                  builder: (_) => GiveReview(),
+                  builder: (_) => GiveReview(lessonId: lessonId,),
                 );
               },
             ),
@@ -100,7 +101,7 @@ class Review extends StatelessWidget {
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              onPressed: () => Get.to(() => ReviewUserPage()),
+              onPressed: () => Get.to(() => ReviewUserPage(lessonId: lessonId)),
               child: Text(
                 "See more reviews",
                 style: GoogleFonts.plusJakartaSans(

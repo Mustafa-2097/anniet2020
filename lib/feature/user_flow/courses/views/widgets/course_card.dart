@@ -8,7 +8,6 @@ class CourseCard extends StatelessWidget {
   final String lessons;
   final double progress;
   final String image;
-
   const CourseCard({super.key, required this.title, required this.lessons, required this.progress, required this.image});
 
   @override

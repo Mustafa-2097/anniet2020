@@ -15,11 +15,14 @@ class LessonTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: lesson.isLocked
-          ? null
-          : () {
+      onTap: () {
+        if (lesson.isLocked) {
+          Get.snackbar("Locked", "Complete previous lesson first", backgroundColor: AppColors.redColor);
+          return;
+        }
         Get.to(() => OnlineClassPage(lesson: lesson, courseId: courseId));
       },
+
       child: Container(
         margin: EdgeInsets.only(bottom: 12.r),
         padding: EdgeInsets.all(16.r),
@@ -87,13 +90,15 @@ class LessonTile extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8.h),
-                  LinearProgressIndicator(
-                    value: lesson.isCompleted ? 1.0 : 0.0,
-                    minHeight: 6,
-                    backgroundColor: Colors.grey,
-                    borderRadius: BorderRadius.circular(20.r),
-                    color: AppColors.greenColor,
-                  ),
+                  if (lesson.order != 1)
+                    LinearProgressIndicator(
+                      value: lesson.isCompleted ? 1.0 : 0.0,
+                      minHeight: 6,
+                      backgroundColor: Colors.grey,
+                      borderRadius: BorderRadius.circular(20.r),
+                      color: AppColors.greenColor,
+                    ),
+
                 ],
               ),
             )

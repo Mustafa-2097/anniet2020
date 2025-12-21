@@ -30,6 +30,12 @@ class ApiEndpoints {
   static const String courses = '$baseUrl/courses';
   static const String nextVideo = '$baseUrl/courses/:id/next-video';
 
+  // Lesson's Review
+  static const String review = '$baseUrl/lessons/:id/review';
+
+
+  /// Certificate
+
 
 
 }

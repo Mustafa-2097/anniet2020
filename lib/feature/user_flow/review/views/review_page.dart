@@ -8,11 +8,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 
 class ReviewUserPage extends StatelessWidget {
-  ReviewUserPage({super.key});
-  final controller = Get.put(ReviewUserController());
+  final String lessonId;
+  const ReviewUserPage({super.key, required this.lessonId});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ReviewUserController(lessonId), tag: lessonId);
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -25,7 +26,6 @@ class ReviewUserPage extends StatelessWidget {
         title: Text("Review", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         centerTitle: true,
       ),
-
       body: Stack(
         children: [
           Padding(
@@ -39,11 +39,11 @@ class ReviewUserPage extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: _ratingSummary(),
+                        child: _ratingSummary(controller),
                       ),
                       Expanded(
                         flex: 2,
-                        child: _ratingBreakdown(),
+                        child: _ratingBreakdown(controller),
                       ),
                     ],
                   ),
@@ -52,7 +52,7 @@ class ReviewUserPage extends StatelessWidget {
                 SizedBox(height: 30.h),
 
                 /// Review List Scrollable
-                Expanded(child: _reviewList(),),
+                Expanded(child: _reviewList(lessonId)),
               ],
             ),
           ),
@@ -72,7 +72,7 @@ class ReviewUserPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                     ),
-                    builder: (_) => GiveReview(),
+                    builder: (_) => GiveReview(lessonId: lessonId,),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -101,80 +101,73 @@ class ReviewUserPage extends StatelessWidget {
     );
   }
 
-  Widget _ratingSummary() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "4.4",
-          style: GoogleFonts.plusJakartaSans(fontSize: 32.sp, fontWeight: FontWeight.w700, color: AppColors.blackColor),
-        ),
-        SizedBox(height: 4.h),
-        Row(
-          children: [
-            Icon(Icons.star, color: Colors.amber, size: 18.r),
-            Icon(Icons.star, color: Colors.amber, size: 18.r),
-            Icon(Icons.star, color: Colors.amber, size: 18.r),
-            Icon(Icons.star, color: Colors.amber, size: 18.r),
-            Icon(Icons.star, color: AppColors.greyColor, size: 18.r),
-          ],
-        ),
-        SizedBox(height: 8.h),
-        Text(
-          "Based on 532 review",
-          style: GoogleFonts.plusJakartaSans(fontSize: 10.sp, fontWeight: FontWeight.w600, color: AppColors.subTextColor),
-        ),
-      ],
-    );
-  }
-
-  Widget _ratingBreakdown() {
-    final controller = Get.find<ReviewUserController>();
-    return Column(
-      children: controller.ratingStats.entries.map((e) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: 5.r),
-          child: Row(
-            children: [
-              Text(e.key.toString(), style: GoogleFonts.plusJakartaSans(fontSize: 10.sp, fontWeight: FontWeight.w600, color: AppColors.subTextColor)),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: LinearProgressIndicator(
-                  value: e.value,
-                  minHeight: 6.h,
-                  backgroundColor: AppColors.greyColor,
-                  borderRadius: BorderRadius.circular(20.r),
-                  color: AppColors.greenColor,
-                ),
-              ),
-            ],
+  Widget _ratingSummary(ReviewUserController controller) {
+    return Obx( () =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            controller.averageRating.toStringAsFixed(1),
+            style: GoogleFonts.plusJakartaSans(fontSize: 32.sp, fontWeight: FontWeight.w700),
           ),
-        );
-      }).toList(),
+          SizedBox(height: 4.h),
+          Row(
+            children: List.generate(5, (i) {
+              return Icon(
+                i < controller.averageRating.round()
+                    ? Icons.star
+                    : Icons.star_border,
+                color: Colors.amber,
+                size: 18.r,
+              );
+            }),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            "Based on ${controller.reviews.length} reviews",
+            style: GoogleFonts.plusJakartaSans(fontSize: 10.sp, fontWeight: FontWeight.w600, color: AppColors.subTextColor),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _reviewList() {
-    final controller = Get.find<ReviewUserController>();
+  Widget _ratingBreakdown(ReviewUserController controller) {
+    return Obx( () =>
+      Column(
+        children: List.generate(5, (i) {
+          final star = 5 - i;
+          final count = controller.counts[star] ?? 0;
+          final total = controller.reviews.isEmpty
+              ? 1
+              : controller.reviews.length;
+          return Padding(
+            padding: EdgeInsets.only(bottom: 6.r),
+            child: Row(
+              children: [
+                Text("$star"),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: LinearProgressIndicator(
+                    value: count / total,
+                    minHeight: 6,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
 
+  Widget _reviewList(String lessonId) {
+    final controller = Get.find<ReviewUserController>(tag: lessonId);
     return Obx(() {
       return ListView.separated(
-        itemCount: controller.reviews.length + 1,
+        itemCount: controller.reviews.length,
         separatorBuilder: (_, __) => SizedBox(height: 20.h),
-        itemBuilder: (context, index) {
-          /// Bottom loader for pagination
-          if (index == controller.reviews.length) {
-            if (controller.hasMore.value) {
-              controller.fetchReviews();
-              return Padding(
-                padding: EdgeInsets.all(60.r),
-                child: Center(child: CircularProgressIndicator()),
-              );
-            } else {
-              return const SizedBox();
-            }
-          }
-
+        itemBuilder: (_, index) {
           final review = controller.reviews[index];
           return ReviewItem(review: review);
         },

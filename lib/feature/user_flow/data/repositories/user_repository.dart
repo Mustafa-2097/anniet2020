@@ -82,6 +82,26 @@ class UserRepository {
     if (response['success'] != true) return null;
     return LessonModel.fromJson(response['data']);
   }
+  /// Lesson Reviews
+  Future<Map<String, dynamic>> getLessonReviews(String lessonId) async {
+    final response = await _provider.fetchLessonReviews(lessonId);
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'Failed to load reviews');
+    }
+    return response['data'];
+  }
+  /// Create lesson review
+  Future<void> createReview({required String lessonId, required int rating, required String comment}) async {
+    final response = await _provider.createReview(
+      lessonId: lessonId,
+      rating: rating,
+      comment: comment,
+    );
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'Failed to submit review');
+    }
+  }
+
 
 
 

@@ -24,7 +24,7 @@ class ReviewItem extends StatelessWidget {
             ),
             SizedBox(width: 4.w),
             Text(
-              review.date,
+              "${review.createdAt}",
               style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.boxTextColor, fontWeight: FontWeight.w600),
             ),
             const Spacer(),

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../controllers/review_page_controller.dart';
 
 class GiveReview extends StatefulWidget {
-  const GiveReview({super.key});
+  final String lessonId;
+  const GiveReview({super.key, required this.lessonId});
   @override
   State<GiveReview> createState() => _GiveReviewState();
 }
@@ -86,17 +88,28 @@ class _GiveReviewState extends State<GiveReview> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (selectedStars == 0) {
-                  Get.snackbar("Error", "Please select a rating!", backgroundColor: AppColors.redColor);
+                  Get.snackbar("Error", "Please select a rating!",backgroundColor: AppColors.redColor);
                   return;
                 }
-                if (reviewController.text.isEmpty) {
+
+                if (reviewController.text.trim().isEmpty) {
                   Get.snackbar("Error", "Please write a review!", backgroundColor: AppColors.redColor);
                   return;
                 }
-                Navigator.pop(context);
+
+                final controller =
+                Get.find<ReviewUserController>(tag: widget.lessonId);
+
+                if (controller.isSubmitting.value) return;
+
+                await controller.submitReview(
+                  rating: selectedStars,
+                  comment: reviewController.text.trim(),
+                );
               },
+
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 14.h),
                 shape: RoundedRectangleBorder(

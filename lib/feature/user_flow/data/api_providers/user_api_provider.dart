@@ -71,6 +71,23 @@ class UserApiProvider {
       "${ApiEndpoints.courses}/$courseId/next-video",
     );
   }
+  /// Fetch reviews by lesson id
+  Future<Map<String, dynamic>> fetchLessonReviews(String lessonId) async {
+    return await _client.get(
+      ApiEndpoints.review.replaceFirst(':id', lessonId),
+    );
+  }
+  /// Create review
+  Future<Map<String, dynamic>> createReview({required String lessonId, required int rating, required String comment}) async {
+    return await _client.post(
+      ApiEndpoints.review.replaceFirst(':id', lessonId),
+      {
+        "rating": rating,
+        "comment": comment,
+      },
+    );
+  }
+
 
 
   /// Logout API (requires access token)

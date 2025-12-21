@@ -1,7 +1,7 @@
 class LessonModel {
   final String id;
   final String title;
-  final String image;
+  final String? image;
   final String? video;
   final int lengthInSeconds;
   final int order;
@@ -14,8 +14,8 @@ class LessonModel {
   LessonModel({
     required this.id,
     required this.title,
-    required this.image,
-    required this.video,
+    this.image,
+    this.video,
     required this.lengthInSeconds,
     required this.order,
     required this.description,

@@ -80,14 +80,12 @@ class CoursesPage extends StatelessWidget {
         //   ],
         // )
         body: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.courses.isEmpty) {
-            return const Center(child: Text("No courses found"));
-          }
+          if (controller.isLoading.value) return const Center(child: CircularProgressIndicator());
+          if (controller.courses.isEmpty) return const Center(child: Text("No courses found"));
           final course = controller.courses.first;
-          final progress = course.totalLessons == 0 ? 0.0 : course.completedLessons / course.totalLessons;
+          final total = course.totalLessons;
+          final completed = course.completedLessons.clamp(0, total);
+          final progress = total == 0 ? 0.0 : completed / total;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -95,7 +93,10 @@ class CoursesPage extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(20.r),
-                color: AppColors.primaryColor,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(20.r)),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -119,7 +120,7 @@ class CoursesPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: CourseCard(
                   title: course.title,
-                  lessons:  "${course.completedLessons}/${course.totalLessons} Lessons",
+                  lessons:  "$completed/$total Lessons",
                   progress: progress,
                   image: ImagePath.coursesBg,
                 ),
