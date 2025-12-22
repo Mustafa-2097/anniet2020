@@ -66,7 +66,7 @@ class SignUpController extends GetxController {
       Get.to(() => OtpPage(
         email: emailController.text.trim(),
         type: OtpType.signup,
-        onOtpVerified: () => Get.offAll(() => SignInPage()),
+        onOtpVerified: () => Get.off(() => SignInPage()),
       ));
     } catch (e) {
       EasyLoading.dismiss();

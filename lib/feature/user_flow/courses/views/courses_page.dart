@@ -25,60 +25,6 @@ class CoursesPage extends StatelessWidget {
           title: Text("Your Courses", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
           centerTitle: true,
         ),
-        // body: Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     /// BLUE INFO CONTAINER
-        //     Container(
-        //       width: double.infinity,
-        //       padding: EdgeInsets.all(20.r),
-        //       color: AppColors.primaryColor,
-        //       child: Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Text(
-        //             "Learn the Rules.",
-        //             style: TextStyle(color: AppColors.whiteColor, fontSize: 24.sp, fontWeight: FontWeight.w700),
-        //           ),
-        //           SizedBox(height: 4.h),
-        //           Text(
-        //             "Learn the key mistakes that can cause your driving license to be cancelled.",
-        //             style: TextStyle(color: AppColors.whiteColor, fontSize: 14.sp, fontWeight: FontWeight.w500),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //
-        //     SizedBox(height: 30.h),
-        //
-        //     /// COURSE CARD
-        //     Padding(
-        //       padding: EdgeInsets.symmetric(horizontal: 20.w),
-        //       child: CourseCard(
-        //         title: "This is title",
-        //         // title: course.title,
-        //         lessons:  "This is Lessons",
-        //         //lessons:  "${course.completedLessons}/${course.totalLessons} Lessons",
-        //         progress: 0.40,
-        //         //progress: progress,
-        //         image: ImagePath.coursesBg, // static if from api --> course.thumbnail,
-        //       ),
-        //     ),
-        //
-        //     SizedBox(height: 30.h),
-        //
-        //     Padding(
-        //       padding: EdgeInsets.symmetric(horizontal: 20.w),
-        //       child: PrimaryButton(
-        //         text: "Continue",
-        //           onPressed: () {
-        //             final course = controller.courses.first;
-        //             Get.to(() => LessonsPage(courseId: course.id));
-        //           }
-        //       ),
-        //     )
-        //   ],
-        // )
         body: Obx(() {
           if (controller.isLoading.value) return const Center(child: CircularProgressIndicator());
           if (controller.courses.isEmpty) return const Center(child: Text("No courses found"));

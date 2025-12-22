@@ -25,6 +25,7 @@ class LessonsPage extends StatelessWidget {
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
             onPressed: () {
+              Get.delete<LessonsController>(tag: courseId);
               Get.to(() => CustomerDashboard(initialIndex: 1));
             },
           ),

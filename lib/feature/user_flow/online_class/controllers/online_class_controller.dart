@@ -11,10 +11,12 @@ class OnlineClassController extends GetxController {
   final isInitialized = false.obs;
   VoidCallback? onVideoCompleted;
   String? _currentUrl;
+  bool _hasCompleted = false;
 
   void setVideo(String? url, {VoidCallback? onCompleted}) {
     if (url == null || url.isEmpty) return;
     if (_currentUrl == url) return;
+    _hasCompleted = false;
     _currentUrl = url;
     onVideoCompleted = onCompleted;
     _initVideo(url);
@@ -33,10 +35,14 @@ class OnlineClassController extends GetxController {
     /// LISTEN FOR VIDEO END
     videoController!.addListener(() {
       final controller = videoController!;
-      if (controller.value.position >= controller.value.duration && !controller.value.isPlaying) {
+      if (!_hasCompleted &&
+          controller.value.position >= controller.value.duration &&
+          !controller.value.isPlaying) {
+        _hasCompleted = true;
         onVideoCompleted?.call();
       }
     });
+
 
     chewieController = ChewieController(
       videoPlayerController: videoController!,

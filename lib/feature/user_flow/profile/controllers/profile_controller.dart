@@ -110,9 +110,7 @@ class ProfileController extends GetxController {
   Future<void> logout() async {
     try {
       await _repository.logout();
-      Get.delete<ProfileController>(force: true);
-      Get.delete<PersonalInfoController>(force: true);
-      Get.delete<SignInController>(force: true);
+      Get.deleteAll(force: true);
       Get.offAll(() => SignInPage());
     } catch (e) {
       Get.snackbar('Logout Failed', e.toString());

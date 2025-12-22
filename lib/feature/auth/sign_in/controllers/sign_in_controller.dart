@@ -68,9 +68,7 @@ class SignInController extends GetxController {
 
       if (rememberMe.value) {
         await SharedPreferencesHelper.saveRememberMe(true);
-        await SharedPreferencesHelper.saveRememberedEmail(
-          emailController.text.trim(),
-        );
+        await SharedPreferencesHelper.saveRememberedEmail(emailController.text.trim());
       } else {
         await SharedPreferencesHelper.clearRememberMe();
 
@@ -79,24 +77,14 @@ class SignInController extends GetxController {
       }
 
       EasyLoading.dismiss();
-      Get.snackbar(
-        "Success",
-        "Logged in successfully",
-        backgroundColor: AppColors.primaryColor,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Success", "Logged in successfully", backgroundColor: AppColors.primaryColor, colorText: Colors.white);
 
       if (role == 'ADMIN') {
         Get.offAll(() => AdminDashboard());
       } else if (role == 'USER') {
         Get.offAll(() => CustomerDashboard());
       } else {
-        Get.snackbar(
-          "Error",
-          "Unknown role",
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        Get.snackbar("Error", "Unknown role", backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
 
 

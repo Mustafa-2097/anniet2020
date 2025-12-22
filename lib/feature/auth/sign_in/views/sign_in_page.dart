@@ -18,7 +18,6 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sw = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: SafeArea(

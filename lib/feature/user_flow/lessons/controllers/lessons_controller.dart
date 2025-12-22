@@ -42,13 +42,11 @@ class LessonsController extends GetxController {
         lesson.isLocked = true;
         continue;
       }
-
       /// First lesson always unlocked
       if (i == 0) {
         lesson.isLocked = false;
         continue;
       }
-
       /// Unlock only if previous lesson completed
       lesson.isLocked = !lessons[i - 1].isCompleted;
     }

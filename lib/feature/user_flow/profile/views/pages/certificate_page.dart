@@ -1,13 +1,15 @@
-import 'package:anniet2020/core/constant/image_path.dart';
-import 'package:anniet2020/feature/user_flow/profile/controllers/help_support_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:printing/printing.dart';
 import '../../../../../core/constant/app_colors.dart';
+import '../../controllers/certificate_controller.dart';
 
 class CertificatePage extends StatelessWidget {
-  const CertificatePage({super.key});
+  CertificatePage({super.key});
+  final controller = Get.put(CertificateController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,52 +87,13 @@ class CertificatePage extends StatelessWidget {
 
                 // Download Button
                 Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            insetPadding: EdgeInsets.zero,
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(vertical: 16.h),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "Your Certificate",
-                                    style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
-                                  ),
-                                  SizedBox(height: 10),
-                                  // Certificate Showing here
-                                  Image.asset(
-                                    ImagePath.certificate,
-                                    width: 300,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  SizedBox(height: 10),
-                                  ElevatedButton(
-                                    onPressed: () => Get.back(),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(24.r),
-                                      ),
-                                      padding: EdgeInsets.symmetric(horizontal: 40.w),
-                                    ),
-                                    child: Text(
-                                      "Close",
-                                      style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, height: 1.5, color: AppColors.whiteColor),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                  child: Obx(() => ElevatedButton(
+                    onPressed: controller.isCourseCompleted.value
+                        ? () async {
+                      await controller.generatePdf();
+                      showPdfDialog();
+                    }
+                        : null, //  disable
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
                       shape: RoundedRectangleBorder(
@@ -138,18 +101,101 @@ class CertificatePage extends StatelessWidget {
                       ),
                       padding: EdgeInsets.symmetric(horizontal: 40.w),
                     ),
-                    child: Text(
-                      "Download Certificate",
-                      style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, height: 1.5, color: AppColors.whiteColor),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Download Certificate",
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.whiteColor,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Icon(
+                          controller.isCourseCompleted.value
+                              ? Icons.lock_open
+                              : Icons.lock,
+                          color: Colors.white,
+                        ),
+                      ],
                     ),
-                  ),
+                  )),
                 ),
+
               ],
             ),
           ),
         ),
-      )
-      ,
+      ),
     );
   }
 }
+
+void showPdfDialog() {
+  final controller = Get.find<CertificateController>();
+
+  showDialog(
+    context: Get.context!,
+    builder: (_) {
+      final screenWidth = MediaQuery.of(Get.context!).size.width;
+      final dialogWidth = screenWidth - 16;
+      final dialogHeight = dialogWidth / 0.414;
+      return Dialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 8.r, vertical: 16.r),
+        child: SizedBox(
+          width: dialogWidth,
+          height: dialogHeight,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(12),
+                child: Text(
+                  "Your Certificate",
+                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                ),
+              ),
+
+              // PDF Preview
+              Expanded(
+                child: PdfPreview(
+                  build: (format) async => controller.pdfBytes!,
+                  allowPrinting: false,
+                  allowSharing: false,
+                  canChangeOrientation: false,
+                  canChangePageFormat: false,
+                ),
+              ),
+
+              // Action Buttons
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.r),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => Get.back(),
+                      child: Text("Close"),
+                    ),
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.download),
+                      label: Text("Download"),
+                      onPressed: () async {
+                        await Printing.sharePdf(
+                          bytes: controller.pdfBytes!,
+                          filename: "certificate.pdf",
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+

@@ -98,7 +98,6 @@ class LessonTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20.r),
                       color: AppColors.greenColor,
                     ),
-
                 ],
               ),
             )

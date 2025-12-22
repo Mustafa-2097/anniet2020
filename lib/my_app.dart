@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
                 side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
               ),
             ),
-            home: SplashScreen(),
+            home: CustomerDashboard(),
           ),
         );
       },
