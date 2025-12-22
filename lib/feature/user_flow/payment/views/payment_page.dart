@@ -1,14 +1,17 @@
 import 'package:anniet2020/core/constant/image_path.dart';
 import 'package:anniet2020/core/constant/widgets/primary_button.dart';
 import 'package:anniet2020/feature/user_flow/payment/views/pages/add_new_card.dart';
+import 'package:anniet2020/feature/user_flow/payment/views/pages/stripe_webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
+import '../controllers/stripe_controller.dart';
 
 class PaymentPage extends StatelessWidget {
-  const PaymentPage({super.key});
+  PaymentPage({super.key});
+  final StripeController stripeController = Get.put(StripeController());
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +186,9 @@ class PaymentPage extends StatelessWidget {
 
             /// Payment Button
             PrimaryButton(
-              onPressed: () => Get.to(() => AddNewCard()),
+              onPressed: () {
+                stripeController.setupStripeAccount();
+              },
               text: "Payment",
             ),
             SizedBox(height: 10.h),

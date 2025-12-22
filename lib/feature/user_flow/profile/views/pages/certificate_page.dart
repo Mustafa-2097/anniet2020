@@ -140,8 +140,8 @@ void showPdfDialog() {
     context: Get.context!,
     builder: (_) {
       final screenWidth = MediaQuery.of(Get.context!).size.width;
-      final dialogWidth = screenWidth - 16;
-      final dialogHeight = dialogWidth / 0.414;
+      final dialogWidth = screenWidth - 16.w;
+      final dialogHeight = dialogWidth;
       return Dialog(
         insetPadding: EdgeInsets.symmetric(horizontal: 8.r, vertical: 16.r),
         child: SizedBox(
@@ -150,7 +150,7 @@ void showPdfDialog() {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(12),
+                padding: EdgeInsets.all(12.r),
                 child: Text(
                   "Your Certificate",
                   style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),

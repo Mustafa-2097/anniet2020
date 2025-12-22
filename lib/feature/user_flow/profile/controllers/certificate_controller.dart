@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart';
@@ -25,7 +26,6 @@ class CertificateController extends GetxController {
 
   Future<void> generatePdf() async {
     final pdf = pw.Document();
-
     final bgImage = pw.MemoryImage(
       (await rootBundle.load('assets/images/certificate.png'))
           .buffer
@@ -41,32 +41,26 @@ class CertificateController extends GetxController {
             children: [
               // FULL WIDTH IMAGE
               pw.Positioned.fill(
-                child: pw.Image(
-                  bgImage,
-                  fit: pw.BoxFit.cover, // 🔥 cover full page
-                ),
+                child: pw.Image(bgImage, fit: pw.BoxFit.cover),
               ),
 
               // NAME
               pw.Positioned(
-                left: 260,
-                top: 150,
+                left: 400,
+                top: 130,
                 child: pw.Text(
                   userName.value,
-                  style: pw.TextStyle(
-                    fontSize: 22,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
+                  style: pw.TextStyle(fontSize: 22.sp, fontWeight: pw.FontWeight.bold),
                 ),
               ),
 
               // DATE
               pw.Positioned(
-                left: 260,
-                top: 360,
+                left: 400,
+                top: 390,
                 child: pw.Text(
                   completionDate.value,
-                  style: pw.TextStyle(fontSize: 12),
+                  style: pw.TextStyle(fontSize: 12.sp),
                 ),
               ),
             ],

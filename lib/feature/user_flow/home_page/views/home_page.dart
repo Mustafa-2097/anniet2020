@@ -6,6 +6,7 @@ import 'package:anniet2020/feature/user_flow/payment/views/payment_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -123,92 +124,100 @@ class HomePage extends StatelessWidget {
                       /// Cards (PageView)
                       SizedBox(
                         height: sh * 0.189,
-                        child: PageView.builder(
-                          controller: controller.pageController,
-                          itemCount: items.length,
-                          onPageChanged: (index) =>
-                              controller.currentPage.value = index,
-                          itemBuilder: (context, index) {
-                            final item = items[index];
-                            return Stack(
-                              children: [
-                                // Background image
-                                Container(
-                                  width: sw * 0.872,
-                                  height: sh * 0.189,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    image: DecorationImage(
-                                      image: AssetImage(item['image']!),
-                                      fit: BoxFit.cover,
-                                      colorFilter: ColorFilter.mode(
-                                        Colors.black.withOpacity(0.35),
-                                        BlendMode.darken,
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (notification) {
+                            if (notification is UserScrollNotification) {
+                              if (notification.direction == ScrollDirection.idle) {
+                                controller.onUserInteractionEnd();
+                              } else {
+                                controller.onUserInteractionStart();
+                              }
+                            }
+                            return false;
+                          },
+                          child: PageView.builder(
+                            controller: controller.pageController,
+                            itemCount: items.length,
+                            onPageChanged: controller.setPage,
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              return Stack(
+                                children: [
+                                  // Background Image
+                                  Container(
+                                    width: sw * 0.872,
+                                    height: sh * 0.189,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                        image: AssetImage(item['image']!),
+                                        fit: BoxFit.cover,
+                                        colorFilter: ColorFilter.mode(
+                                          Colors.black.withOpacity(0.35),
+                                          BlendMode.darken,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
 
-                                // Overlay container
-                                Container(
-                                  width: 327.w,
-                                  height: sh * 0.189,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    color: Colors.black.withOpacity(0.5),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w,
-                                    vertical: 8.h,
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item['title']!,
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: AppColors.whiteColor,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w700,
+                                  // Overlay
+                                  Container(
+                                    width: sw * 0.872,
+                                    height: sh * 0.189,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.black.withOpacity(0.5),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['title']!,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(height: 4.h),
-                                      Text(
-                                        item['subtitle']!,
-                                        style: GoogleFonts.plusJakartaSans(color: AppColors.whiteColor, fontSize: 14.sp, fontWeight: FontWeight.w500),
-                                      ),
-                                      SizedBox(height: 8.h),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          item['subtitle']!,
+                                          style: TextStyle(color: Colors.white, fontSize: 14),
+                                        ),
+                                        SizedBox(height: 8),
 
-                                      // Dot indicators (only this needs Obx)
-                                      Obx(() => Row(
+                                        // Dot indicators
+                                        Obx(() => Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: List.generate(
                                             items.length,
-                                            (dotIndex) => Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 3.w),
+                                                (dotIndex) => Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 3),
                                               child: Container(
-                                                width: 6.w,
-                                                height: 6.h,
+                                                width: 6,
+                                                height: 6,
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
                                                   color: dotIndex == controller.currentPage.value
-                                                      ? AppColors.whiteColor
+                                                      ? Colors.white
                                                       : Colors.white.withOpacity(0.4),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                        )),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            );
-                          },
+                                ],
+                              );
+                            },
+                          ),
                         ),
                       ),
+
 
                       SizedBox(height: 10.h),
 

@@ -3,6 +3,7 @@ import 'package:anniet2020/feature/user_flow/dashboard/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../courses/views/courses_page.dart';
+import '../home_page/controllers/home_controller.dart';
 import '../home_page/views/home_page.dart';
 import '../profile/controllers/profile_controller.dart';
 import '../profile/views/profile_page.dart';
@@ -35,6 +36,11 @@ class _CustomerDashboardState extends State<CustomerDashboard> {
     setState(() {
       _selectedIndex = index;
     });
+
+    // যদি HomePage তে আসো, auto-slide restart করো
+    if (index == 0) {
+      HomeController.instance.restartSlider();
+    }
   }
 
   @override
