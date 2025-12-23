@@ -31,6 +31,15 @@ class UserRepository {
     }
     return response['data']['avatar'];
   }
+  /// Certificate
+  Future<List<Map<String, dynamic>>> getCertificates() async {
+    final response = await _provider.fetchCertificate();
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'Failed to load certificates');
+    }
+    return List<Map<String, dynamic>>.from(response['data']);
+  }
+
   /// Contact Us via Message
   Future<void> contactUs(String message) async {
     final response = await _provider.contactUs(message);

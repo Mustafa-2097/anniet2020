@@ -1,4 +1,6 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import '../../../../core/constant/app_colors.dart';
 import '../../lessons/controllers/lessons_controller.dart';
 import '../../lessons/models/lesson_model.dart';
 import '../../score/models/score_model.dart';
@@ -10,13 +12,8 @@ import '../model/exam_question_model.dart';
 class ExamController extends GetxController {
   final String courseId;
   final String lessonId;
-
   late final LessonsController lessonsController;
-
-  ExamController({
-    required this.courseId,
-    required this.lessonId,
-  });
+  ExamController({required this.courseId, required this.lessonId});
 
   static const int questionsPerVideo = 5;
   static const int passMark = 4;
@@ -28,17 +25,16 @@ class ExamController extends GetxController {
   final isAnswered = false.obs;
   final isCorrect = false.obs;
   final score = 0.obs;
+  final isNavigating = false.obs;
 
   /// ================= GETTERS =================
   int get totalQuestions => questions.length;
 
   double get progress => (currentIndex.value + 1) / totalQuestions;
 
-  ExamQuestionModel get question =>
-      questions[currentIndex.value];
+  ExamQuestionModel get question => questions[currentIndex.value];
 
-  LessonModel get lesson =>
-      lessonsController.lessons.firstWhere(
+  LessonModel get lesson => lessonsController.lessons.firstWhere(
             (l) => l.id == lessonId,
       );
 
@@ -47,8 +43,7 @@ class ExamController extends GetxController {
   void onInit() {
     super.onInit();
 
-    lessonsController =
-        Get.find<LessonsController>(tag: courseId);
+    lessonsController = Get.find<LessonsController>(tag: courseId);
 
     questions.assignAll([
       ExamQuestionModel(
@@ -87,9 +82,7 @@ class ExamController extends GetxController {
 
   void checkAnswer() {
     if (selectedIndex.value == -1) return;
-
     isAnswered.value = true;
-
     if (selectedIndex.value == question.correctIndex) {
       isCorrect.value = true;
       score.value++;
@@ -99,26 +92,37 @@ class ExamController extends GetxController {
   }
 
   Future<void> nextQuestion() async {
+    if (isNavigating.value) return;
+
     if (currentIndex.value == questionsPerVideo - 1) {
+      isNavigating.value = true;
+      EasyLoading.show(status: 'Checking result...');
+
       final isPassed = score.value >= passMark;
 
-      if (isPassed) {
-        // 🔥 STEP 1: tell backend to move to next video
-        await lessonsController.getNextVideo(courseId);
+      try {
+        if (isPassed) {
+          // STEP 1: tell backend to move to next video
+          await lessonsController.getNextVideo(courseId);
+          // STEP 2: refresh lessons from backend
+          await lessonsController.refreshFromBackend();
+        }
 
-        // 🔥 STEP 2: refresh lessons from backend
-        await lessonsController.refreshFromBackend();
+        EasyLoading.dismiss();
+        Get.offAll(() => ScorePage(
+          courseId: courseId,
+          result: ScoreData(
+            score: score.value,
+            total: questionsPerVideo,
+            isPassed: isPassed,
+          ),
+          onNext: isPassed ? goToNextLesson : retryExam,
+        ));
+      } catch (e) {
+        EasyLoading.dismiss();
+        isNavigating.value = false;
+        Get.snackbar("Error", "Something went wrong. Please try again.", backgroundColor: AppColors.redColor);
       }
-
-      Get.offAll(() => ScorePage(
-        courseId: courseId,
-        result: ScoreData(
-          score: score.value,
-          total: questionsPerVideo,
-          isPassed: isPassed,
-        ),
-        onNext: isPassed ? goToNextLesson : retryExam,
-      ));
       return;
     }
 
@@ -129,19 +133,14 @@ class ExamController extends GetxController {
   }
 
   void retryExam() {
-    Get.offAll(() => OnlineClassPage(
-      courseId: courseId,
-      lessonId: lessonId,
-    ));
+    Get.offAll(() => OnlineClassPage(courseId: courseId, lessonId: lessonId));
   }
 
   void goToNextLesson() {
     final lessons = lessonsController.lessons;
     final index = lessons.indexWhere((l) => l.id == lessonId);
 
-    if (index != -1 &&
-        index + 1 < lessons.length &&
-        !lessons[index + 1].isLocked) {
+    if (index != -1 && index + 1 < lessons.length) {
       Get.offAll(() => OnlineClassPage(
         courseId: courseId,
         lessonId: lessons[index + 1].id,

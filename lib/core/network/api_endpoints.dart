@@ -33,10 +33,5 @@ class ApiEndpoints {
   // Lesson's Review
   static const String review = '$baseUrl/lessons/:id/review';
 
-
-  /// Certificate
-
-
-
 }
 

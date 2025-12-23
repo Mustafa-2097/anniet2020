@@ -17,11 +17,7 @@ class OnlineClassPage extends StatefulWidget {
   final String courseId;
   final String lessonId;
 
-  const OnlineClassPage({
-    super.key,
-    required this.courseId,
-    required this.lessonId,
-  });
+  const OnlineClassPage({super.key, required this.courseId, required this.lessonId});
 
   @override
   State<OnlineClassPage> createState() => _OnlineClassPageState();
@@ -30,9 +26,8 @@ class OnlineClassPage extends StatefulWidget {
 class _OnlineClassPageState extends State<OnlineClassPage> {
   late final OnlineClassController controller;
 
-  /// 🔥 ALWAYS read lesson from controller (single source of truth)
-  LessonModel get lesson =>
-      Get.find<LessonsController>(tag: widget.courseId)
+  /// ALWAYS read lesson from controller (single source of truth)
+  LessonModel get lesson => Get.find<LessonsController>(tag: widget.courseId)
           .lessons
           .firstWhere((l) => l.id == widget.lessonId);
 
@@ -44,18 +39,9 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
     controller.setVideo(
       lesson.video,
       onCompleted: () async {
-        /// ONLY intro lesson unlocks directly
         if (lesson.order == 1) {
           final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
-
-          // Mark the intro lesson as completed
-          lesson.isCompleted = true;
-
-          // Refresh the backend to update lesson states
-          await lessonsController.refreshFromBackend();
-
-          // You can also unlock the next lesson, if applicable, here:
-          await lessonsController.unlockNextLesson(widget.courseId);
+          await lessonsController.completeIntroAndRefresh();
         }
       },
     );

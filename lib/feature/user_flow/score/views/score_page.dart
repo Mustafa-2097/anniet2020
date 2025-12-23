@@ -13,11 +13,11 @@ class ScorePage extends StatelessWidget {
   final ScoreData result;
   final VoidCallback onNext;
   final String courseId;
-  ScorePage({super.key, required this.result, required this.onNext, required this.courseId});
-  final ProfileController profile = Get.find<ProfileController>();
+  const ScorePage({super.key, required this.result, required this.onNext, required this.courseId});
 
   @override
   Widget build(BuildContext context) {
+    final ProfileController profile = Get.find<ProfileController>();
     final lessons = Get.find<LessonsController>(tag: courseId);
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
@@ -68,7 +68,6 @@ class ScorePage extends StatelessWidget {
                   completedVideos: completed,
                 );
               }),
-
 
               const Spacer(),
 

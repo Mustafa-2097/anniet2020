@@ -8,7 +8,6 @@ class UserApiProvider {
   Future<Map<String, dynamic>> fetchProfile() async {
     return await _client.get(ApiEndpoints.profile);
   }
-
   /// Update profile
   Future<Map<String, dynamic>> updateProfile({
     String? name,
@@ -30,6 +29,10 @@ class UserApiProvider {
       filePath: imagePath,
       fileField: 'avatar',
     );
+  }
+  /// Certificate
+  Future<Map<String, dynamic>> fetchCertificate() async {
+    return await _client.get(ApiEndpoints.certificate);
   }
   /// Contact Us
   Future<Map<String, dynamic>> contactUs(String message) async {

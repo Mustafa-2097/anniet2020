@@ -13,7 +13,7 @@ class ReviewUserController extends GetxController {
   final isLoading = false.obs;
 
   double averageRating = 0;
-  Map<int, int> counts = {};
+  final RxMap<int, int> counts = <int, int>{}.obs;
 
   @override
   void onInit() {
@@ -29,7 +29,10 @@ class ReviewUserController extends GetxController {
           .map((e) => ReviewUserModel.fromJson(e))
           .toList();
       averageRating = (data['average'] as num).toDouble();
-      counts = Map<int, int>.from(data['counts']);
+      final rawCounts = Map<String, dynamic>.from(data['counts']);
+      counts.value = rawCounts.map(
+            (key, value) => MapEntry(int.parse(key), value as int),
+      );
     } finally {
       isLoading.value = false;
     }

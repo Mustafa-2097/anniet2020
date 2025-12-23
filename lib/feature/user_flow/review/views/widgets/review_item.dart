@@ -7,6 +7,11 @@ import '../../models/review_page_model.dart';
 class ReviewItem extends StatelessWidget {
   final ReviewUserModel review;
   const ReviewItem({super.key, required this.review});
+  String formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +29,9 @@ class ReviewItem extends StatelessWidget {
             ),
             SizedBox(width: 4.w),
             Text(
-              "${review.createdAt}",
+              formatDate(review.createdAt),
               style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.boxTextColor, fontWeight: FontWeight.w600),
             ),
-            const Spacer(),
-            Icon(Icons.more_horiz, color: AppColors.blackColor, size: 24.r),
           ],
         ),
 
@@ -46,7 +49,7 @@ class ReviewItem extends StatelessWidget {
         Text(
           review.userName,
           style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.boxTextColor, fontWeight: FontWeight.w600),
-        )
+        ),
       ],
     );
   }

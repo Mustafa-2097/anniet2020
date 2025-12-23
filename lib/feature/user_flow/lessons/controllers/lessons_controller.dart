@@ -43,6 +43,15 @@ class LessonsController extends GetxController {
     }
   }
 
+  Future<void> completeIntroAndRefresh() async {
+    /// 1️⃣ backend কে বলো next video generate করতে
+    await _repository.getNextVideo(courseId);
+
+    /// 2️⃣ backend থেকে fresh lesson list আনো
+    await fetchLessons();
+  }
+
+
   /// Core lock/unlock logic
   void _applyLockFromBackend() {
     bool nextUnlockedGiven = false;
@@ -78,12 +87,4 @@ class LessonsController extends GetxController {
     await fetchLessons();
   }
 
-  Future<void> unlockNextLesson(String courseId) async {
-    // Get next lesson and mark it as unlocked
-    final nextLesson = lessons.firstWhere(
-          (lesson) => lesson.order == (lessons.firstWhere((l) => l.id == courseId).order + 1),
-    );
-    nextLesson.isLocked = false; // Unlock the next lesson
-    lessons.refresh();
-    }
 }

@@ -16,8 +16,7 @@ import '../../../../core/constant/image_path.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final controller = Get.put(HomeController());
-  final profile= Get.lazyPut(() => ProfileController());
-  final profileController = Get.find<ProfileController>();
+  final profileController= Get.put(ProfileController(), permanent: true);
 
   final List<Map<String, String>> items = [
     {

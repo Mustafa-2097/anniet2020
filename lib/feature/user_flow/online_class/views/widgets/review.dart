@@ -59,11 +59,21 @@ class Review extends StatelessWidget {
 
         /// Reviews List
         Obx(() {
-          /// Reviews list from controller
-          final reviews = controller.reviews;
+          /// 1 - Show loader while fetching
+          if (controller.isLoading.value) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.h),
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                  strokeWidth: 2,
+                ),
+              ),
+            );
+          }
 
-          /// Empty state handle
-          if (reviews.isEmpty) {
+          /// 2 - Empty state
+          if (controller.reviews.isEmpty) {
             return Center(
               child: Text(
                 "No reviews yet",
@@ -72,12 +82,11 @@ class Review extends StatelessWidget {
             );
           }
 
-          /// Only take maximum 2 reviews safely
-          final limitedReviews = reviews.take(2).toList();
-
+          /// 3 - Show max 2 reviews
+          final limitedReviews = controller.reviews.take(2).toList();
           return ListView.separated(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: limitedReviews.length,
             separatorBuilder: (_, __) => SizedBox(height: 20.h),
             itemBuilder: (context, index) {
@@ -101,7 +110,7 @@ class Review extends StatelessWidget {
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              onPressed: () => Get.to(() => ReviewUserPage(lessonId: lessonId)),
+              onPressed: () => Get.off(() => ReviewUserPage(lessonId: lessonId)),
               child: Text(
                 "See more reviews",
                 style: GoogleFonts.plusJakartaSans(

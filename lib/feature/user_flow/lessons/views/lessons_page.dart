@@ -21,14 +21,17 @@ class _LessonsPageState extends State<LessonsPage> {
   @override
   void initState() {
     super.initState();
-    Get.put(ProfileController());
-    controller = Get.put(LessonsController(widget.courseId), tag: widget.courseId, permanent: true);
-  }
+    Get.find<ProfileController>();
 
-  @override
-  void dispose() {
-    Get.delete<LessonsController>(tag: widget.courseId);
-    super.dispose();
+    if (Get.isRegistered<LessonsController>(tag: widget.courseId)) {
+      controller = Get.find<LessonsController>(tag: widget.courseId);
+    } else {
+      controller = Get.put(
+        LessonsController(widget.courseId),
+        tag: widget.courseId,
+        permanent: true,
+      );
+    }
   }
 
   @override

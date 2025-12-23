@@ -151,6 +151,9 @@ class ReviewUserPage extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: count / total,
                     minHeight: 6,
+                    borderRadius: BorderRadius.circular(10.r),
+                    backgroundColor: Colors.grey.shade300,
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
                   ),
                 ),
               ],
