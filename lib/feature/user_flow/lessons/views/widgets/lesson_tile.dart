@@ -20,7 +20,7 @@ class LessonTile extends StatelessWidget {
           Get.snackbar("Locked", "Complete previous lesson first", backgroundColor: AppColors.redColor);
           return;
         }
-        Get.to(() => OnlineClassPage(lesson: lesson, courseId: courseId));
+        Get.to(() => OnlineClassPage(lessonId: lesson.id, courseId: courseId));
       },
 
       child: Container(

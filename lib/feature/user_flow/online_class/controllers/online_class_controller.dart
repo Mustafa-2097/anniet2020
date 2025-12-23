@@ -5,7 +5,6 @@ import 'package:video_player/video_player.dart';
 
 class OnlineClassController extends GetxController {
   static OnlineClassController get instance => Get.find();
-
   VideoPlayerController? videoController;
   ChewieController? chewieController;
   final isInitialized = false.obs;
@@ -13,36 +12,31 @@ class OnlineClassController extends GetxController {
   String? _currentUrl;
   bool _hasCompleted = false;
 
+  /// ================= SET VIDEO =================
   void setVideo(String? url, {VoidCallback? onCompleted}) {
     if (url == null || url.isEmpty) return;
     if (_currentUrl == url) return;
-    _hasCompleted = false;
     _currentUrl = url;
+    _hasCompleted = false;
     onVideoCompleted = onCompleted;
     _initVideo(url);
   }
 
+  /// ================= INIT VIDEO =================
   Future<void> _initVideo(String videoUrl) async {
     isInitialized.value = false;
-
     videoController?.dispose();
     chewieController?.dispose();
-
     videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
-
     await videoController!.initialize();
-
-    /// LISTEN FOR VIDEO END
+    /// ================= LISTEN FOR VIDEO END =================
     videoController!.addListener(() {
       final controller = videoController!;
-      if (!_hasCompleted &&
-          controller.value.position >= controller.value.duration &&
-          !controller.value.isPlaying) {
+      if (!_hasCompleted && controller.value.position >= controller.value.duration) {
         _hasCompleted = true;
         onVideoCompleted?.call();
       }
     });
-
 
     chewieController = ChewieController(
       videoPlayerController: videoController!,
@@ -55,6 +49,7 @@ class OnlineClassController extends GetxController {
     isInitialized.value = true;
   }
 
+  /// ================= CLEANUP =================
   @override
   void onClose() {
     videoController?.dispose();

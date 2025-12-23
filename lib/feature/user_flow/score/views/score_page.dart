@@ -61,10 +61,14 @@ class ScorePage extends StatelessWidget {
               SizedBox(height: 30.h),
 
               /// Progress Dots
-              ProgressDots(
-                total: lessons.lessons.length,
-                completedVideos: result.completedVideos,
-              ),
+              Obx(() {
+                final completed = lessons.lessons.where((l) => l.isCompleted).length;
+                return ProgressDots(
+                  total: lessons.lessons.length,
+                  completedVideos: completed,
+                );
+              }),
+
 
               const Spacer(),
 

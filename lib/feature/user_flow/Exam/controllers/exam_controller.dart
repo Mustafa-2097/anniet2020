@@ -1,33 +1,55 @@
-import 'package:anniet2020/feature/user_flow/lessons/views/lessons_page.dart';
 import 'package:get/get.dart';
 import '../../lessons/controllers/lessons_controller.dart';
 import '../../lessons/models/lesson_model.dart';
 import '../../score/models/score_model.dart';
 import '../../score/views/score_page.dart';
-import '../model/exam_question_model.dart';
 import '../../online_class/views/online_class_page.dart';
+import '../../lessons/views/lessons_page.dart';
+import '../model/exam_question_model.dart';
 
 class ExamController extends GetxController {
-  static ExamController get instance => Get.find();
-
-  /// ================= DEPENDENCIES =================
-  final LessonModel lesson;
   final String courseId;
+  final String lessonId;
+
   late final LessonsController lessonsController;
-  ExamController({required this.lesson, required this.courseId});
 
-  /// ================= CONFIG =================
+  ExamController({
+    required this.courseId,
+    required this.lessonId,
+  });
+
   static const int questionsPerVideo = 5;
-  static const int passMark = 4; /// 4 out of 5 required
+  static const int passMark = 4;
 
-  /// ================= QUESTIONS =================
+  /// ================= STATE =================
   final questions = <ExamQuestionModel>[].obs;
+  final currentIndex = 0.obs;
+  final selectedIndex = (-1).obs;
+  final isAnswered = false.obs;
+  final isCorrect = false.obs;
+  final score = 0.obs;
 
+  /// ================= GETTERS =================
+  int get totalQuestions => questions.length;
+
+  double get progress => (currentIndex.value + 1) / totalQuestions;
+
+  ExamQuestionModel get question =>
+      questions[currentIndex.value];
+
+  LessonModel get lesson =>
+      lessonsController.lessons.firstWhere(
+            (l) => l.id == lessonId,
+      );
+
+  /// ================= INIT =================
   @override
   void onInit() {
     super.onInit();
-    lessonsController = Get.find<LessonsController>(tag: courseId);
-    /// TODO: Later load questions dynamically from backend by lesson.id
+
+    lessonsController =
+        Get.find<LessonsController>(tag: courseId);
+
     questions.assignAll([
       ExamQuestionModel(
         question: "What is the legal BAC limit?",
@@ -57,26 +79,12 @@ class ExamController extends GetxController {
     ]);
   }
 
-  /// ================= STATE =================
-  final currentIndex = 0.obs;
-  final selectedIndex = (-1).obs;
-  final isAnswered = false.obs;
-  final isCorrect = false.obs;
-
-  final score = 0.obs;
-  final progress = 0.0.obs;
-
-  /// ================= GETTERS =================
-  ExamQuestionModel get question => questions[currentIndex.value];
-  int get totalQuestions => questionsPerVideo;
-
-  /// ================= OPTION SELECT =================
+  /// ================= ACTIONS =================
   void selectOption(int index) {
     if (isAnswered.value) return;
     selectedIndex.value = index;
   }
 
-  /// ================= CHECK ANSWER =================
   void checkAnswer() {
     if (selectedIndex.value == -1) return;
 
@@ -90,75 +98,55 @@ class ExamController extends GetxController {
     }
   }
 
-  /// ================= NEXT QUESTION =================
   Future<void> nextQuestion() async {
-    /// Last question
     if (currentIndex.value == questionsPerVideo - 1) {
-      final bool isPassed = score.value >= passMark;
+      final isPassed = score.value >= passMark;
 
       if (isPassed) {
-        lessonsController.markLessonCompleted(lesson.id);
-        await lessonsController.syncNextVideoFromServer();
+        // 🔥 STEP 1: tell backend to move to next video
+        await lessonsController.getNextVideo(courseId);
+
+        // 🔥 STEP 2: refresh lessons from backend
+        await lessonsController.refreshFromBackend();
       }
 
-      goToResultPage(isPassed);
+      Get.offAll(() => ScorePage(
+        courseId: courseId,
+        result: ScoreData(
+          score: score.value,
+          total: questionsPerVideo,
+          isPassed: isPassed,
+        ),
+        onNext: isPassed ? goToNextLesson : retryExam,
+      ));
       return;
     }
 
-    /// Go next question
     currentIndex.value++;
-    progress.value = currentIndex.value / questionsPerVideo;
-
     selectedIndex.value = -1;
     isAnswered.value = false;
     isCorrect.value = false;
   }
 
-  /// ================= SCORE PAGE =================
-  void goToResultPage(bool isPassed) {
-    Get.off(() => ScorePage(
-      result: ScoreData(
-        score: score.value,
-        total: questionsPerVideo,
-        isPassed: isPassed,
-        completedVideos: lessonsController.lessons.where((l) => l.isCompleted).length,
-      ),
-      onNext: isPassed ? goToNextLesson : retryExam, courseId: courseId,
-    ));
-  }
-
-  /// ================= RETRY SAME LESSON =================
   void retryExam() {
-    score.value = 0;
-    progress.value = 0;
-    currentIndex.value = 0;
-
-    selectedIndex.value = -1;
-    isAnswered.value = false;
-    isCorrect.value = false;
-
-    Get.off(() => OnlineClassPage(
-      courseId: lessonsController.courseId,
-      lesson: lesson,
+    Get.offAll(() => OnlineClassPage(
+      courseId: courseId,
+      lessonId: lessonId,
     ));
   }
 
-  /// ================= NEXT LESSON =================
   void goToNextLesson() {
-    final index =
-    lessonsController.lessons.indexWhere((l) => l.id == lesson.id);
-    if (index == -1) return;
+    final lessons = lessonsController.lessons;
+    final index = lessons.indexWhere((l) => l.id == lessonId);
 
-    /// If next lesson exists → open it
-    if (index + 1 < lessonsController.lessons.length) {
-      final nextLesson = lessonsController.lessons[index + 1];
-
+    if (index != -1 &&
+        index + 1 < lessons.length &&
+        !lessons[index + 1].isLocked) {
       Get.offAll(() => OnlineClassPage(
-        courseId: lessonsController.courseId,
-        lesson: nextLesson,
+        courseId: courseId,
+        lessonId: lessons[index + 1].id,
       ));
     } else {
-      /// All lessons completed → back to lessons list
       Get.offAll(() => LessonsPage(courseId: courseId));
     }
   }

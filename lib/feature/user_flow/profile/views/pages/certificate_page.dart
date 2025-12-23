@@ -10,7 +10,6 @@ class CertificatePage extends StatelessWidget {
   CertificatePage({super.key});
   final controller = Get.put(CertificateController());
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,9 +140,9 @@ void showPdfDialog() {
     builder: (_) {
       final screenWidth = MediaQuery.of(Get.context!).size.width;
       final dialogWidth = screenWidth - 16.w;
-      final dialogHeight = dialogWidth;
+      final dialogHeight = dialogWidth/0.9;
       return Dialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 8.r, vertical: 16.r),
+        insetPadding: EdgeInsets.symmetric(horizontal: 8.r, vertical: 8.r),
         child: SizedBox(
           width: dialogWidth,
           height: dialogHeight,
@@ -151,9 +150,27 @@ void showPdfDialog() {
             children: [
               Padding(
                 padding: EdgeInsets.all(12.r),
-                child: Text(
-                  "Your Certificate",
-                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // CENTER TITLE
+                    Center(
+                      child: Text("Your Certificate", style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600)),
+                    ),
+                    // RIGHT CORNER SHARE ICON
+                    Positioned(
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(Icons.share, size: 22.r, color: AppColors.primaryColor),
+                        onPressed: () async {
+                          await Printing.sharePdf(
+                            bytes: controller.pdfBytes!,
+                            filename: "certificate.pdf",
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -182,12 +199,16 @@ void showPdfDialog() {
                       icon: Icon(Icons.download),
                       label: Text("Download"),
                       onPressed: () async {
-                        await Printing.sharePdf(
-                          bytes: controller.pdfBytes!,
-                          filename: "certificate.pdf",
+                        await controller.downloadPdf();
+                        Get.defaultDialog(
+                          title: "Certificate Downloaded",
+                          middleText: "Open your Downloads folder to view the certificate.",
+                          textConfirm: "OK",
+                          onConfirm: () => Get.back(),
                         );
                       },
                     ),
+
                   ],
                 ),
               ),

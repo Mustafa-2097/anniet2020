@@ -5,16 +5,34 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../profile/controllers/profile_controller.dart';
 import '../controllers/lessons_controller.dart';
 
-class LessonsPage extends StatelessWidget {
+class LessonsPage extends StatefulWidget {
   final String courseId;
   const LessonsPage({super.key, required this.courseId});
+  @override
+  State<LessonsPage> createState() => _LessonsPageState();
+}
+
+class _LessonsPageState extends State<LessonsPage> {
+  late final LessonsController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    Get.put(ProfileController());
+    controller = Get.put(LessonsController(widget.courseId), tag: widget.courseId, permanent: true);
+  }
+
+  @override
+  void dispose() {
+    Get.delete<LessonsController>(tag: widget.courseId);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Get.put(LessonsController(courseId), tag: courseId);
-    final controller = Get.find<LessonsController>(tag: courseId);
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -25,12 +43,18 @@ class LessonsPage extends StatelessWidget {
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: AppColors.blackColor, size: 24.r),
             onPressed: () {
-              Get.delete<LessonsController>(tag: courseId);
-              Get.to(() => CustomerDashboard(initialIndex: 1));
+              Get.off(() => CustomerDashboard(initialIndex: 1));
             },
           ),
         ),
-        title: Obx(() => Text("${controller.lessons.length} Lessons", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor))),
+        title: Obx(() => Text(
+          "${controller.lessons.length} Lessons",
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.blackColor,
+          ),
+        )),
         centerTitle: true,
       ),
       body: Obx(() {
@@ -41,10 +65,14 @@ class LessonsPage extends StatelessWidget {
           padding: EdgeInsets.all(20.r),
           itemCount: controller.lessons.length,
           itemBuilder: (_, index) {
-            return LessonTile(lesson: controller.lessons[index], courseId: courseId);
+            return LessonTile(
+              lesson: controller.lessons[index],
+              courseId: widget.courseId,
+            );
           },
         );
       }),
     );
   }
 }
+

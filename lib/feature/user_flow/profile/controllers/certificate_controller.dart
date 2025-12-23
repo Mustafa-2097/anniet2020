@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
@@ -72,6 +74,29 @@ class CertificateController extends GetxController {
     pdfBytes = await pdf.save();
   }
 
+  Future<void> downloadPdf() async {
+    try {
+      late Directory directory;
 
+      if (Platform.isAndroid) {
+        directory = Directory('/storage/emulated/0/Download');
+      } else if (Platform.isIOS) {
+        directory = await getApplicationDocumentsDirectory();
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      final filePath = '${directory.path}/certificate.pdf';
+      final file = File(filePath);
+      await file.writeAsBytes(pdfBytes!);
+
+      print("PDF saved at: $filePath");
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Download failed",
+      );
+    }
+  }
 
 }

@@ -7,7 +7,7 @@ class LessonModel {
   final int order;
   final String description;
 
-  /// These must be mutable
+  /// Mutable states (controlled by LessonsController)
   bool isCompleted;
   bool isLocked;
 
@@ -26,16 +26,22 @@ class LessonModel {
   factory LessonModel.fromJson(Map<String, dynamic> json) {
     return LessonModel(
       id: json['id'],
-      title: json['title'],
+      title: json['title'] ?? "",
       image: json['thumbnail'],
       video: json['video'],
       lengthInSeconds: json['lengthInSeconds'] ?? 0,
+      order: json['order'] ?? 0,
       description: json['description'] ?? "",
-      order: json['order'],
+
+      /// ✅ Backend is the ONLY source of completion
       isCompleted: json['completed'] ?? false,
+
+      /// 🔒 Lock state will be calculated later
+      isLocked: true,
     );
   }
 
+  /// UI helper
   String get duration {
     final minutes = (lengthInSeconds / 60).ceil();
     return "$minutes min";

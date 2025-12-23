@@ -6,17 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../lessons/models/lesson_model.dart';
 import '../controllers/exam_controller.dart';
 
 class ExamPage extends StatelessWidget {
   final String courseId;
-  final LessonModel lesson;
-  const ExamPage({super.key, required this.courseId, required this.lesson});
+  final String lessonId;
+  const ExamPage({super.key, required this.courseId, required this.lessonId});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ExamController(lesson: lesson, courseId: courseId));
+    final controller = Get.put(ExamController(lessonId: lessonId, courseId: courseId));
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       extendBody: true,
@@ -32,7 +31,7 @@ class ExamPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      onPressed: () => Get.off(() => OnlineClassPage(courseId: courseId, lesson: lesson)),
+                      onPressed: () => Get.off(() => OnlineClassPage(courseId: courseId, lessonId: lessonId)),
                       icon: Icon(Icons.arrow_back_ios, size: 16.r, color: AppColors.blackColor),
                     ),
                     SizedBox(width: 18.w),
@@ -40,7 +39,7 @@ class ExamPage extends StatelessWidget {
                       height: 12.h,
                       width: 186.w,
                       child: LinearProgressIndicator(
-                        value: controller.progress.value,
+                        value: controller.progress,
                         backgroundColor: Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(20.r),
                         color: AppColors.greenColor,
@@ -212,7 +211,7 @@ class _WrongBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = ExamController.instance;
+    final controller = Get.find<ExamController>();
     final sh = MediaQuery.of(context).size.height;
 
     return Container(
