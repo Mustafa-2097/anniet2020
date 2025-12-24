@@ -26,7 +26,17 @@ class ReviewUserPage extends StatelessWidget {
         title: Text("Review", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color:  AppColors.blackColor)),
         centerTitle: true,
       ),
-      body: Stack(
+      body: Obx(()=>
+      controller.isLoading.value
+          ? Padding(
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: AppColors.primaryColor,
+          ),
+        ),
+      )
+          : Stack(
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(16.r, 16.r, 16.r, 0.r),
@@ -83,20 +93,21 @@ class ReviewUserPage extends StatelessWidget {
                     backgroundColor: AppColors.primaryColor
                 ),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add, color: AppColors.whiteColor, size: 18.r),
-                    SizedBox(width: 6.w),
-                    Text(
-                      "Write a Review",
-                      style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color:  AppColors.whiteColor),
-                    ),
-                  ]
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add, color: AppColors.whiteColor, size: 18.r),
+                      SizedBox(width: 6.w),
+                      Text(
+                        "Write a Review",
+                        style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color:  AppColors.whiteColor),
+                      ),
+                    ]
                 ),
               ),
             ),
           ),
         ],
+      )
       )
     );
   }

@@ -1,22 +1,21 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../data/repositories/user_repository.dart';
 import '../../lessons/controllers/lessons_controller.dart';
-import '../../lessons/models/lesson_model.dart';
+import '../../lessons/views/lessons_page.dart';
+import '../../online_class/views/online_class_page.dart';
 import '../../score/models/score_model.dart';
 import '../../score/views/score_page.dart';
-import '../../online_class/views/online_class_page.dart';
-import '../../lessons/views/lessons_page.dart';
 import '../model/exam_question_model.dart';
 
 class ExamController extends GetxController {
   final String courseId;
   final String lessonId;
-  late final LessonsController lessonsController;
   ExamController({required this.courseId, required this.lessonId});
 
-  static const int questionsPerVideo = 5;
-  static const int passMark = 4;
+  final UserRepository _repository = UserRepository();
+  late final LessonsController lessonsController;
 
   /// ================= STATE =================
   final questions = <ExamQuestionModel>[].obs;
@@ -25,53 +24,35 @@ class ExamController extends GetxController {
   final isAnswered = false.obs;
   final isCorrect = false.obs;
   final score = 0.obs;
+  final isLoading = true.obs;
   final isNavigating = false.obs;
 
   /// ================= GETTERS =================
   int get totalQuestions => questions.length;
 
-  double get progress => (currentIndex.value + 1) / totalQuestions;
+  double get progress => totalQuestions == 0 ? 0 : (currentIndex.value + 1) / totalQuestions;
 
   ExamQuestionModel get question => questions[currentIndex.value];
-
-  LessonModel get lesson => lessonsController.lessons.firstWhere(
-            (l) => l.id == lessonId,
-      );
 
   /// ================= INIT =================
   @override
   void onInit() {
     super.onInit();
-
     lessonsController = Get.find<LessonsController>(tag: courseId);
+    _loadQuestions();
+  }
 
-    questions.assignAll([
-      ExamQuestionModel(
-        question: "What is the legal BAC limit?",
-        options: ["0.10", "0.05", "0.02", "Zero"],
-        correctIndex: 1,
-      ),
-      ExamQuestionModel(
-        question: "When can you overtake?",
-        options: ["Never", "Anytime", "When safe", "Only at night"],
-        correctIndex: 2,
-      ),
-      ExamQuestionModel(
-        question: "Red traffic light means?",
-        options: ["Stop", "Go", "Speed up", "Slow down"],
-        correctIndex: 0,
-      ),
-      ExamQuestionModel(
-        question: "Seatbelt is required?",
-        options: ["No", "Sometimes", "Yes", "Only highway"],
-        correctIndex: 2,
-      ),
-      ExamQuestionModel(
-        question: "Speed limit sign is?",
-        options: ["Suggestion", "Warning", "Maximum speed", "Minimum speed"],
-        correctIndex: 2,
-      ),
-    ]);
+  /// ================= API =================
+  Future<void> _loadQuestions() async {
+    try {
+      isLoading.value = true;
+      final result = await _repository.getLessonQuestions(lessonId);
+      questions.assignAll(result);
+    } catch (e) {
+      Get.snackbar("Error", "Failed to load exam questions", backgroundColor: AppColors.redColor);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   /// ================= ACTIONS =================
@@ -82,46 +63,39 @@ class ExamController extends GetxController {
 
   void checkAnswer() {
     if (selectedIndex.value == -1) return;
+
     isAnswered.value = true;
-    if (selectedIndex.value == question.correctIndex) {
-      isCorrect.value = true;
+    isCorrect.value = selectedIndex.value == question.correctIndex;
+
+    if (isCorrect.value) {
       score.value++;
-    } else {
-      isCorrect.value = false;
     }
   }
 
   Future<void> nextQuestion() async {
     if (isNavigating.value) return;
 
-    if (currentIndex.value == questionsPerVideo - 1) {
+    if (currentIndex.value == totalQuestions - 1) {
       isNavigating.value = true;
       EasyLoading.show(status: 'Checking result...');
 
-      final isPassed = score.value >= passMark;
+      final bool isPassed = score.value >= (totalQuestions * 0.8);
 
       try {
         if (isPassed) {
-          // STEP 1: tell backend to move to next video
           await lessonsController.getNextVideo(courseId);
-          // STEP 2: refresh lessons from backend
           await lessonsController.refreshFromBackend();
         }
 
         EasyLoading.dismiss();
         Get.offAll(() => ScorePage(
           courseId: courseId,
-          result: ScoreData(
-            score: score.value,
-            total: questionsPerVideo,
-            isPassed: isPassed,
-          ),
+          result: ScoreData(score: score.value, total: totalQuestions, isPassed: isPassed),
           onNext: isPassed ? goToNextLesson : retryExam,
         ));
-      } catch (e) {
+      } catch (_) {
         EasyLoading.dismiss();
         isNavigating.value = false;
-        Get.snackbar("Error", "Something went wrong. Please try again.", backgroundColor: AppColors.redColor);
       }
       return;
     }
@@ -133,7 +107,10 @@ class ExamController extends GetxController {
   }
 
   void retryExam() {
-    Get.offAll(() => OnlineClassPage(courseId: courseId, lessonId: lessonId));
+    Get.offAll(() => OnlineClassPage(
+      courseId: courseId,
+      lessonId: lessonId,
+    ));
   }
 
   void goToNextLesson() {

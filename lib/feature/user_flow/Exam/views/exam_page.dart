@@ -21,6 +21,12 @@ class ExamPage extends StatelessWidget {
       extendBody: true,
       body: SafeArea(
         child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (controller.questions.isEmpty) {
+            return const Center(child: Text("No questions found"));
+          }
           return Padding(
             padding: EdgeInsets.all(16.r),
             child: Column(
@@ -58,35 +64,45 @@ class ExamPage extends StatelessWidget {
                 SizedBox(height: 30.h),
 
                 /// ================= QUESTION =================
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    controller.question.question,
-                    style: GoogleFonts.notoSans(fontSize: 18.sp, fontWeight: FontWeight.w500, color:  AppColors.blackColor),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// ================= QUESTION =================
+                        Text(
+                          controller.question.question,
+                          style: GoogleFonts.notoSans(fontSize: 18.sp, fontWeight: FontWeight.w500, color: AppColors.blackColor),
+                          softWrap: true,
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          "Tap the correct answer",
+                          style: GoogleFonts.notoSans(fontSize: 14.sp, fontWeight: FontWeight.w400, color: AppColors.subTextColor),
+                        ),
+                        SizedBox(height: 12.h),
+
+                        /// ================= OPTIONS =================
+                        ...List.generate(
+                          controller.question.options.length,
+                              (index) {
+                            return _OptionTile(
+                              index: index,
+                              text: controller.question.options[index],
+                            );
+                          },
+                        ),
+
+                        /// bottom safe spacing so last option isn't hidden
+                        SizedBox(height: 100.h),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 16.h),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("Tap the correct answer", style: GoogleFonts.notoSans(fontSize: 14.sp, fontWeight: FontWeight.w400, color:  AppColors.subTextColor)),
-                ),
 
-                SizedBox(height: 6.h),
 
-                /// ================= OPTIONS =================
-                ...List.generate(
-                  controller.question.options.length,
-                      (index) {
-                    final option = controller.question.options[index];
-
-                    return _OptionTile(
-                      index: index,
-                      text: option,
-                    );
-                  },
-                ),
-
-                const Spacer(),
+                //const Spacer(),
 
                 /// =================== BOTTOM ACTION ===================
                 if (!controller.isAnswered.value)
@@ -178,7 +194,7 @@ class _CorrectBottomSheet extends StatelessWidget {
             children: [
               Icon(Icons.check_circle, color: Color(0xFF478400), size: 28.r),
               SizedBox(width: 8.w),
-              Text("Correct!", style: GoogleFonts.notoSans(fontSize: 20.sp,fontWeight: FontWeight.w700, color: Color(0xFF478400))),
+              Text("Correct!", style: GoogleFonts.notoSans(fontSize: 16.sp,fontWeight: FontWeight.w700, color: Color(0xFF478400))),
             ],
           ),
           SizedBox(height: 20.h),
@@ -227,13 +243,13 @@ class _WrongBottomSheet extends StatelessWidget {
             children: [
               Icon(Icons.cancel, color: AppColors.redColor, size: 28.r),
               SizedBox(width: 8.w),
-              Text("Incorrect", style: GoogleFonts.notoSans(fontSize: 20.sp,fontWeight: FontWeight.w700, color: AppColors.redColor)),
+              Text("Incorrect", style: GoogleFonts.notoSans(fontSize: 16.sp,fontWeight: FontWeight.w700, color: AppColors.redColor)),
             ],
           ),
           SizedBox(height: 12.h),
           Text(
             "Correct Answer: ${controller.question.options[controller.question.correctIndex]}",
-            style: GoogleFonts.notoSans(fontSize: 18.sp,fontWeight: FontWeight.w700, color: AppColors.greenColor),
+            style: GoogleFonts.notoSans(fontSize: 14.sp,fontWeight: FontWeight.w700, color: AppColors.greenColor),
           ),
           SizedBox(height: 20.h),
           SizedBox(

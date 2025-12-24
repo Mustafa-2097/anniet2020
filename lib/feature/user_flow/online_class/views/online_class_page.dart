@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../data/repositories/user_repository.dart';
 import '../../lessons/controllers/lessons_controller.dart';
 import '../../lessons/models/lesson_model.dart';
 import '../controllers/online_class_controller.dart';
@@ -111,7 +112,6 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
             "Before watching the next video, please watch this one attentively and answer the questions.",
           ),
 
-          if (!isIntroLesson) ...[
             SizedBox(height: 20.h),
             BeforeYouContinueCard(),
             SizedBox(height: 20.h),
@@ -120,7 +120,35 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
 
             /// ================= CONTINUE =================
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                final repository = UserRepository();
+                final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
+
+                /// 1️⃣ backend থেকে প্রশ্ন আছে কিনা জানো
+                final bool hasQuestions =
+                await repository.hasExamQuestions(lesson.id);
+
+                /// 2️⃣ প্রশ্ন না থাকলে → direct unlock + next video
+                if (!hasQuestions) {
+                  await lessonsController.getNextVideo(widget.courseId);
+                  await lessonsController.refreshFromBackend();
+
+                  /// Go to next lesson video
+                  final lessons = lessonsController.lessons;
+                  final index = lessons.indexWhere((l) => l.id == lesson.id);
+
+                  if (index != -1 && index + 1 < lessons.length) {
+                    Get.off(() => OnlineClassPage(
+                      courseId: widget.courseId,
+                      lessonId: lessons[index + 1].id,
+                    ));
+                  } else {
+                    Get.off(() => LessonsPage(courseId: widget.courseId));
+                  }
+                  return;
+                }
+
+                /// 3️⃣ প্রশ্ন থাকলে → exam
                 Get.off(() => ExamPage(
                   courseId: widget.courseId,
                   lessonId: lesson.id,
@@ -142,7 +170,6 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
                 ),
               ),
             ),
-          ],
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
+import '../../Exam/model/exam_question_model.dart';
 import '../../courses/models/course_model.dart';
 import '../../lessons/models/lesson_model.dart';
 import '../api_providers/user_api_provider.dart';
@@ -109,6 +110,27 @@ class UserRepository {
     if (response['success'] != true) {
       throw Exception(response['message'] ?? 'Failed to submit review');
     }
+  }
+  /// Lesson's Questions
+  Future<List<ExamQuestionModel>> getLessonQuestions(String lessonId) async {
+    final response = await _provider.fetchLessonQuestions(lessonId);
+
+    if (response['success'] != true) {
+      throw Exception(response['message'] ?? 'Failed to load questions');
+    }
+    final List list = response['data'];
+    return list.map((e) => ExamQuestionModel.fromJson(e)).toList();
+  }
+  /// Check if lesson has exam questions
+  Future<bool> hasExamQuestions(String lessonId) async {
+    final response = await _provider.fetchLessonQuestions(lessonId);
+
+    if (response['success'] != true) {
+      return false;
+    }
+
+    final List data = response['data'] ?? [];
+    return data.isNotEmpty;
   }
 
 

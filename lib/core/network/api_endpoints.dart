@@ -33,5 +33,8 @@ class ApiEndpoints {
   // Lesson's Review
   static const String review = '$baseUrl/lessons/:id/review';
 
+  // Exam questions
+  static const String questions = '$baseUrl/lessons/:id/questions';
+
 }
 

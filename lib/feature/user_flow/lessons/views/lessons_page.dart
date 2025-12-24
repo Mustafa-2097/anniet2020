@@ -25,6 +25,7 @@ class _LessonsPageState extends State<LessonsPage> {
 
     if (Get.isRegistered<LessonsController>(tag: widget.courseId)) {
       controller = Get.find<LessonsController>(tag: widget.courseId);
+      controller.refreshFromBackend();
     } else {
       controller = Get.put(
         LessonsController(widget.courseId),

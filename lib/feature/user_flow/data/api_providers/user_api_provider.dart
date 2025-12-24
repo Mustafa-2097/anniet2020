@@ -90,6 +90,12 @@ class UserApiProvider {
       },
     );
   }
+  /// Fetch reviews by lesson id
+  Future<Map<String, dynamic>> fetchLessonQuestions(String lessonId) async {
+    return await _client.get(
+      ApiEndpoints.questions.replaceFirst(':id', lessonId),
+    );
+  }
 
 
 
