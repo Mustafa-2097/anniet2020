@@ -57,7 +57,7 @@ class AdminBottomNavBar extends StatelessWidget {
           children: [
             SizedBox(height: 2.h),
             Image.asset(
-              isSelected ? filledIcon : outlinedIcon,  // ✅ Use filled icon when selected
+              isSelected ? filledIcon : outlinedIcon,
               color: isSelected ? AppColors.primaryColor : AppColors.blackColor,
               width: 26.w,
               height: 26.h,

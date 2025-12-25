@@ -63,13 +63,16 @@ class LogoutButton extends StatelessWidget {
                               ),
                               backgroundColor: AppColors.whiteColor,
                             ),
-                            onPressed: () {
-                              SharedPreferencesHelper.clearToken;
+                            onPressed: () async {
+                              await SharedPreferencesHelper.clearToken();
+
                               Get.delete<ProfileController>(force: true);
                               Get.delete<PersonalInfoController>(force: true);
                               Get.delete<SignInController>(force: true);
+
                               Get.offAll(() => SignInPage());
                             },
+
                             child: Text(
                               "Log Out",
                               style: GoogleFonts.plusJakartaSans(color: AppColors.redColor, fontSize: 16.sp, fontWeight: FontWeight.w600),

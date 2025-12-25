@@ -61,21 +61,26 @@ class _LessonsPageState extends State<LessonsPage> {
         )),
         centerTitle: true,
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return ListView.builder(
-          padding: EdgeInsets.all(20.r),
-          itemCount: controller.lessons.length,
-          itemBuilder: (_, index) {
-            return LessonTile(
-              lesson: controller.lessons[index],
-              courseId: widget.courseId,
-            );
-          },
-        );
-      }),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          controller.fetchLessons();
+        },
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            padding: EdgeInsets.all(20.r),
+            itemCount: controller.lessons.length,
+            itemBuilder: (_, index) {
+              return LessonTile(
+                lesson: controller.lessons[index],
+                courseId: widget.courseId,
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 }

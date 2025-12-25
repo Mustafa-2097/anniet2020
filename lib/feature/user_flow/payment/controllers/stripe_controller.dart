@@ -3,6 +3,7 @@ import 'package:anniet2020/core/network/api_endpoints.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
 import '../views/pages/stripe_webview.dart';
 
@@ -15,6 +16,19 @@ class StripeController extends GetxController {
   void openStripeWebView(String url) {
     Get.to(() => StripeWebView(stripeUrl: url));
   }
+
+  Future<void> openStripeCheckout(String url) async {
+    final uri = Uri.parse(url);
+
+    if (!await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch Stripe Checkout';
+    }
+  }
+
+
 
   Future<void> setupStripeAccount() async {
     try {
@@ -34,7 +48,7 @@ class StripeController extends GetxController {
       };
 
       final response = await http.post(
-        Uri.parse('${ApiEndpoints.baseUrl}/payments/create-stripe-account'),
+        Uri.parse('${ApiEndpoints.baseUrl}/payment/create-checkout-session'),
         headers: headers,
       );
 
@@ -47,10 +61,12 @@ class StripeController extends GetxController {
         final stripeUrl = data['data']['url'] as String;
 
         EasyLoading.showSuccess("Opening secure setup...");
-        await Future.delayed(const Duration(milliseconds: 800)); // Small delay for UX
+        await Future.delayed(const Duration(milliseconds: 800));
 
         // Open in-app WebView
-        openStripeWebView(stripeUrl);
+        // openStripeWebView(stripeUrl);
+        await openStripeCheckout(stripeUrl);
+
       } else {
         final msg = json.decode(response.body)['message'] ?? 'Failed to generate link';
         EasyLoading.showError(msg);

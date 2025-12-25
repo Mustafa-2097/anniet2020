@@ -139,11 +139,11 @@ class SignInPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don’t have an account? ", style: AppTextStyles.body3(context).copyWith(fontSize: 16.sp)),
+                  Text("Don’t have an account? ", style: AppTextStyles.body3(context).copyWith(fontSize: 14.sp)),
                   GestureDetector(
                     onTap: () => Get.to(() => SignUpPage()),
                     child: Text(
-                      "Sign Up", style: AppTextStyles.body3(context).copyWith(fontSize: 16.sp, color: AppColors.primaryColor),
+                      "Sign Up", style: AppTextStyles.body3(context).copyWith(fontSize: 14.sp, color: AppColors.primaryColor),
                     ),
                   ),
                 ],

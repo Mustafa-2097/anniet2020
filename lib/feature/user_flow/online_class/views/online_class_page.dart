@@ -39,12 +39,13 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
 
     controller.setVideo(
       lesson.video,
-      onCompleted: () async {
-        if (lesson.order == 1) {
-          final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
-          await lessonsController.completeIntroAndRefresh();
-        }
-      },
+      // onCompleted: () async {
+      //   if (lesson.order == 1) {
+      //     final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
+      //     await lessonsController.completeIntroAndRefresh();
+      //   }
+      // },
+
     );
   }
 
@@ -122,38 +123,50 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
             ElevatedButton(
               onPressed: () async {
                 final repository = UserRepository();
-                final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
+                final lessonsController =
+                Get.find<LessonsController>(tag: widget.courseId);
 
-                /// 1️⃣ backend থেকে প্রশ্ন আছে কিনা জানো
+                /// STEP 1: check exam
                 final bool hasQuestions =
                 await repository.hasExamQuestions(lesson.id);
 
-                /// 2️⃣ প্রশ্ন না থাকলে → direct unlock + next video
-                if (!hasQuestions) {
-                  await lessonsController.getNextVideo(widget.courseId);
-                  await lessonsController.refreshFromBackend();
-
-                  /// Go to next lesson video
-                  final lessons = lessonsController.lessons;
-                  final index = lessons.indexWhere((l) => l.id == lesson.id);
-
-                  if (index != -1 && index + 1 < lessons.length) {
-                    Get.off(() => OnlineClassPage(
-                      courseId: widget.courseId,
-                      lessonId: lessons[index + 1].id,
-                    ));
-                  } else {
-                    Get.off(() => LessonsPage(courseId: widget.courseId));
-                  }
+                if (hasQuestions) {
+                  Get.off(() => ExamPage(
+                    courseId: widget.courseId,
+                    lessonId: lesson.id,
+                  ));
                   return;
                 }
 
-                /// 3️⃣ প্রশ্ন থাকলে → exam
-                Get.off(() => ExamPage(
-                  courseId: widget.courseId,
-                  lessonId: lesson.id,
-                ));
+                /// STEP 2: unlock next lesson ONLY ONCE
+                if (!lesson.isCompleted) {
+                  await lessonsController.getNextVideo(widget.courseId);
+                  await lessonsController.fetchLessons();
+                }
+
+                /// STEP 3: navigate safely
+                final lessons = lessonsController.lessons;
+                final currentIndex =
+                lessons.indexWhere((l) => l.id == lesson.id);
+
+                if (currentIndex != -1 &&
+                    currentIndex + 1 < lessons.length) {
+                  final nextLesson = lessons[currentIndex + 1];
+
+                  if (!nextLesson.isLocked) {
+                    Get.off(() => OnlineClassPage(
+                      courseId: widget.courseId,
+                      lessonId: nextLesson.id,
+                    ));
+                    return;
+                  }
+                }
+
+                /// STEP 4: fallback
+                Get.off(() => LessonsPage(courseId: widget.courseId));
               },
+
+
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
                 shape: RoundedRectangleBorder(

@@ -12,6 +12,9 @@ class LessonsController extends GetxController {
   final isLoading = true.obs;
   final lessons = <LessonModel>[].obs;
 
+  final isIntroCompleted = false.obs;
+
+
   @override
   void onInit() {
     super.onInit();
@@ -37,7 +40,7 @@ class LessonsController extends GetxController {
       /// Apply lock logic ONLY from backend state
       _applyLockFromBackend();
     } catch (e) {
-      debugPrint("❌ fetchLessons error: $e");
+      debugPrint("fetchLessons error: $e");
     } finally {
       isLoading(false);
     }

@@ -6,6 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
+import '../../../../../core/offline_storage/shared_pref.dart';
+import '../../../../auth/sign_in/controllers/sign_in_controller.dart';
+import '../../../../auth/sign_in/views/sign_in_page.dart';
+import '../../../../user_flow/profile/controllers/personal_info_controller.dart';
+import '../../../../user_flow/profile/controllers/profile_controller.dart';
 import '../../../Educate/views/educate_page.dart';
 
 class CustomAppDrawer extends StatelessWidget {
@@ -122,7 +127,15 @@ class CustomAppDrawer extends StatelessWidget {
                                       ),
                                       backgroundColor: AppColors.whiteColor,
                                     ),
-                                    onPressed: () {}, // go to sign in page...
+                                    onPressed: () async {
+                                      await SharedPreferencesHelper.clearToken();
+
+                                      Get.delete<ProfileController>(force: true);
+                                      Get.delete<PersonalInfoController>(force: true);
+                                      Get.delete<SignInController>(force: true);
+
+                                      Get.offAll(() => SignInPage());
+                                    },
                                     child: Text(
                                       "Log Out",
                                       style: GoogleFonts.plusJakartaSans(color: AppColors.redColor, fontSize: 16.sp, fontWeight: FontWeight.w600),
