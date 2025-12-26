@@ -116,73 +116,75 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
             SizedBox(height: 20.h),
             BeforeYouContinueCard(),
             SizedBox(height: 20.h),
+            ElevatedButton(
+            onPressed: () async {
+              final repository = UserRepository();
+              final lessonsController =
+              Get.find<LessonsController>(tag: widget.courseId);
+
+              /// STEP 1: check exam
+              final bool hasQuestions =
+              await repository.hasExamQuestions(lesson.id);
+
+              if (hasQuestions) {
+                Get.off(() => ExamPage(
+                  courseId: widget.courseId,
+                  lessonId: lesson.id,
+                ));
+                return;
+              }
+
+              /// STEP 2: unlock next lesson ONLY ONCE
+              if (!lesson.isCompleted) {
+                await lessonsController.getNextVideo(widget.courseId);
+                await lessonsController.fetchLessons();
+              }
+
+              /// STEP 3: navigate safely
+              final lessons = lessonsController.lessons;
+              final currentIndex =
+              lessons.indexWhere((l) => l.id == lesson.id);
+
+              if (currentIndex != -1 &&
+                  currentIndex + 1 < lessons.length) {
+                final nextLesson = lessons[currentIndex + 1];
+
+                if (!nextLesson.isLocked) {
+                  Get.off(() => OnlineClassPage(
+                    courseId: widget.courseId,
+                    lessonId: nextLesson.id,
+                  ));
+                  return;
+                }
+              }
+
+              /// STEP 4: fallback
+              Get.off(() => LessonsPage(courseId: widget.courseId));
+            },
+
+
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+            ),
+            child: Text(
+              "Continue",
+              style: GoogleFonts.notoSans(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+            SizedBox(height: 20.h),
             Review(lessonId: lesson.id),
             SizedBox(height: 25.h),
 
             /// ================= CONTINUE =================
-            ElevatedButton(
-              onPressed: () async {
-                final repository = UserRepository();
-                final lessonsController =
-                Get.find<LessonsController>(tag: widget.courseId);
 
-                /// STEP 1: check exam
-                final bool hasQuestions =
-                await repository.hasExamQuestions(lesson.id);
-
-                if (hasQuestions) {
-                  Get.off(() => ExamPage(
-                    courseId: widget.courseId,
-                    lessonId: lesson.id,
-                  ));
-                  return;
-                }
-
-                /// STEP 2: unlock next lesson ONLY ONCE
-                if (!lesson.isCompleted) {
-                  await lessonsController.getNextVideo(widget.courseId);
-                  await lessonsController.fetchLessons();
-                }
-
-                /// STEP 3: navigate safely
-                final lessons = lessonsController.lessons;
-                final currentIndex =
-                lessons.indexWhere((l) => l.id == lesson.id);
-
-                if (currentIndex != -1 &&
-                    currentIndex + 1 < lessons.length) {
-                  final nextLesson = lessons[currentIndex + 1];
-
-                  if (!nextLesson.isLocked) {
-                    Get.off(() => OnlineClassPage(
-                      courseId: widget.courseId,
-                      lessonId: nextLesson.id,
-                    ));
-                    return;
-                  }
-                }
-
-                /// STEP 4: fallback
-                Get.off(() => LessonsPage(courseId: widget.courseId));
-              },
-
-
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.r),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-              ),
-              child: Text(
-                "Continue",
-                style: GoogleFonts.notoSans(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
         ],
       ),
     );

@@ -102,11 +102,13 @@ class PersonalInfoController extends GetxController {
     }
   }
 
+
   @override
   void onInit() {
     super.onInit();
     nameController.text = profile.userName.value;
     emailController.text = profile.userEmail.value;
+    phoneController.text = profile.userPhone.value!;
   }
 
   @override
