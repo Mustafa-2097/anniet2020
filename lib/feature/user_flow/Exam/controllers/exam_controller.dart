@@ -107,9 +107,11 @@ class ExamController extends GetxController {
   }
 
   void retryExam() {
+    // Pass the actual LessonModel from LessonsController
+    final lesson = lessonsController.lessons.firstWhere((l) => l.id == lessonId);
     Get.offAll(() => OnlineClassPage(
       courseId: courseId,
-      lessonId: lessonId,
+      lesson: lesson,
     ));
   }
 
@@ -118,9 +120,10 @@ class ExamController extends GetxController {
     final index = lessons.indexWhere((l) => l.id == lessonId);
 
     if (index != -1 && index + 1 < lessons.length) {
+      final nextLesson = lessons[index + 1];
       Get.offAll(() => OnlineClassPage(
         courseId: courseId,
-        lessonId: lessons[index + 1].id,
+        lesson: nextLesson, // pass LessonModel, not id
       ));
     } else {
       Get.offAll(() => LessonsPage(courseId: courseId));

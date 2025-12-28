@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:chewie/chewie.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -8,17 +7,13 @@ class OnlineClassController extends GetxController {
   VideoPlayerController? videoController;
   ChewieController? chewieController;
   final isInitialized = false.obs;
-  VoidCallback? onVideoCompleted;
   String? _currentUrl;
-  bool _hasCompleted = false;
 
   /// ================= SET VIDEO =================
-  void setVideo(String? url, {VoidCallback? onCompleted}) {
+  void setVideo(String? url) {
     if (url == null || url.isEmpty) return;
     if (_currentUrl == url) return;
     _currentUrl = url;
-    _hasCompleted = false;
-    onVideoCompleted = onCompleted;
     _initVideo(url);
   }
 
@@ -29,14 +24,6 @@ class OnlineClassController extends GetxController {
     chewieController?.dispose();
     videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
     await videoController!.initialize();
-    /// ================= LISTEN FOR VIDEO END =================
-    videoController!.addListener(() {
-      final controller = videoController!;
-      if (!_hasCompleted && controller.value.position >= controller.value.duration) {
-        _hasCompleted = true;
-        onVideoCompleted?.call();
-      }
-    });
 
     chewieController = ChewieController(
       videoPlayerController: videoController!,
@@ -49,7 +36,6 @@ class OnlineClassController extends GetxController {
     isInitialized.value = true;
   }
 
-  /// ================= CLEANUP =================
   @override
   void onClose() {
     videoController?.dispose();

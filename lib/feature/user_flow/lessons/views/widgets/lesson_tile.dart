@@ -20,7 +20,7 @@ class LessonTile extends StatelessWidget {
           Get.snackbar("Locked", "Complete previous lesson first", backgroundColor: AppColors.redColor);
           return;
         }
-        Get.to(() => OnlineClassPage(lessonId: lesson.id, courseId: courseId));
+        Get.to(() => OnlineClassPage(lesson: lesson, courseId: courseId));
       },
 
       child: Container(
@@ -90,14 +90,13 @@ class LessonTile extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8.h),
-                  if (lesson.order != 1)
-                    LinearProgressIndicator(
-                      value: lesson.isCompleted ? 1.0 : 0.0,
-                      minHeight: 6,
-                      backgroundColor: Colors.grey,
-                      borderRadius: BorderRadius.circular(20.r),
-                      color: AppColors.greenColor,
-                    ),
+                  LinearProgressIndicator(
+                    value: lesson.isCompleted ? 1.0 : 0.0,
+                    minHeight: 6,
+                    backgroundColor: Colors.grey,
+                    borderRadius: BorderRadius.circular(20.r),
+                    color: AppColors.greenColor,
+                  ),
                 ],
               ),
             )

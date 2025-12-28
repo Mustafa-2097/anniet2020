@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../lessons/controllers/lessons_controller.dart';
 import '../controllers/exam_controller.dart';
 
 class ExamPage extends StatelessWidget {
@@ -24,9 +25,6 @@ class ExamPage extends StatelessWidget {
           if (controller.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (controller.questions.isEmpty) {
-            return const Center(child: Text("No questions found"));
-          }
           return Padding(
             padding: EdgeInsets.all(16.r),
             child: Column(
@@ -37,7 +35,11 @@ class ExamPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      onPressed: () => Get.off(() => OnlineClassPage(courseId: courseId, lessonId: lessonId)),
+                      onPressed: () {
+                        final lessonsController = Get.find<LessonsController>(tag: courseId);
+                        final lesson = lessonsController.lessons.firstWhere((l) => l.id == lessonId);
+                        Get.off(() => OnlineClassPage(courseId: courseId, lesson: lesson));
+                      },
                       icon: Icon(Icons.arrow_back_ios, size: 16.r, color: AppColors.blackColor),
                     ),
                     SizedBox(width: 18.w),

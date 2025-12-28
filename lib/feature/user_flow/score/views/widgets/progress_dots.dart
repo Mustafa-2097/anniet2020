@@ -18,7 +18,6 @@ class ProgressDots extends StatelessWidget {
           /// Circle position
           if (i.isEven) {
             int index = i ~/ 2;
-
             final bool isCompleted = index < safeCompleted;
 
             return Container(
@@ -44,10 +43,12 @@ class ProgressDots extends StatelessWidget {
           }
 
           /// Line between circles
+          int lineIndex = (i - 1) ~/ 2;
+          final bool isLineCompleted = lineIndex < safeCompleted - 1;
           return Container(
             height: 1.5.h,
             width: 20.w,
-            color: const Color(0xFFE9E9E9),
+            color: isLineCompleted ? AppColors.primaryColor : const Color(0xFFE9E9E9),
           );
         },
       ),

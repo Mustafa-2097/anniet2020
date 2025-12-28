@@ -267,7 +267,9 @@ class SettingsPage extends StatelessWidget {
             child: TextField(
               controller: textController,
               obscureText: !isVisible,
+              textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
+                isDense: true,
                 border: InputBorder.none,
                 hintText: label,
                 suffixIcon: GestureDetector(

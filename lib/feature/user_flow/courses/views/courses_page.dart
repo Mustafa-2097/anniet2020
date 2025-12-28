@@ -37,13 +37,16 @@ class CoursesPage extends StatelessWidget {
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("You're not Subscribed", style: TextStyle(fontSize: 16.sp)),
-                      SizedBox(height: 20.h),
-                      PrimaryButton(text: "Subscribe Now", onPressed: () => Get.to(() => PaymentPage())),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.all(16.r),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("You're not Subscribed!", style: TextStyle(fontSize: 16.sp)),
+                        SizedBox(height: 20.h),
+                        PrimaryButton(text: "Subscribe Now", onPressed: () => Get.to(() => PaymentPage())),
+                      ],
+                    ),
                   ),
                 ),
               );
