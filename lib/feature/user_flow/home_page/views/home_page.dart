@@ -244,14 +244,14 @@ class HomePage extends StatelessWidget {
 
                         /// Video Play
                         Container(
-                          height: sh * 0.23,
+                          height: sh * 0.226,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                             color: Colors.black,
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                             child: Obx(() {
                               if (!profileController.isInitialized.value || profileController.chewieController == null) {
                                 return const Center(
@@ -346,10 +346,10 @@ class HomePage extends StatelessWidget {
                         ),
 
                         SizedBox(height: 10.h),
-
-                        /// Join Now Button
-                        PrimaryButton(text: "Subscribe Now", onPressed: () => Get.to(() => PaymentPage())),
-                        SizedBox(height: 10.h),
+                        //
+                        // /// Join Now Button
+                        // PrimaryButton(text: "Subscribe Now", onPressed: () => Get.to(() => PaymentPage())),
+                        // SizedBox(height: 10.h),
                       ],
                     ),
                   ),

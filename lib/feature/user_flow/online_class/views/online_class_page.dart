@@ -37,16 +37,7 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
     super.initState();
     controller = Get.put(OnlineClassController());
 
-    controller.setVideo(
-      lesson.video,
-      // onCompleted: () async {
-      //   if (lesson.order == 1) {
-      //     final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
-      //     await lessonsController.completeIntroAndRefresh();
-      //   }
-      // },
-
-    );
+    controller.setVideo(lesson.video);
   }
 
   @override
@@ -57,7 +48,6 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isIntroLesson = lesson.order == 1;
     final sh = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -85,13 +75,13 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
         children: [
           /// ================= VIDEO =================
           Container(
-            height: sh * 0.23,
+            height: sh * 0.226,
             decoration: BoxDecoration(
               color: Colors.black,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               child: Obx(() {
                 if (!controller.isInitialized.value) {
                   return const Center(
@@ -108,23 +98,21 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
           /// ================= DETAILS =================
           VideoDetailsCard(
             title: lesson.title,
+            lessonNum: lesson.order.toString(),
             description: lesson.description,
-            infoMessage:
-            "Before watching the next video, please watch this one attentively and answer the questions.",
+            infoMessage: "Before watching the next video, please watch this one attentively and answer the questions.",
           ),
 
-            SizedBox(height: 20.h),
-            BeforeYouContinueCard(),
-            SizedBox(height: 20.h),
-            ElevatedButton(
+          SizedBox(height: 20.h),
+          BeforeYouContinueCard(),
+          SizedBox(height: 20.h),
+          ElevatedButton(
             onPressed: () async {
               final repository = UserRepository();
-              final lessonsController =
-              Get.find<LessonsController>(tag: widget.courseId);
+              final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
 
               /// STEP 1: check exam
-              final bool hasQuestions =
-              await repository.hasExamQuestions(lesson.id);
+              final bool hasQuestions = await repository.hasExamQuestions(lesson.id);
 
               if (hasQuestions) {
                 Get.off(() => ExamPage(
@@ -142,11 +130,9 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
 
               /// STEP 3: navigate safely
               final lessons = lessonsController.lessons;
-              final currentIndex =
-              lessons.indexWhere((l) => l.id == lesson.id);
+              final currentIndex = lessons.indexWhere((l) => l.id == lesson.id);
 
-              if (currentIndex != -1 &&
-                  currentIndex + 1 < lessons.length) {
+              if (currentIndex != -1 && currentIndex + 1 < lessons.length) {
                 final nextLesson = lessons[currentIndex + 1];
 
                 if (!nextLesson.isLocked) {
@@ -172,18 +158,13 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
             ),
             child: Text(
               "Continue",
-              style: GoogleFonts.notoSans(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
+              style: GoogleFonts.notoSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.white),
             ),
           ),
-            SizedBox(height: 20.h),
-            Review(lessonId: lesson.id),
-            SizedBox(height: 25.h),
 
-            /// ================= CONTINUE =================
+          SizedBox(height: 20.h),
+          Review(lessonId: lesson.id),
+          SizedBox(height: 25.h),
 
         ],
       ),

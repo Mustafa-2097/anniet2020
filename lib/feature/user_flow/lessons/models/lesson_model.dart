@@ -33,10 +33,10 @@ class LessonModel {
       order: json['order'] ?? 0,
       description: json['description'] ?? "",
 
-      /// ✅ Backend is the ONLY source of completion
+      /// Backend is the ONLY source of completion
       isCompleted: json['completed'] ?? false,
 
-      /// 🔒 Lock state will be calculated later
+      /// Lock state will be calculated later
       isLocked: true,
     );
   }

@@ -12,8 +12,6 @@ class LessonsController extends GetxController {
   final isLoading = true.obs;
   final lessons = <LessonModel>[].obs;
 
-  final isIntroCompleted = false.obs;
-
 
   @override
   void onInit() {

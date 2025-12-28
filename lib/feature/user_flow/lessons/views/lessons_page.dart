@@ -53,11 +53,7 @@ class _LessonsPageState extends State<LessonsPage> {
         ),
         title: Obx(() => Text(
           "${controller.lessons.length} Lessons",
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.blackColor,
-          ),
+          style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
         )),
         centerTitle: true,
       ),

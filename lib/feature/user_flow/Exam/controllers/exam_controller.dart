@@ -79,7 +79,7 @@ class ExamController extends GetxController {
       isNavigating.value = true;
       EasyLoading.show(status: 'Checking result...');
 
-      final bool isPassed = score.value >= (totalQuestions * 0.8);
+      final bool isPassed = score.value >= totalQuestions;
 
       try {
         if (isPassed) {

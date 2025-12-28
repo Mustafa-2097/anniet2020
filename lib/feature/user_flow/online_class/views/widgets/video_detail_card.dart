@@ -5,11 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
 
 class VideoDetailsCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final String infoMessage;
-
-  const VideoDetailsCard({super.key, required this.title, required this.description, required this.infoMessage});
+  final String title, lessonNum, description, infoMessage;
+  const VideoDetailsCard({super.key, required this.title, required this.lessonNum, required this.description, required this.infoMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +31,14 @@ class VideoDetailsCard extends StatelessWidget {
           Text(
             title,
             style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
+          ),
+
+          SizedBox(height: 3.h),
+
+          /// DESCRIPTION TEXT
+          Text(
+            "Lesson: $lessonNum",
+            style: GoogleFonts.plusJakartaSans(fontSize: 11.sp, color: AppColors.subTextColor, fontWeight: FontWeight.w500),
           ),
 
           SizedBox(height: 8.h),
