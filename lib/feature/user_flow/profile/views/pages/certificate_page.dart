@@ -46,10 +46,10 @@ class CertificatePage extends StatelessWidget {
                 Container(
                   height: 110.h,
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 16.r),
                   decoration: BoxDecoration(
                     color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +106,7 @@ class CertificatePage extends StatelessWidget {
                         Text(
                           "Download Certificate",
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14.sp,
+                            fontSize: MediaQuery.of(context).size.width * 0.037,
                             fontWeight: FontWeight.w600,
                             color: AppColors.whiteColor,
                           ),

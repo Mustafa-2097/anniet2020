@@ -4,9 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
 
 class ProgressDots extends StatelessWidget {
-  final int total;
-  final int completedVideos;
-  const ProgressDots({super.key, required this.total, required this.completedVideos});
+  final int total, completedVideos;
+  //final Lesson currentLesson;
+  const ProgressDots({
+    super.key,
+    required this.total,
+    required this.completedVideos,
+    //required this.currentLesson
+  });
 
   @override
   Widget build(BuildContext context) {

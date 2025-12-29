@@ -56,7 +56,7 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
       // STEP 1: CHECK IF LESSON HAS EXAM (using questionsCount from model)
       if (_currentLesson.hasExam) {
         EasyLoading.show(status: "Loading exam...");
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(Duration(milliseconds: 1000));
         EasyLoading.dismiss();
         setState(() => _isProcessing = false);
         Get.off(() => ExamPage(
@@ -72,10 +72,13 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
         EasyLoading.show(status: "Completing lesson...");
         await lessonsController.getNextVideo(widget.courseId);
         await lessonsController.refreshFromBackend();
+        EasyLoading.showSuccess("Lesson Completed!");
+        await Future.delayed(Duration(milliseconds: 500));
       }
 
       // STEP 3: FIND NEXT LESSON
       EasyLoading.show(status: "Finding next lesson...");
+      await Future.delayed(Duration(milliseconds: 2000));
       final lessons = lessonsController.lessons;
       final currentIndex = lessons.indexWhere((l) => l.id == _currentLesson.id);
 
@@ -86,7 +89,6 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
 
       // STEP 4: NAVIGATE OR UPDATE VIDEO
       if (nextLesson != null && nextLesson.video != null && nextLesson.video!.isNotEmpty && !nextLesson.isLocked) {
-        EasyLoading.show(status: "Preparing next video...");
         // Update in-place
         setState(() {
           _currentLesson = nextLesson!;
@@ -97,16 +99,16 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
         controller = Get.put(OnlineClassController(), tag: _currentLesson.id);
         controller.setVideo(_currentLesson.video);
 
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(Duration(milliseconds: 500));
         EasyLoading.dismiss();
         setState(() => _isProcessing = false);
         return;
       }
 
       // STEP 5: COURSE END
-      EasyLoading.show(status: "Course completed!");
+      EasyLoading.showSuccess("Course completed!");
       // Show success message before navigation
-      await Future.delayed(Duration(milliseconds: 800));
+      await Future.delayed(Duration(milliseconds: 1000));
       EasyLoading.dismiss();
       setState(() => _isProcessing = false);
       Get.off(() => LessonsPage(courseId: widget.courseId));

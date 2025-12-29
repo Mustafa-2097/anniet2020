@@ -26,7 +26,7 @@ class ScorePage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             children: [
-              SizedBox(height: 110.h),
+              SizedBox(height: 100.h),
 
               /// Result Icon
               Image.asset(
@@ -58,7 +58,18 @@ class ScorePage extends StatelessWidget {
                 style: GoogleFonts.notoSans(fontSize: 16.sp, fontWeight: FontWeight.w400, color: AppColors.blackColor),
               ),
 
-              SizedBox(height: 30.h),
+              SizedBox(height: 26.h),
+
+              Text(
+                "Your Lesson's Progress:",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+
+              SizedBox(height: 12.h),
 
               /// Progress Dots
               Obx(() {
@@ -66,6 +77,7 @@ class ScorePage extends StatelessWidget {
                 return ProgressDots(
                   total: lessons.lessons.length,
                   completedVideos: completed,
+                  //currentLesson: ,
                 );
               }),
 

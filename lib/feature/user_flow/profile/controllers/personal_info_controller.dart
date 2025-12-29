@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../core/constant/app_colors.dart';
 import '../../data/repositories/user_repository.dart';
 
 class PersonalInfoController extends GetxController {
@@ -52,7 +53,7 @@ class PersonalInfoController extends GetxController {
         Get.snackbar(
           "File too large",
           "Image must be less than 2MB. Current size: ${(fileSize / (1024 * 1024)).toStringAsFixed(2)}MB",
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.redColor,
         );
         isPickingImage.value = false;
         return;
@@ -64,7 +65,7 @@ class PersonalInfoController extends GetxController {
         Get.snackbar(
           "Invalid image",
           "Only JPG, JPEG, PNG images are allowed",
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.redColor,
         );
         isPickingImage.value = false;
         return;
@@ -78,7 +79,7 @@ class PersonalInfoController extends GetxController {
       Get.snackbar(
         "Error",
         "Failed to pick image. Please try again.",
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.redColor,
       );
     } finally {
       isPickingImage.value = false;
@@ -162,8 +163,7 @@ class PersonalInfoController extends GetxController {
       Get.snackbar(
         "Success",
         "Profile updated successfully",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
+        backgroundColor: AppColors.primaryColor,
       );
 
       // Navigate back after a delay

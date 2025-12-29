@@ -9,7 +9,7 @@ import '../../about/controller/payment_controller.dart';
 import '../controllers/stripe_controller.dart';
 
 class PaymentPage extends StatefulWidget {
-  PaymentPage({super.key});
+  const PaymentPage({super.key});
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
@@ -29,6 +29,8 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -74,10 +76,10 @@ class _PaymentPageState extends State<PaymentPage> {
                       // Avatar Image
                       ClipRRect(
                         borderRadius: BorderRadius.circular(6.r),
-                        child: Image.asset(ImagePath.payment, height: 140.h, width: 150.w, fit: BoxFit.cover),
+                        child: Image.asset(ImagePath.payment, height: sh*0.172, width: sw*0.4, fit: BoxFit.cover),
                       ),
             
-                      SizedBox(width: 14),
+                      SizedBox(width: sw*0.03),
             
                       // Text Section
                       Expanded(
@@ -86,7 +88,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           children: [
                             Text(
                               paymentData.title ?? 'No title',
-                              style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
+                              style: GoogleFonts.plusJakartaSans(fontSize: sw*0.043, fontWeight: FontWeight.w600, color: AppColors.blackColor),
                             ),
             
                             SizedBox(height: 6.h),
@@ -97,7 +99,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             // ),
             
                             Text(
-                              paymentData.description ?? 'No description',
+                              paymentData.description ?? '',
                               style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.subTextColor, fontWeight: FontWeight.w400),
                             ),
             
@@ -125,17 +127,17 @@ class _PaymentPageState extends State<PaymentPage> {
                               children: [
                                 Text(
                                   formattedTime,
-                                  style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: AppColors.primaryColor),
+                                  style: GoogleFonts.plusJakartaSans(fontSize: sw*0.032, fontWeight: FontWeight.w600, color: AppColors.primaryColor),
                                 ),
-                                SizedBox(width: 4.w),
+                                SizedBox(width: sw*0.01),
                                 Text(
                                   "•",
-                                  style: TextStyle(fontSize: 24.sp, color: AppColors.primaryColor),
+                                  style: TextStyle(fontSize: sw*0.064, color: AppColors.primaryColor),
                                 ),
-                                SizedBox(width: 4.w),
+                                SizedBox(width: sw*0.01),
                                 Text(
                                   "${paymentData.lessons ?? ''} Lesson",
-                                  style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w600, color: AppColors.primaryColor),
+                                  style: GoogleFonts.plusJakartaSans(fontSize: sw*0.032, fontWeight: FontWeight.w600, color: AppColors.primaryColor),
                                 ),
                               ],
                             ),
@@ -156,7 +158,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     elevation: 0,
                     color: AppColors.whiteColor,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 24.w, right: 24.w, bottom: 24.h, top: 24.h),
+                      padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 24.h, top: 24.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -166,8 +168,8 @@ class _PaymentPageState extends State<PaymentPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Total Cost",
-                                style: TextStyle(color: AppColors.subTextColor, fontSize: 12.sp, fontWeight: FontWeight.w600),
+                                "Total Cost (GST Included)",
+                                style: TextStyle(color: AppColors.subTextColor, fontSize: sw*0.032, fontWeight: FontWeight.w600),
                               ),
             
                               Text(
