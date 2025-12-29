@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/certificate_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/contact_us_page.dart';
 import 'package:anniet2020/feature/user_flow/profile/views/pages/educate_employees_page.dart';
@@ -40,14 +39,15 @@ class ProfilePage extends StatelessWidget {
                 // Profile Image
                 Obx(() {
                   final avatar = controller.avatarUrl.value;
-                  final bool hasApiImage = avatar != null && avatar.isNotEmpty && avatar.startsWith('http');
                   return CircleAvatar(
                     radius: 28.r,
                     backgroundColor: AppColors.boxTextColor,
-                    backgroundImage: hasApiImage ? NetworkImage(avatar) : null,
-                    child: hasApiImage
-                        ? null
-                        : Icon(Icons.person, size: 40.r, color: Colors.white),
+                    backgroundImage: avatar != null && avatar.isNotEmpty
+                        ? NetworkImage(avatar)
+                        : null,
+                    child: avatar == null || avatar.isEmpty
+                        ? Icon(Icons.person, size: 40.r, color: Colors.white)
+                        : null,
                   );
                 }),
                 SizedBox(width: 14.w),

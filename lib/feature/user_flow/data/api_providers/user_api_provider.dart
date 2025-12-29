@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../../../../core/network/http_client.dart';
 import '../../../../core/network/api_endpoints.dart';
 
@@ -13,14 +14,17 @@ class UserApiProvider {
     String? name,
     String? phone,
   }) async {
-    final Map<String, dynamic> body = {};
+    debugPrint('Updating profile: name=$name, phone=$phone');
 
+    final Map<String, dynamic> body = {};
     if (name != null) body['name'] = name;
     if (phone != null) body['phone'] = phone;
-    return await _client.patch(
+    final response = await _client.patch(
       ApiEndpoints.updateProfile,
       body,
     );
+    debugPrint('Profile update response: $response');
+    return response;
   }
   /// Upload avatar
   Future<Map<String, dynamic>> uploadAvatar(String imagePath) async {

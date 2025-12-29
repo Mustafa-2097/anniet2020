@@ -10,7 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
-import '../../data/repositories/user_repository.dart';
 import '../../lessons/controllers/lessons_controller.dart';
 import '../../lessons/models/lesson_model.dart';
 import '../controllers/online_class_controller.dart';
@@ -18,13 +17,7 @@ import '../controllers/online_class_controller.dart';
 class OnlineClassPage extends StatefulWidget {
   final String courseId;
   final LessonModel lesson;
-
-  const OnlineClassPage({
-    super.key,
-    required this.courseId,
-    required this.lesson,
-  });
-
+  const OnlineClassPage({super.key, required this.courseId, required this.lesson});
   @override
   State<OnlineClassPage> createState() => _OnlineClassPageState();
 }
@@ -34,42 +27,16 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
   late LessonModel _currentLesson;
   bool _isProcessing = false;
 
-  int _questionCount = 0;
-  bool _hasExam = false;
-
-
   @override
   void initState() {
     super.initState();
     _currentLesson = widget.lesson;
-    controller = Get.put(
-      OnlineClassController(),
-      tag: widget.lesson.id,
-    );
+    controller = Get.put(OnlineClassController(), tag: widget.lesson.id);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.setVideo(_currentLesson.video);
     });
-    _loadExamInfo();
   }
-  Future<void> _loadExamInfo() async {
-    final repository = UserRepository();
-
-    try {
-      final questions =
-      await repository.getLessonQuestions(_currentLesson.id);
-
-      setState(() {
-        _questionCount = questions.length;
-        _hasExam = questions.isNotEmpty;
-      });
-    } catch (e) {
-      // fail silently (UI only)
-      _questionCount = 0;
-      _hasExam = false;
-    }
-  }
-
 
   @override
   void dispose() {
@@ -83,32 +50,32 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
     setState(() => _isProcessing = true);
     EasyLoading.show(status: "Please wait...");
 
-    final repository = UserRepository();
-    final lessonsController =
-    Get.find<LessonsController>(tag: widget.courseId);
+    final lessonsController = Get.find<LessonsController>(tag: widget.courseId);
 
     try {
-      // STEP 1: CHECK EXAM
-      final hasQuestions =
-      await repository.hasExamQuestions(_currentLesson.id);
-
-      if (hasQuestions) {
+      // STEP 1: CHECK IF LESSON HAS EXAM (using questionsCount from model)
+      if (_currentLesson.hasExam) {
+        EasyLoading.show(status: "Loading exam...");
+        await Future.delayed(Duration(milliseconds: 500));
         EasyLoading.dismiss();
         setState(() => _isProcessing = false);
         Get.off(() => ExamPage(
           courseId: widget.courseId,
           lessonId: _currentLesson.id,
+          isLessonAlreadyCompleted: _currentLesson.isCompleted,
         ));
         return;
       }
 
       // STEP 2: COMPLETE LESSON ONLY IF NOT COMPLETED BEFORE
       if (!_currentLesson.isCompleted) {
+        EasyLoading.show(status: "Completing lesson...");
         await lessonsController.getNextVideo(widget.courseId);
         await lessonsController.refreshFromBackend();
       }
 
       // STEP 3: FIND NEXT LESSON
+      EasyLoading.show(status: "Finding next lesson...");
       final lessons = lessonsController.lessons;
       final currentIndex = lessons.indexWhere((l) => l.id == _currentLesson.id);
 
@@ -119,6 +86,7 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
 
       // STEP 4: NAVIGATE OR UPDATE VIDEO
       if (nextLesson != null && nextLesson.video != null && nextLesson.video!.isNotEmpty && !nextLesson.isLocked) {
+        EasyLoading.show(status: "Preparing next video...");
         // Update in-place
         setState(() {
           _currentLesson = nextLesson!;
@@ -126,25 +94,26 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
 
         // Delete old controller & initialize new video
         Get.delete<OnlineClassController>(tag: _currentLesson.id);
-        controller = Get.put(
-          OnlineClassController(),
-          tag: _currentLesson.id,
-        );
+        controller = Get.put(OnlineClassController(), tag: _currentLesson.id);
         controller.setVideo(_currentLesson.video);
 
+        await Future.delayed(Duration(milliseconds: 300));
         EasyLoading.dismiss();
         setState(() => _isProcessing = false);
         return;
       }
 
       // STEP 5: COURSE END
+      EasyLoading.show(status: "Course completed!");
+      // Show success message before navigation
+      await Future.delayed(Duration(milliseconds: 800));
       EasyLoading.dismiss();
       setState(() => _isProcessing = false);
       Get.off(() => LessonsPage(courseId: widget.courseId));
     } catch (e) {
       EasyLoading.dismiss();
+      Get.snackbar("Error", "Something went wrong", backgroundColor: AppColors.redColor);
       setState(() => _isProcessing = false);
-      Get.snackbar("Error", "Something went wrong");
     }
   }
 
@@ -199,12 +168,11 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
             title: _currentLesson.title,
             lessonNum: _currentLesson.order.toString(),
             description: _currentLesson.description,
-            infoMessage:
-            "Before watching the next video, please watch this one attentively and answer the questions.",
+            infoMessage: "Before watching the next video, please watch this one attentively and answer the questions.",
           ),
-          SizedBox(height: 20.h),
-          BeforeYouContinueCard(hasExam: _hasExam, questionCount: _questionCount),
-          SizedBox(height: 20.h),
+          SizedBox(height: 24.h),
+          BeforeYouContinueCard(questionCount: _currentLesson.questionsCount),
+          SizedBox(height: 16.h),
 
           // CONTINUE BUTTON
           ElevatedButton(
@@ -218,11 +186,7 @@ class _OnlineClassPageState extends State<OnlineClassPage> {
             ),
             child: Text(
               "Continue",
-              style: GoogleFonts.notoSans(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
+              style: GoogleFonts.notoSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.white),
             ),
           ),
           SizedBox(height: 20.h),

@@ -12,11 +12,16 @@ import '../controllers/exam_controller.dart';
 class ExamPage extends StatelessWidget {
   final String courseId;
   final String lessonId;
-  const ExamPage({super.key, required this.courseId, required this.lessonId});
+  final bool isLessonAlreadyCompleted;
+  const ExamPage({super.key, required this.courseId, required this.lessonId, this.isLessonAlreadyCompleted = false});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ExamController(lessonId: lessonId, courseId: courseId));
+    final controller = Get.put(ExamController(
+      lessonId: lessonId,
+      courseId: courseId,
+      isLessonAlreadyCompleted: isLessonAlreadyCompleted,
+    ));
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       extendBody: true,

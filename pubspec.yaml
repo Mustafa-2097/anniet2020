@@ -38,6 +38,8 @@ dependencies:
   path_provider: ^2.1.5
   permission_handler:
   webview_flutter:
+  shimmer:
+  flutter_image_compress:
 
 
 #==========================================#

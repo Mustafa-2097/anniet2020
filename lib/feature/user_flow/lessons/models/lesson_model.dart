@@ -1,11 +1,15 @@
 class LessonModel {
   final String id;
   final String title;
-  final String? image;
+  final String? thumbnail;
   final String? video;
   final int lengthInSeconds;
   final int order;
   final String description;
+  final int questionsCount; // Added from API
+  final String status;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   /// Mutable states (controlled by LessonsController)
   bool isCompleted;
@@ -14,11 +18,15 @@ class LessonModel {
   LessonModel({
     required this.id,
     required this.title,
-    this.image,
+    this.thumbnail,
     this.video,
     required this.lengthInSeconds,
     required this.order,
     required this.description,
+    required this.questionsCount, // Added
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
     required this.isCompleted,
     this.isLocked = true,
   });
@@ -27,16 +35,16 @@ class LessonModel {
     return LessonModel(
       id: json['id'],
       title: json['title'] ?? "",
-      image: json['thumbnail'],
+      thumbnail: json['thumbnail'],
       video: json['video'],
       lengthInSeconds: json['lengthInSeconds'] ?? 0,
       order: json['order'] ?? 0,
       description: json['description'] ?? "",
-
-      /// Backend is the ONLY source of completion
+      questionsCount: json['questionsCount'] ?? 0, // Added
+      status: json['status'] ?? "ACTIVE",
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
       isCompleted: json['completed'] ?? false,
-
-      /// Lock state will be calculated later
       isLocked: true,
     );
   }
@@ -46,4 +54,7 @@ class LessonModel {
     final minutes = (lengthInSeconds / 60).ceil();
     return "$minutes min";
   }
+
+  /// Helper to check if lesson has exam
+  bool get hasExam => questionsCount > 0;
 }

@@ -1,4 +1,4 @@
-import 'package:anniet2020/feature/user_flow/dashboard/customer_dashboard.dart';
+import 'dart:io';
 import 'package:anniet2020/feature/user_flow/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,28 +10,14 @@ class PersonalInfoController extends GetxController {
   static PersonalInfoController get instance => Get.find();
   final profile = Get.find<ProfileController>();
 
-  var fullName = "Your full name".obs;
-  var email = "Your email".obs;
-  var phone = "Phone".obs;
-
-  var pickedImage = Rx<XFile?>(null);
-
   final ImagePicker picker = ImagePicker();
   final previewImagePath = RxnString();
 
-  Future pickImage() async {
-    final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-    if (img == null) return;
-    final ext = img.path.split('.').last.toLowerCase();
-    if (!['jpg', 'jpeg', 'png'].contains(ext)) {
-      Get.snackbar("Invalid image", "Only JPG, JPEG, PNG images are allowed", backgroundColor: Colors.red, colorText: Colors.white);
-      return;
-    }
-    pickedImage.value = img;
-    previewImagePath.value = img.path;
-  }
+  // Prevent multiple image picker calls
+  var isPickingImage = false.obs;
 
   final UserRepository _repository = UserRepository();
+
   /// Text Controllers
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -40,17 +26,76 @@ class PersonalInfoController extends GetxController {
   /// Fixed Country Code (Australia)
   final String countryCode = "+61";
 
+  Future<void> pickImage() async {
+    // Prevent multiple simultaneous picker calls
+    if (isPickingImage.value) return;
+
+    try {
+      isPickingImage.value = true;
+
+      final img = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50, // Reduced quality to reduce file size
+      );
+
+      if (img == null) {
+        isPickingImage.value = false;
+        return;
+      }
+
+      // Validate file size BEFORE processing
+      final file = File(img.path);
+      final fileSize = await file.length();
+      const maxSize = 2 * 1024 * 1024; // 2MB max size
+
+      if (fileSize > maxSize) {
+        Get.snackbar(
+          "File too large",
+          "Image must be less than 2MB. Current size: ${(fileSize / (1024 * 1024)).toStringAsFixed(2)}MB",
+          backgroundColor: Colors.red,
+        );
+        isPickingImage.value = false;
+        return;
+      }
+
+      // Validate extension
+      final ext = img.path.split('.').last.toLowerCase();
+      if (!['jpg', 'jpeg', 'png'].contains(ext)) {
+        Get.snackbar(
+          "Invalid image",
+          "Only JPG, JPEG, PNG images are allowed",
+          backgroundColor: Colors.red,
+        );
+        isPickingImage.value = false;
+        return;
+      }
+
+      // Set the preview image path
+      previewImagePath.value = img.path;
+
+    } catch (e) {
+      debugPrint('Image picker error: $e');
+      Get.snackbar(
+        "Error",
+        "Failed to pick image. Please try again.",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isPickingImage.value = false;
+    }
+  }
+
   /// Name Validation
-  String? validateName(String value) {
-    if (value.isEmpty) return "Please enter your full name";
-    if (value.length < 3) return "Name must be at least 3 characters";
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) return "Please enter your full name";
+    if (value.trim().length < 3) return "Name must be at least 3 characters";
     return null;
   }
 
   /// Phone Validation
-  String? validatePhone(String value) {
-    if (value.isEmpty) return null;
-    if (value.length < 7) return "Enter a valid phone number";
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) return null;
+    if (value.trim().length < 7) return "Enter a valid phone number";
     return null;
   }
 
@@ -67,48 +112,84 @@ class PersonalInfoController extends GetxController {
     // Check if nothing changed
     final bool isNameChanged = nameController.text.trim() != profile.userName.value;
     final bool isPhoneChanged = fullPhone != null && fullPhone != profile.userPhone.value;
-    final bool isImageChanged = pickedImage.value != null;
+    final bool isImageChanged = previewImagePath.value != null;
+
     if (!isNameChanged && !isPhoneChanged && !isImageChanged) {
-      Get.snackbar("Info", "No changes to save", backgroundColor: Colors.orange, colorText: Colors.white);
+      Get.snackbar(
+        "Info",
+        "No changes to save",
+        backgroundColor: Colors.orange,
+      );
       return;
     }
 
     try {
       EasyLoading.show(status: 'Saving info...');
+
+      // Update profile info if changed
       if (isNameChanged || isPhoneChanged) {
         await _repository.updateProfile(
           name: isNameChanged ? nameController.text.trim() : null,
           phone: isPhoneChanged ? fullPhone : null,
         );
       }
+
+      // Upload avatar if changed
       if (isImageChanged) {
-        final avatarUrl = await _repository.uploadAvatar(pickedImage.value!.path);
-        profile.avatarUrl.value = avatarUrl;
+        try {
+          final avatarUrl = await _repository.uploadAvatar(previewImagePath.value!);
+          profile.avatarUrl.value = avatarUrl;
+        } catch (e) {
+          debugPrint('Avatar upload failed: $e');
+          // Don't fail entire update if avatar upload fails
+          Get.snackbar(
+            "Note",
+            "Profile updated but avatar failed to upload. Try a smaller image.",
+            backgroundColor: Colors.orange,
+          );
+        }
       }
+
+      // Update local state
       if (isNameChanged) {
         profile.userName.value = nameController.text.trim();
         profile.userHandle.value = profile.generateHandle(nameController.text.trim());
       }
       if (isPhoneChanged) profile.userPhone.value = fullPhone!;
+
       EasyLoading.dismiss();
-      Get.snackbar("Success", "Profile updated successfully", backgroundColor: Colors.green, colorText: Colors.white);
-      Get.off(() => CustomerDashboard(initialIndex: 3));
+
+      Get.snackbar(
+        "Success",
+        "Profile updated successfully",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      // Navigate back after a delay
+      await Future.delayed(Duration(milliseconds: 1500));
+      Get.back();
+
     } catch (e, stack) {
       EasyLoading.dismiss();
       debugPrint('❌ PROFILE UPDATE ERROR');
       debugPrint(e.toString());
       debugPrint(stack.toString());
-      Get.snackbar("Update Failed", e.toString(), backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        "Update Failed",
+        "Failed to update profile. Please try again.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
-
 
   @override
   void onInit() {
     super.onInit();
     nameController.text = profile.userName.value;
     emailController.text = profile.userEmail.value;
-    phoneController.text = profile.userPhone.value!;
+    phoneController.text = profile.userPhone.value?.replaceFirst('+61', '') ?? '';
   }
 
   @override
@@ -116,6 +197,7 @@ class PersonalInfoController extends GetxController {
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
+    isPickingImage.value = false;
     super.onClose();
   }
 }

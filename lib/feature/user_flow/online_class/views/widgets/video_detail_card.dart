@@ -41,7 +41,7 @@ class VideoDetailsCard extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(fontSize: 11.sp, color: AppColors.subTextColor, fontWeight: FontWeight.w500),
           ),
 
-          SizedBox(height: 8.h),
+          SizedBox(height: 6.h),
 
           /// DESCRIPTION TEXT
           Text(
@@ -49,7 +49,7 @@ class VideoDetailsCard extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.subTextColor, fontWeight: FontWeight.w500),
           ),
 
-          SizedBox(height: 6.h),
+          SizedBox(height: 8.h),
 
           /// INFO BOX
           Container(

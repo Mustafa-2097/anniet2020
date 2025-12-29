@@ -24,7 +24,7 @@ class EducateEmployeesPage extends StatelessWidget {
           child: BackButton(color: AppColors.blackColor),
         ),
         title: Text(
-          "Contact Us",
+          "Educate Employee",
           style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor),
         ),
         centerTitle: true,
@@ -120,7 +120,7 @@ class EducateEmployeesPage extends StatelessWidget {
                 validator: (v) => controller.validateMessage(v!.trim()),
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: 20.h),
 
               /// SEND BUTTON
               PrimaryButton(

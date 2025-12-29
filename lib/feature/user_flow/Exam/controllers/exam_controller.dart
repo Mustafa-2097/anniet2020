@@ -10,9 +10,13 @@ import '../../score/views/score_page.dart';
 import '../model/exam_question_model.dart';
 
 class ExamController extends GetxController {
-  final String courseId;
-  final String lessonId;
-  ExamController({required this.courseId, required this.lessonId});
+  final String courseId, lessonId;
+  final bool _isLessonAlreadyCompleted;
+  ExamController({
+    required this.courseId,
+    required this.lessonId,
+    bool? isLessonAlreadyCompleted, // Add optional parameter
+  }) : _isLessonAlreadyCompleted = isLessonAlreadyCompleted ?? false;
 
   final UserRepository _repository = UserRepository();
   late final LessonsController lessonsController;
@@ -26,6 +30,7 @@ class ExamController extends GetxController {
   final score = 0.obs;
   final isLoading = true.obs;
   final isNavigating = false.obs;
+  final isLessonCompleted = false.obs;
 
   /// ================= GETTERS =================
   int get totalQuestions => questions.length;
@@ -39,6 +44,7 @@ class ExamController extends GetxController {
   void onInit() {
     super.onInit();
     lessonsController = Get.find<LessonsController>(tag: courseId);
+    isLessonCompleted.value = _isLessonAlreadyCompleted;
     _loadQuestions();
   }
 
@@ -82,9 +88,13 @@ class ExamController extends GetxController {
       final bool isPassed = score.value >= totalQuestions;
 
       try {
-        if (isPassed) {
+        // Only complete lesson if:
+        // 1. User passed the exam AND
+        // 2. Lesson is not already completed
+        if (isPassed && !isLessonCompleted.value) {
           await lessonsController.getNextVideo(courseId);
           await lessonsController.refreshFromBackend();
+          isLessonCompleted.value = true; // Mark as completed locally
         }
 
         EasyLoading.dismiss();

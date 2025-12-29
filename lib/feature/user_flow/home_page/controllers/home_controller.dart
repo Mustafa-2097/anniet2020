@@ -9,7 +9,7 @@ class HomeController extends GetxController {
   late PageController pageController;
   Timer? _timer;
 
-  final int totalPages = 4; // কার্ডের সংখ্যা অনুযায়ী
+  final int totalPages = 4;
   bool _isUserInteracting = false;
 
   @override
@@ -21,7 +21,7 @@ class HomeController extends GetxController {
   }
 
   void _startAutoSlide() {
-    _timer?.cancel(); // পুরাতন timer থাকলে cancel
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 3), (_) {
       if (_isUserInteracting) return;
 
@@ -52,7 +52,7 @@ class HomeController extends GetxController {
     currentPage.value = index;
   }
 
-  /// যদি bottom nav থেকে ফিরে আসো, slide restart করার জন্য
+  /// if navgiagte from any bottom nav page then slider restart
   void restartSlider() {
     _startAutoSlide();
   }

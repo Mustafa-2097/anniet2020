@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
 import '../../Exam/model/exam_question_model.dart';
@@ -25,7 +26,16 @@ class UserRepository {
     }
   }
   /// Upload avatar
-  Future<String> uploadAvatar(String imagePath) async {
+  Future<String> uploadAvatar(String imagePath, {int maxSizeInMB = 2}) async {
+    // Get file and check size
+    final file = File(imagePath);
+    final fileSize = await file.length();
+    final maxSize = maxSizeInMB * 1024 * 1024;
+
+    if (fileSize > maxSize) {
+      throw Exception('Image size must be less than ${maxSizeInMB}MB. Please choose a smaller image.');
+    }
+
     final response = await _provider.uploadAvatar(imagePath);
     if (response['success'] != true) {
       throw Exception(response['message'] ?? 'Avatar upload failed');

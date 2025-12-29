@@ -1,4 +1,3 @@
-import 'package:anniet2020/core/constant/image_path.dart';
 import 'package:anniet2020/feature/user_flow/online_class/views/online_class_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,7 +37,7 @@ class LessonTile extends StatelessWidget {
                 /// IMAGE
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(ImagePath.lesson01, height: 75.h, width: 75.w, fit: BoxFit.cover),
+                  child: Image.network(lesson.thumbnail.toString(), height: 75.h, width: 75.w, fit: BoxFit.cover),
                 ),
 
                 /// ICON OVER IMAGE
