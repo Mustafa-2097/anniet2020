@@ -47,7 +47,6 @@ class ExamPage extends StatelessWidget {
                       },
                       icon: Icon(Icons.arrow_back_ios, size: 16.r, color: AppColors.blackColor),
                     ),
-                    SizedBox(width: 18.w),
                     SizedBox(
                       height: 12.h,
                       width: 186.w,
@@ -58,7 +57,7 @@ class ExamPage extends StatelessWidget {
                         color: AppColors.greenColor,
                       ),
                     ),
-                    SizedBox(width: 18.w),
+                    SizedBox(width: 13.w),
                     Image.asset(ImagePath.progressIcon, width: 24, fit: BoxFit.contain),
                     SizedBox(width: 5.w),
                     /// Current question progress text (1/5, 2/5, 3/5...)

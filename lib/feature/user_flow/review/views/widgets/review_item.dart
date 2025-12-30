@@ -27,7 +27,7 @@ class ReviewItem extends StatelessWidget {
               review.rating.toString(),
               style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.blackColor, fontWeight: FontWeight.w600),
             ),
-            SizedBox(width: 4.w),
+            SizedBox(width: 10.w),
             Text(
               formatDate(review.createdAt),
               style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppColors.boxTextColor, fontWeight: FontWeight.w600),

@@ -14,30 +14,18 @@ class EducateEmployeesController extends GetxController {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final companyController = TextEditingController();
+  final employeeController = TextEditingController();
   final messageController = TextEditingController();
-
-  /// Dropdown value
-  var employeeCount = "1-10".obs;
-
-  /// Convert dropdown value to int
-  int _mapEmployeeCount(String value) {
-    switch (value) {
-      case "1-10":
-        return 10;
-      case "11-50":
-        return 50;
-      case "51-200":
-        return 200;
-      case "200+":
-        return 201;
-      default:
-        return 0;
-    }
-  }
 
   /// Company validation
   String? validateCompany(String value) {
     if (value.isEmpty) return "Company name is required";
+    return null;
+  }
+
+  /// How many Employees validation
+  String? validateEmployees(String value) {
+    if (value.isEmpty) return "Employee count is required";
     return null;
   }
 
@@ -48,7 +36,7 @@ class EducateEmployeesController extends GetxController {
     return null;
   }
 
-  /// logic
+  /// Educate Employee
   Future<void> educateEmployee(GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return;
 
@@ -57,18 +45,18 @@ class EducateEmployeesController extends GetxController {
 
       await _repository.educateEmployee(
         companyName: companyController.text.trim(),
-        employeeCount: _mapEmployeeCount(employeeCount.value),
+        employeeCount:  int.tryParse(employeeController.text.trim()) ?? 0,
         message: messageController.text.trim(),
       );
 
       EasyLoading.dismiss();
-
-      Get.snackbar("Success", "Your request has been sent successfully!", backgroundColor: AppColors.primaryColor, snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Success", "Your request has been sent successfully!", backgroundColor: AppColors.primaryColor);
       companyController.clear();
+      employeeController.clear();
       messageController.clear();
     } catch (e) {
       EasyLoading.dismiss();
-      Get.snackbar("Error", e.toString(), snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+      Get.snackbar("Error", e.toString(), backgroundColor: AppColors.redColor);
     }
   }
 
@@ -84,6 +72,7 @@ class EducateEmployeesController extends GetxController {
     nameController.dispose();
     emailController.dispose();
     companyController.dispose();
+    employeeController.dispose();
     messageController.dispose();
     super.onClose();
   }

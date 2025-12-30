@@ -83,28 +83,16 @@ class EducateEmployeesPage extends StatelessWidget {
               ),
               SizedBox(height: 15.h),
 
-              /// EMPLOYEE COUNT — DROPDOWN
+              /// EMPLOYEE COUNT
               Text("How many employees do you want to educate?", style: AppTextStyles.body3(context).copyWith(color: AppColors.blackColor)),
               SizedBox(height: 6.h),
-              Obx(() => Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF6F6F6),
-                  borderRadius: BorderRadius.circular(24.r),
-                ),
-                child: DropdownButton<String>(
-                  value: controller.employeeCount.value,
-                  isExpanded: true,
-                  underline: const SizedBox(),
-                  items: [
-                    "1-10",
-                    "11-50",
-                    "51-200",
-                    "200+"
-                  ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                  onChanged: (value) => controller.employeeCount.value = value!,
-                ),
-              ),
+              TextFormField(
+                controller: controller.employeeController,
+                keyboardType: TextInputType.number,
+                decoration: _inputDecoration("Educate Employee Count", context)
+                    .copyWith(hintStyle: TextStyle(color: AppColors.boxTextColor))
+                    .copyWith(contentPadding: EdgeInsets.all(16.w)),
+                validator: (v) => controller.validateEmployees(v!.trim()),
               ),
 
               SizedBox(height: 15.h),
