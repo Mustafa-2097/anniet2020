@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../../core/constant/app_colors.dart';
+import 'package:image/image.dart' as img;
 import '../../data/repositories/user_repository.dart';
 
 class PersonalInfoController extends GetxController {
@@ -28,7 +30,6 @@ class PersonalInfoController extends GetxController {
   final String countryCode = "+61";
 
   Future<void> pickImage() async {
-    // Prevent multiple simultaneous picker calls
     if (isPickingImage.value) return;
 
     try {
@@ -36,7 +37,9 @@ class PersonalInfoController extends GetxController {
 
       final img = await picker.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 50, // Reduced quality to reduce file size
+        imageQuality: 60, // Increased from 20 for better quality but still compressed
+        maxWidth: 800, // Limit width
+        maxHeight: 800, // Limit height
       );
 
       if (img == null) {
@@ -44,27 +47,18 @@ class PersonalInfoController extends GetxController {
         return;
       }
 
-      // Validate file size BEFORE processing
-      final file = File(img.path);
+      // Compress the image further if needed
+      final compressedPath = await compressImage(File(img.path));
+
+      // Validate file size
+      final file = File(compressedPath);
       final fileSize = await file.length();
-      const maxSize = 2 * 1024 * 1024; // 2MB max size
+      const maxSize = 1 * 1024 * 1024; // 1MB max size
 
       if (fileSize > maxSize) {
         Get.snackbar(
           "File too large",
-          "Image must be less than 2MB. Current size: ${(fileSize / (1024 * 1024)).toStringAsFixed(2)}MB",
-          backgroundColor: AppColors.redColor,
-        );
-        isPickingImage.value = false;
-        return;
-      }
-
-      // Validate extension
-      final ext = img.path.split('.').last.toLowerCase();
-      if (!['jpg', 'jpeg', 'png'].contains(ext)) {
-        Get.snackbar(
-          "Invalid image",
-          "Only JPG, JPEG, PNG images are allowed",
+          "Image must be less than 1MB. Please choose a smaller image.",
           backgroundColor: AppColors.redColor,
         );
         isPickingImage.value = false;
@@ -72,7 +66,7 @@ class PersonalInfoController extends GetxController {
       }
 
       // Set the preview image path
-      previewImagePath.value = img.path;
+      previewImagePath.value = compressedPath;
 
     } catch (e) {
       debugPrint('Image picker error: $e');
@@ -83,6 +77,28 @@ class PersonalInfoController extends GetxController {
       );
     } finally {
       isPickingImage.value = false;
+    }
+  }
+
+  Future<String> compressImage(File imageFile) async {
+    try {
+      final image = img.decodeImage(await imageFile.readAsBytes());
+      if (image == null) return imageFile.path;
+
+      // Resize if needed
+      final resized = img.copyResize(image, width: 400);
+
+      // Get directory for saving compressed image
+      final directory = await getTemporaryDirectory();
+      final compressedPath = '${directory.path}/compressed_avatar_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      // Save compressed image
+      await File(compressedPath).writeAsBytes(img.encodeJpg(resized, quality: 75));
+
+      return compressedPath;
+    } catch (e) {
+      debugPrint('Compression error: $e');
+      return imageFile.path;
     }
   }
 

@@ -17,9 +17,7 @@ import '../../about/controller/payment_controller.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final controller = Get.put(HomeController());
-  final profileController= Get.put(ProfileController(), permanent: true);
-  final paymentController = Get.put(PaymentPageController());
-
+  final profileController = Get.put(ProfileController(), permanent: true);
 
   final List<Map<String, String>> items = [
     {
@@ -87,7 +85,7 @@ class HomePage extends StatelessWidget {
       backgroundColor: AppColors.whiteColor,
       body: RefreshIndicator(
         onRefresh: () async {
-          await paymentController.fetchPaymentPage();
+          await profileController.loadProfile();
         },
         child: SafeArea(
           child: Column(

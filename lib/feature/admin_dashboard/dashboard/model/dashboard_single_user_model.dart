@@ -90,7 +90,7 @@ class CourseProgress {
   final String id;
   final String title;
   final LessonProgress lessons;
-  final int progress;
+  dynamic progress;
   final bool completed;
 
   CourseProgress({
@@ -106,7 +106,7 @@ class CourseProgress {
       id: json['id'] as String,
       title: json['title'] as String,
       lessons: LessonProgress.fromJson(json['lessons']),
-      progress: json['progress'] as int,
+      progress: json['progress'],
       completed: json['completed'] as bool,
     );
   }
@@ -141,3 +141,4 @@ class LessonProgress {
     'completed': completed,
   };
 }
+
