@@ -17,6 +17,9 @@ class AdminDashboard extends StatefulWidget {
 class _AdminDashboardState extends State<AdminDashboard> {
   late int _selectedIndex;
 
+  // Create a GlobalKey for the AdminDashboardState
+  static final GlobalKey<_AdminDashboardState> dashboardKey = GlobalKey<_AdminDashboardState>();
+
   final List<Widget> _screens = [
     DashboardPage(),
     UsersPage(),
@@ -28,7 +31,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.initialIndex; // set initial tab
+    _selectedIndex = widget.initialIndex;
   }
 
   void _onItemTapped(int index) {
@@ -40,11 +43,19 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: dashboardKey, // Add the key here
       body: _screens[_selectedIndex],
       bottomNavigationBar: AdminBottomNavBar(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,
       ),
     );
+  }
+
+  // Method to change tab from outside
+  void changeTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }

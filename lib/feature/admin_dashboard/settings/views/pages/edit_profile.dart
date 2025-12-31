@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../core/constant/app_colors.dart';
 import '../../../../../core/constant/image_path.dart';
-import '../../controllers/edit_profile_controller.dart';
 import '../../controllers/get_me_profile_controller.dart';
 
 class EditProfilePage extends StatelessWidget {
@@ -66,15 +64,23 @@ class EditProfilePage extends StatelessWidget {
                           backgroundImage: image,
                         ),
 
-                        GestureDetector(
-                          onTap: controller.pickImage,
-                          child: CircleAvatar(
-                            radius: 15,
-                            backgroundColor: Colors.white,
-                            child: Icon(Icons.camera_alt_outlined,
-                                size: 16, color: Colors.blue),
-                          ),
-                        ),
+                        Obx(() {
+                          return GestureDetector(
+                            onTap: controller.isPickingImage.value ? null : controller.pickImage,
+                            child: CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.white,
+                              child: controller.isPickingImage.value
+                                  ? SizedBox(
+                                width: 12,
+                                height: 12,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                                  : Icon(Icons.camera_alt_outlined,
+                                  size: 16, color: Colors.blue),
+                            ),
+                          );
+                        }),
                       ],
                     );
                   }),

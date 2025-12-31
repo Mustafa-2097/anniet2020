@@ -132,7 +132,10 @@ class PaymentCard extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.all(16.r),
-      decoration: const BoxDecoration(color: Colors.white),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

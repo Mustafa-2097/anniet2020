@@ -1,5 +1,6 @@
 import 'package:anniet2020/core/constant/app_colors.dart';
 import 'package:anniet2020/core/constant/image_path.dart';
+import 'package:anniet2020/feature/admin_dashboard/admin_dashboard.dart';
 import 'package:anniet2020/feature/admin_dashboard/dashboard/views/widgets/custom_appdrawer.dart';
 import 'package:anniet2020/feature/admin_dashboard/users/views/users_page.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +50,11 @@ class _DashboardPageState extends State<DashboardPage> {
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Icon(Icons.menu, color: AppColors.blackColor),
+            icon: Icon(Icons.menu, color: AppColors.blackColor, size: 24.r),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        title: Text("Dashboard",
-            style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor)),
+        title: Text("Dashboard", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.blackColor)),
         actions: [
           Obx(() {
             final profileData = adminController.profile.value;
@@ -134,9 +134,9 @@ class _DashboardPageState extends State<DashboardPage> {
                     children: [
                       Text(
                         "Dashboard Overview",
-                        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: AppColors.subTextColor),
+                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.subTextColor),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 12.h),
 
                       /// Stat Cards wrapped in Obx to update UI when data arrives
                       Obx(() {
@@ -173,11 +173,20 @@ class _DashboardPageState extends State<DashboardPage> {
                               circleColor: const Color(0xFF1C2A47),
                               iconColor: AppColors.whiteColor,
                             ),
+                            SizedBox(height: 10.h),
+                            StatCard(
+                              title: "Course Completed By",
+                              value: "${controller.totalCompleted.value}",
+                              color: const Color(0xFFEBD8FF),
+                              icon: Icons.check_circle_outline,
+                              circleColor: AppColors.primaryColor,
+                              iconColor: AppColors.whiteColor,
+                            ),
                           ],
                         );
                       }),
 
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 16.h),
 
                       /// User list container
                       Container(
@@ -202,7 +211,10 @@ class _DashboardPageState extends State<DashboardPage> {
                                 children: [
                                   Text("Recent User", style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.blackColor)),
                                   GestureDetector(
-                                    onTap: () => Get.to(() => UsersPage()),
+                                    onTap: () {
+                                      debugPrint("View All Clicked!");
+                                      Get.off(() => UsersPage());
+                                    },
                                     child: Text("View All", style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.primaryColor)),
                                   ),
                                 ],

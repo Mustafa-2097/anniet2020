@@ -1,5 +1,6 @@
+import 'package:anniet2020/feature/admin_dashboard/admin_dashboard.dart';
+import 'package:anniet2020/feature/admin_dashboard/dashboard/views/dashboard_page.dart';
 import 'package:anniet2020/feature/admin_dashboard/users/views/pages/user_details.dart';
-import 'package:anniet2020/onboarding/model/onboarding_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,7 +10,7 @@ import '../../dashboard/controllers/dashboard_user_controller.dart';
 import '../../dashboard/model/dashboard_user_model.dart';
 
 class UsersPage extends StatefulWidget {
-  UsersPage({super.key});
+  const UsersPage({super.key});
 
   @override
   State<UsersPage> createState() => _UsersPageState();
@@ -37,8 +38,11 @@ class _UsersPageState extends State<UsersPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text("All Users",
-            style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
+        leading: IconButton(
+          onPressed: () => Get.to(() => AdminDashboard()),
+          icon: Icon(Icons.arrow_back_outlined, color: Colors.black),
+        ),
+        title: Text("All Users", style: GoogleFonts.plusJakartaSans(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -91,9 +95,13 @@ class _UsersPageState extends State<UsersPage> {
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: Color(0xFFF3F3F3),
                           border: Border(bottom: BorderSide(color: Color(0xFFD2D6D8))),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(12.r),
+                            topRight: Radius.circular(12.r),
+                          ),
                         ),
                         child: Text(
                           "Showing Page ${controller.currentPage.value} of ${controller.totalPages.value}",

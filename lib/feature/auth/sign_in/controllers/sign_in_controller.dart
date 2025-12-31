@@ -87,7 +87,6 @@ class SignInController extends GetxController {
         Get.snackbar("Error", "Unknown role", backgroundColor: Colors.redAccent, colorText: Colors.white);
       }
 
-
     } catch (e) {
       EasyLoading.dismiss();
       Get.snackbar("Login Failed", e.toString(), backgroundColor: Colors.redAccent, colorText: Colors.white);

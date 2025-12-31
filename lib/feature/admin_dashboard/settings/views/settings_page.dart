@@ -7,7 +7,6 @@ import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/image_path.dart';
 import '../../../../core/constant/widgets/logout_button.dart';
 import '../controllers/get_me_profile_controller.dart';
-import '../controllers/settings_controller.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
@@ -208,12 +207,12 @@ class SettingsPage extends StatelessWidget {
                             String confirmPass = controller.confirmPasswordController.text;
 
                             if (oldPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
-                              Get.snackbar("Error", "All fields are required");
+                              Get.snackbar("Error", "All fields are required", backgroundColor: AppColors.redColor);
                               return;
                             }
 
                             if (newPass != confirmPass) {
-                              Get.snackbar("Error", "New passwords do not match");
+                              Get.snackbar("Error", "New passwords do not match", backgroundColor: AppColors.redColor);
                               return;
                             }
 

@@ -36,7 +36,7 @@ class CustomAppDrawer extends StatelessWidget {
               SizedBox(height: 30.h),
               _DrawerItem(
                 icon: Icons.dashboard_outlined,
-                label: 'Dashboard',
+                label: 'dashboard',
                 onTap: () => Get.offAll(() => AdminDashboard(initialIndex: 0)),
               ),
               SizedBox(height: 10.h),

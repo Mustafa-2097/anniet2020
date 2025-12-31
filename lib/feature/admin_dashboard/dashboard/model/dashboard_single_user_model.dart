@@ -36,7 +36,7 @@ class UserDetail {
   final String email;
   final String? phone;
   final String? avatar;
-  final double amount;
+  dynamic amount;
   final bool subscribed;
   final DateTime? paidAt;
   final bool certification;
@@ -48,7 +48,7 @@ class UserDetail {
     required this.email,
     this.phone,
     this.avatar,
-    required this.amount,
+    this.amount,
     required this.subscribed,
     this.paidAt,
     required this.certification,
@@ -62,7 +62,7 @@ class UserDetail {
       email: json['email'] as String,
       phone: json['phone'] as String?,
       avatar: json['avatar'] as String?,
-      amount: (json['amount'] as num).toDouble(),
+      amount: json['amount'],
       subscribed: json['subscribed'] as bool,
       paidAt: json['paidAt'] != null ? DateTime.parse(json['paidAt']) : null,
       certification: json['certification'] as bool,
