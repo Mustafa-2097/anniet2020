@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../../../core/constant/image_path.dart';
-import '../../about/controller/payment_controller.dart';
+import '../../payment/controllers/payment_controller.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});

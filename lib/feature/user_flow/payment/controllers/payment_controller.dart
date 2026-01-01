@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'package:anniet2020/core/network/api_endpoints.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../../core/offline_storage/shared_pref.dart';
 import '../model/payment_model.dart';
 
 class PaymentPageController extends GetxController {
 
   var isLoading = false.obs;
-  var paymentPageData = Rxn<PaymentData>();
+  var paymentPageData = Rxn<PaymentUserData>();
   var errorMessage = ''.obs;
   var isError = false.obs;
 

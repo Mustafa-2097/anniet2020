@@ -2,7 +2,7 @@ class PaymentPageResponse {
   final bool success;
   final int statusCode;
   final String message;
-  final PaymentData data;
+  final PaymentUserData data;
 
   PaymentPageResponse({
     required this.success,
@@ -16,7 +16,7 @@ class PaymentPageResponse {
       success: json['success'],
       statusCode: json['statusCode'],
       message: json['message'],
-      data: PaymentData.fromJson(json['data']),
+      data: PaymentUserData.fromJson(json['data']),
     );
   }
 
@@ -30,7 +30,7 @@ class PaymentPageResponse {
   }
 }
 
-class PaymentData {
+class PaymentUserData {
   final String title;
   final String? thumbnail;
   final String? description;
@@ -38,7 +38,7 @@ class PaymentData {
   final int lessons;
   final int totalTime;
 
-  PaymentData({
+  PaymentUserData({
     required this.title,
     this.thumbnail,
     this.description,
@@ -47,8 +47,8 @@ class PaymentData {
     required this.totalTime,
   });
 
-  factory PaymentData.fromJson(Map<String, dynamic> json) {
-    return PaymentData(
+  factory PaymentUserData.fromJson(Map<String, dynamic> json) {
+    return PaymentUserData(
       title: json['title'],
       thumbnail: json['thumbnail'],
       description: json['description'],

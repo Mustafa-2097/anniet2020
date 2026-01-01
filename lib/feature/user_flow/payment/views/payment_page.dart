@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../core/constant/app_colors.dart';
-import '../../about/controller/payment_controller.dart';
+import '../controllers/payment_controller.dart';
 import '../controllers/stripe_controller.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -57,7 +57,7 @@ class _PaymentPageState extends State<PaymentPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          int totalSeconds = paymentData.totalTime ?? 0;
+          int totalSeconds = paymentData.totalTime;
         
           int minutes = totalSeconds ~/ 60;
           int seconds = totalSeconds % 60;
@@ -87,7 +87,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              paymentData.title ?? 'No title',
+                              paymentData.title,
                               style: GoogleFonts.plusJakartaSans(fontSize: sw*0.043, fontWeight: FontWeight.w600, color: AppColors.blackColor),
                             ),
             
@@ -136,7 +136,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                 ),
                                 SizedBox(width: sw*0.01),
                                 Text(
-                                  "${paymentData.lessons ?? ''} Lesson",
+                                  "${paymentData.lessons} Lesson",
                                   style: GoogleFonts.plusJakartaSans(fontSize: sw*0.032, fontWeight: FontWeight.w600, color: AppColors.primaryColor),
                                 ),
                               ],
@@ -173,7 +173,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               ),
             
                               Text(
-                                "\$${paymentData.price ?? ''}",
+                                "\$${paymentData.price}",
                                 style: TextStyle(color: AppColors.blackColor, fontSize: 16.sp, fontWeight: FontWeight.w600),
                               ),
                             ],
